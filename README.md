@@ -1,2 +1,386 @@
-# Dynamic-Credit-Limit-Optimization-with-RL-
-Dynamic Credit Limit Optimization with RL.
+# Dynamic Credit Limit Optimization with Reinforcement Learning
+
+This repository is a practical demo of how a bank could adjust customer credit limits dynamically instead of relying on fixed business rules.
+
+The project combines three ideas:
+
+- synthetic retail-banking data,
+- a supervised risk model that estimates default probability,
+- a Reinforcement Learning agent that decides whether to decrease, keep, or increase a client's credit limit.
+
+It is written for readers who may not know banking or Reinforcement Learning yet.
+
+## What problem is this project solving?
+
+When a bank gives a client a credit card or revolving credit line, it must decide how much credit the client is allowed to use.
+
+If the limit is too low:
+
+- the customer may be frustrated,
+- card usage is lower,
+- the bank loses revenue.
+
+If the limit is too high:
+
+- the client may borrow more than they can repay,
+- the probability of default increases,
+- the bank needs to hold more capital against risk.
+
+So the real question is:
+
+> For each customer, what is the best credit limit to maximize value while keeping risk under control?
+
+Traditional banks often answer this with static rules. This repository shows how to formulate the same problem as a sequential decision problem and learn a policy automatically.
+
+## Banking concepts in plain English
+
+### Credit limit
+
+The maximum amount a customer is allowed to borrow on a card or revolving credit product.
+
+### Default
+
+The event where the customer stops repaying as expected. In this demo, the risk model predicts the probability of default over a short horizon.
+
+### Probability of Default (PD)
+
+The estimated probability that a customer will default during a given period.
+
+### Expected Loss (EL)
+
+The average loss the bank expects from risky exposure.
+
+In credit risk, a common formula is:
+
+$$
+EL = PD \times LGD \times EAD
+$$
+
+where:
+
+- $PD$ = probability of default,
+- $LGD$ = loss given default,
+- $EAD$ = exposure at default.
+
+This project uses a simplified version of that logic inside the reward.
+
+### RWA or capital cost proxy
+
+Banks cannot lend freely without consequence. Riskier portfolios require more capital. In this project, we include a regulatory-style penalty term so the agent is not rewarded for growing limits blindly.
+
+## Reinforcement Learning in plain English
+
+Reinforcement Learning, or RL, is a way to train an agent by trial and error.
+
+At each step:
+
+1. the agent observes the customer state,
+2. it chooses an action,
+3. the environment returns a reward,
+4. the agent learns to improve future decisions.
+
+Here, the action is one of a few credit limit adjustments:
+
+- decrease by 20%,
+- decrease by 10%,
+- keep unchanged,
+- increase by 10%,
+- increase by 20%.
+
+The RL algorithm used here is PPO, a widely used policy-gradient method that is relatively stable for practical experimentation.
+
+## How the full system works
+
+```mermaid
+flowchart LR
+	A[Client data] --> B[Risk model estimates PD]
+	B --> C[RL environment builds state]
+	C --> D[PPO agent chooses action]
+	D --> E[Credit limit is adjusted]
+	E --> F[Reward is computed from revenue and risk]
+	F --> D
+```
+
+The system is built in two layers:
+
+- a risk layer, which estimates whether a customer is risky,
+- a decision layer, which decides the credit limit change.
+
+## Mathematical formulation
+
+### State
+
+The state $s_t$ contains information about the current customer and their context, such as:
+
+- income,
+- utilization ratio,
+- internal score,
+- delinquency indicators,
+- current limit,
+- spending level,
+- macro-economic features.
+
+### Action
+
+The action $a_t$ is a credit limit adjustment chosen from:
+
+$$
+a_t \in \{-20\%, -10\%, 0\%, +10\%, +20\%\}
+$$
+
+### Transition
+
+Once an action is applied, the customer moves to a new state with a new balance, utilization level, risk estimate, and simulated outcome.
+
+### Reward
+
+The reward is designed to represent the economic value of a lending decision.
+
+$$
+r_t = \text{interest}_t + \text{fees}_t - \lambda_1 \cdot \text{expected loss}_t - \lambda_2 \cdot \text{capital cost}_t - \text{constraint penalties}_t
+$$
+
+This means:
+
+- higher balances can generate more interest,
+- but higher balances also increase expected loss,
+- very risky actions are penalized.
+
+### Objective
+
+The agent tries to maximize the expected sum of discounted rewards:
+
+$$
+\max_\pi \; \mathbb{E}_{\pi}\left[\sum_{t=0}^{T} \gamma^t r_t\right]
+$$
+
+where:
+
+- $\pi$ is the policy,
+- $\gamma$ is the discount factor,
+- $T$ is the episode horizon.
+
+## Why this matters in banking
+
+This is not just a toy machine-learning problem.
+
+In a retail bank, credit limit management affects:
+
+- revenue from interest and card usage,
+- customer experience,
+- portfolio default rate,
+- capital consumption,
+- regulatory stability.
+
+That is why this use case is interesting: it links machine learning to a real business decision with clear trade-offs.
+
+## Project structure
+
+```text
+.
+|-- app.py
+|-- train.py
+|-- requirements.txt
+`-- credit_limit_rl/
+	|-- __init__.py
+	|-- config.py
+	|-- data.py
+	|-- env.py
+	`-- risk.py
+```
+
+## What is implemented
+
+### 1. Synthetic customer portfolio
+
+The data generator creates realistic retail credit variables such as:
+
+- income,
+- current credit limit,
+- balance,
+- utilization,
+- payment incidents,
+- internal score,
+- regional macro variables,
+- a synthetic default target.
+
+This lets you run the project without confidential banking data.
+
+### 2. Default-risk model
+
+A Gradient Boosting classifier estimates the probability of default.
+
+This model acts like a simplified bank risk engine. It provides the RL environment with a live estimate of how risky a customer currently is.
+
+### 3. Custom RL environment
+
+The Gymnasium environment simulates the effect of a credit-limit decision on:
+
+- revenue,
+- expected loss,
+- capital cost,
+- risk penalties.
+
+### 4. PPO training
+
+The training loop uses Stable-Baselines3 to learn a policy from repeated interactions with the environment.
+
+### 5. Offline evaluation
+
+The trained policy is compared with a baseline strategy:
+
+- `static_maintain`: always keep the current limit,
+- `ppo_dynamic`: dynamically adjust the limit.
+
+## Visual overview of the decision loop
+
+```mermaid
+sequenceDiagram
+	participant Customer
+	participant RiskModel
+	participant RLAgent
+	participant Environment
+
+	Customer->>RiskModel: Features
+	RiskModel-->>Environment: Predicted PD
+	Environment-->>RLAgent: State s_t
+	RLAgent->>Environment: Action a_t
+	Environment-->>RLAgent: Reward r_t and next state
+```
+
+## Latest results snapshot
+
+The repository exports reproducible PNG charts and CSV diagnostics to `results/` after each training run.
+
+Validated run used for the figures below:
+
+- `clients=2000`
+- `train_timesteps=256`
+- `episode_length=128`
+- `runtime=8.07s`
+
+This is intentionally a short smoke-test run to validate the full pipeline. Longer PPO training is needed before drawing strong conclusions about policy quality.
+
+## Performance metrics
+
+### Risk model metrics
+
+| Metric | Meaning | Value |
+|---|---|---:|
+| ROC AUC | Ranking quality between risky and non-risky clients | 0.7083 |
+| Average precision | Precision-recall quality on the positive class | 0.3052 |
+| Brier score | Calibration quality of probabilities, lower is better | 0.0972 |
+| Log loss | Probability error, lower is better | 0.3463 |
+| KS statistic | Separation power between risky and safe clients | 0.4403 |
+
+### Policy comparison
+
+| Policy | Avg reward | Default rate | Avg granted limit | Portfolio reward |
+|---|---:|---:|---:|---:|
+| Static maintain | -1520.64 | 13.75% | 6881.84 EUR | -608255.84 |
+| PPO dynamic | -1591.90 | 14.50% | 6226.73 EUR | -636759.84 |
+
+### Interpretation
+
+On this short run, PPO underperforms the static baseline.
+
+That is not surprising because:
+
+- the training budget is very small,
+- the environment is simplified,
+- RL often needs many more interactions before converging.
+
+The useful point of this repository is that the full decision stack is implemented and measurable end to end.
+
+## Result pictures
+
+### Policy backtest
+
+The chart below compares the static strategy and the learned PPO strategy on reward, default rate, and average limit.
+
+![Policy comparison](results/policy_comparison.png)
+
+The next chart decomposes the PPO reward into revenue, expected loss, capital cost, and penalties.
+
+![PPO reward components](results/ppo_reward_components.png)
+
+This histogram shows which actions PPO preferred during the evaluation run.
+
+![PPO action distribution](results/ppo_action_distribution.png)
+
+### Risk model diagnostics
+
+The ROC curve shows how well the model separates defaulters from non-defaulters across thresholds.
+
+![Risk ROC curve](results/risk_roc_curve.png)
+
+The precision-recall curve is especially useful when defaults are relatively rare.
+
+![Risk precision recall curve](results/risk_precision_recall_curve.png)
+
+The feature importance plot shows which variables matter most for the risk model.
+
+![Risk feature importance](results/risk_feature_importance.png)
+
+## Quick start
+
+### 1. Install dependencies
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+### 2. Train the risk model and RL policy
+
+```powershell
+python train.py --clients 25000 --train-timesteps 8000
+```
+
+Artifacts are written to `artifacts/`:
+
+- trained PPO policy,
+- trained risk model,
+- sample generated clients,
+- JSON metrics.
+
+Charts and diagnostics are written to `results/`:
+
+- `policy_comparison.png`
+- `ppo_reward_components.png`
+- `ppo_action_distribution.png`
+- `risk_roc_curve.png`
+- `risk_precision_recall_curve.png`
+- `risk_feature_importance.png`
+- `policy_decisions.csv`
+- `risk_validation_predictions.csv`
+
+### 3. Launch the dashboard
+
+```powershell
+streamlit run app.py
+```
+
+## How to read the outputs
+
+If you are new to the topic, focus on these three questions:
+
+1. Is the risk model good enough to distinguish risky clients from safer ones?
+2. Does the RL policy generate more value than a simple static baseline?
+3. Does the policy improve revenue without pushing default risk too high?
+
+If the answer to the second or third question is no, then the model, reward design, or training budget still needs work.
+
+## Limitations
+
+- The dataset is synthetic, not real production data.
+- The environment is a simplified simulator, not a full banking balance-sheet engine.
+- The current PPO result is only a smoke test, not a production benchmark.
+- Real deployment would require governance, fairness checks, monitoring, and explainability.
+
+## Possible next improvements
+
+- train for longer and compare several RL seeds,
+- add temporal customer history instead of single-step snapshots,
+- model LGD and EAD explicitly,
+- add constrained RL for portfolio-level risk control,
+- include explainability and policy monitoring views in Streamlit.
