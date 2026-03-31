@@ -125,7 +125,7 @@ The state $s_t$ contains information about the current customer and their contex
 The action $a_t$ is a credit limit adjustment chosen from:
 
 $$
-a_t \in \{-20\%, -10\%, 0\%, +10\%, +20\%\}
+-20\%, -10\%, 0\%, +10\%, +20\%\
 $$
 
 ### Transition
@@ -232,22 +232,6 @@ The trained policy is compared with a baseline strategy:
 - `static_maintain`: always keep the current limit,
 - `ppo_dynamic`: dynamically adjust the limit.
 
-## Visual overview of the decision loop
-
-```mermaid
-sequenceDiagram
-	participant Customer
-	participant RiskModel
-	participant RLAgent
-	participant Environment
-
-	Customer->>RiskModel: Features
-	RiskModel-->>Environment: Predicted PD
-	Environment-->>RLAgent: State s_t
-	RLAgent->>Environment: Action a_t
-	Environment-->>RLAgent: Reward r_t and next state
-```
-
 ## Latest results snapshot
 
 The repository exports reproducible PNG charts and CSV diagnostics to `results/` after each training run.
@@ -322,65 +306,3 @@ The feature importance plot shows which variables matter most for the risk model
 
 ![Risk feature importance](results/risk_feature_importance.png)
 
-## Quick start
-
-### 1. Install dependencies
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-### 2. Train the risk model and RL policy
-
-```powershell
-python train.py --clients 25000 --train-timesteps 8000
-```
-
-Artifacts are written to `artifacts/`:
-
-- trained PPO policy,
-- trained risk model,
-- sample generated clients,
-- JSON metrics.
-
-Charts and diagnostics are written to `results/`:
-
-- `policy_comparison.png`
-- `ppo_reward_components.png`
-- `ppo_action_distribution.png`
-- `risk_roc_curve.png`
-- `risk_precision_recall_curve.png`
-- `risk_feature_importance.png`
-- `policy_decisions.csv`
-- `risk_validation_predictions.csv`
-
-### 3. Launch the dashboard
-
-```powershell
-streamlit run app.py
-```
-
-## How to read the outputs
-
-If you are new to the topic, focus on these three questions:
-
-1. Is the risk model good enough to distinguish risky clients from safer ones?
-2. Does the RL policy generate more value than a simple static baseline?
-3. Does the policy improve revenue without pushing default risk too high?
-
-If the answer to the second or third question is no, then the model, reward design, or training budget still needs work.
-
-## Limitations
-
-- The dataset is synthetic, not real production data.
-- The environment is a simplified simulator, not a full banking balance-sheet engine.
-- The current PPO result is only a smoke test, not a production benchmark.
-- Real deployment would require governance, fairness checks, monitoring, and explainability.
-
-## Possible next improvements
-
-- train for longer and compare several RL seeds,
-- add temporal customer history instead of single-step snapshots,
-- model LGD and EAD explicitly,
-- add constrained RL for portfolio-level risk control,
-- include explainability and policy monitoring views in Streamlit.
