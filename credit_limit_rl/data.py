@@ -37,6 +37,7 @@ def generate_synthetic_portfolio(n_clients: int = 200_000, seed: int = 42) -> pd
     monthly_spend = np.clip(current_balance * rng.uniform(0.55, 1.4, n_clients), 80.0, None)
     debt_to_income = np.clip((current_balance + 0.35 * monthly_spend) / income, 0.01, 3.2)
 
+    # Latent score transformed to monthly PD with a logistic link.
     latent_default = (
         -4.35
         + 3.05 * utilization
@@ -53,6 +54,7 @@ def generate_synthetic_portfolio(n_clients: int = 200_000, seed: int = 42) -> pd
     true_pd = np.clip(_sigmoid(latent_default), 0.002, 0.45)
     default_next_month = rng.binomial(1, true_pd)
 
+    # Keep both realized labels and structural drivers for RL and risk modeling.
     portfolio = pd.DataFrame(
         {
             "region": region,

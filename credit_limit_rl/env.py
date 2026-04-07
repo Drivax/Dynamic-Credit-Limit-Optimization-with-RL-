@@ -22,6 +22,7 @@ def _to_series(record: pd.Series | Mapping[str, float]) -> pd.Series:
 
 def build_observation(record: pd.Series | Mapping[str, float]) -> np.ndarray:
     client = _to_series(record)
+    # Normalize heterogeneous banking signals into a bounded numeric state.
     observation = np.array(
         [
             client["internal_score"] / 1000.0,
@@ -77,6 +78,7 @@ def simulate_credit_decision(
     risk_frame = _risk_feature_frame(client, proposed_limit, adjusted_spend)
     predicted_pd = float(risk_model.predict_proba(risk_frame)[0, 1])
 
+    # Simulated realized PD reacts to utilization shift after the limit decision.
     utilization_delta = float(risk_frame.iloc[0]["utilization"] - client["utilization"])
     realized_pd = float(np.clip(client["true_pd"] * (1.0 + 1.2 * utilization_delta), 0.002, 0.65))
     defaulted = int(generator.random() < realized_pd)
@@ -88,6 +90,7 @@ def simulate_credit_decision(
 
     constraint_penalty = 0.0
     if predicted_pd > config.max_pd_threshold:
+        # Local guardrail: penalize actions that breach per-client risk appetite.
         constraint_penalty += 25.0 * (predicted_pd - config.max_pd_threshold)
 
     reward = monthly_interest + fee_income - config.lambda_default * expected_loss - config.lambda_rwa * rwa_cost - constraint_penalty
@@ -137,6 +140,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         super().reset(seed=seed)
         if seed is not None:
             self.rng = np.random.default_rng(seed)
+        # Episode samples clients without ordering effects.
         replace = len(self.portfolio) < self.episode_length
         self._episode_indices = self.rng.choice(len(self.portfolio), size=self.episode_length, replace=replace)
         self._position = 0
@@ -155,6 +159,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         avg_pd = self._cumulative_pd / float(self._position + 1)
         portfolio_penalty = 0.0
         if avg_pd > self.config.portfolio_pd_threshold:
+            # Portfolio-level constraint mirrors aggregate risk governance.
             portfolio_penalty = 20.0 * (avg_pd - self.config.portfolio_pd_threshold)
 
         reward = float(outcome["reward"]) - portfolio_penalty

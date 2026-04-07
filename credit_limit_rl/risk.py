@@ -25,6 +25,7 @@ RISK_FEATURES = [
 def train_risk_model(portfolio: pd.DataFrame, random_state: int = 42) -> tuple[GradientBoostingClassifier, dict[str, Any]]:
     features = portfolio[RISK_FEATURES]
     target = portfolio["default_next_month"]
+    # Stratification preserves class imbalance between train and validation sets.
     x_train, x_valid, y_train, y_valid = train_test_split(
         features,
         target,
@@ -40,6 +41,7 @@ def train_risk_model(portfolio: pd.DataFrame, random_state: int = 42) -> tuple[G
         min_samples_leaf=100,
         random_state=random_state,
     )
+    # Risk model approximates next-month default probability (PD).
     model.fit(x_train, y_train)
 
     valid_scores = model.predict_proba(x_valid)[:, 1]
@@ -65,6 +67,7 @@ def train_risk_model(portfolio: pd.DataFrame, random_state: int = 42) -> tuple[G
         "default_rate": float(target.mean()),
         "validation_samples": int(len(validation_frame)),
     }
+    # Diagnostics feed both reporting and dashboard visualizations.
     diagnostics = {
         "metrics": metrics,
         "validation_predictions": validation_frame,
