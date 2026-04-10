@@ -18,6 +18,7 @@ RISK_FEATURES = [
     "late_payments_6m",
     "macro_unemployment",
     "macro_inflation",
+    "macro_policy_rate",
     "debt_to_income",
 ]
 

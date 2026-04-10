@@ -26,20 +26,20 @@ def load_artifacts():
     return PPO.load(str(MODEL_PATH)), joblib.load(RISK_MODEL_PATH)
 
 
-def infer_region_macro(region: str) -> tuple[float, float]:
+def infer_region_macro(region: str) -> tuple[float, float, float]:
     mapping = {
-        "ile_de_france": (0.071, 0.022),
-        "nord": (0.089, 0.025),
-        "sud": (0.083, 0.024),
-        "est": (0.077, 0.023),
-        "ouest": (0.068, 0.021),
+        "ile_de_france": (0.071, 0.022, 0.023),
+        "nord": (0.089, 0.025, 0.026),
+        "sud": (0.083, 0.024, 0.024),
+        "est": (0.077, 0.023, 0.024),
+        "ouest": (0.068, 0.021, 0.022),
     }
     return mapping[region]
 
 
 def build_client_frame() -> pd.Series:
     region = st.sidebar.selectbox("Region", ["ile_de_france", "nord", "sud", "est", "ouest"], index=0)
-    macro_unemployment, macro_inflation = infer_region_macro(region)
+    macro_unemployment, macro_inflation, macro_policy_rate = infer_region_macro(region)
 
     income = st.sidebar.slider("Monthly income (EUR)", 1200, 10000, 3200, step=100)
     internal_score = st.sidebar.slider("Internal score", 350, 900, 650, step=10)
@@ -66,6 +66,7 @@ def build_client_frame() -> pd.Series:
                     - 0.0052 * (internal_score - 650.0)
                     + 14.0 * (macro_unemployment - 0.07)
                     + 8.0 * (macro_inflation - 0.02)
+                    + 6.5 * (macro_policy_rate - 0.022)
                     + 0.62 * debt_to_income
                     - 0.003 * min(tenure_months, 120)
                     + 0.015 * max(age - 60, 0)
@@ -87,6 +88,7 @@ def build_client_frame() -> pd.Series:
             "late_payments_6m": float(late_payments_6m),
             "macro_unemployment": float(macro_unemployment),
             "macro_inflation": float(macro_inflation),
+            "macro_policy_rate": float(macro_policy_rate),
             "current_limit": float(current_limit),
             "current_balance": float(current_balance),
             "monthly_spend": float(monthly_spend),

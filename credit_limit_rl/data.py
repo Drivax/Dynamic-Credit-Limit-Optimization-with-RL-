@@ -23,6 +23,11 @@ def generate_synthetic_portfolio(n_clients: int = 200_000, seed: int = 42) -> pd
     region = rng.choice(regions, size=n_clients, p=[0.24, 0.18, 0.24, 0.16, 0.18])
     unemployment = np.array([unemployment_map[item] for item in region]) + rng.normal(0.0, 0.004, n_clients)
     inflation = np.clip(rng.normal(0.024, 0.005, n_clients), 0.01, 0.05)
+    policy_rate = np.clip(
+        0.022 + 0.55 * (inflation - 0.02) + 0.22 * (unemployment - 0.07) + rng.normal(0.0, 0.0025, n_clients),
+        0.005,
+        0.08,
+    )
     age = rng.integers(21, 78, n_clients)
     tenure_months = rng.integers(2, 180, n_clients)
     income = rng.lognormal(mean=8.0, sigma=0.42, size=n_clients)
@@ -46,6 +51,7 @@ def generate_synthetic_portfolio(n_clients: int = 200_000, seed: int = 42) -> pd
         - 0.0052 * (internal_score - 650.0)
         + 14.0 * (unemployment - 0.07)
         + 8.0 * (inflation - 0.02)
+        + 6.5 * (policy_rate - 0.022)
         + 0.62 * debt_to_income
         - 0.003 * np.minimum(tenure_months, 120)
         + 0.015 * np.maximum(age - 60, 0)
@@ -66,6 +72,7 @@ def generate_synthetic_portfolio(n_clients: int = 200_000, seed: int = 42) -> pd
             "late_payments_6m": late_payments_6m.astype(float),
             "macro_unemployment": unemployment,
             "macro_inflation": inflation,
+            "macro_policy_rate": policy_rate,
             "current_limit": current_limit,
             "current_balance": current_balance,
             "monthly_spend": monthly_spend,

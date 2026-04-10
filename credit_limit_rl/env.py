@@ -33,6 +33,7 @@ def build_observation(record: pd.Series | Mapping[str, float]) -> np.ndarray:
             min(client["current_balance"] / max(client["income"], 1.0), 2.5),
             client["macro_unemployment"] * 10.0,
             client["macro_inflation"] * 20.0,
+            client["macro_policy_rate"] * 30.0,
             min(client["income"] / 10000.0, 1.5),
             min(client["tenure_months"] / 180.0, 1.0),
         ],
@@ -54,6 +55,7 @@ def _risk_feature_frame(client: pd.Series, proposed_limit: float, adjusted_spend
         "late_payments_6m": client["late_payments_6m"],
         "macro_unemployment": client["macro_unemployment"],
         "macro_inflation": client["macro_inflation"],
+        "macro_policy_rate": client["macro_policy_rate"],
         "debt_to_income": debt_to_income,
     }
     return pd.DataFrame([row], columns=RISK_FEATURES)
@@ -130,7 +132,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         self.episode_length = min(episode_length, len(self.portfolio))
         self.rng = np.random.default_rng(seed)
         self.action_space = spaces.Discrete(len(ACTION_ADJUSTMENTS))
-        self.observation_space = spaces.Box(low=0.0, high=2.5, shape=(10,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=0.0, high=2.5, shape=(11,), dtype=np.float32)
         self.static_action_index = 2
         self._episode_indices: np.ndarray | None = None
         self._position = 0
