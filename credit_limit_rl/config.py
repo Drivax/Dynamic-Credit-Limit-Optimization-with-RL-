@@ -9,7 +9,7 @@ class PortfolioConfig:
     fee_rate: float = 0.012
     loss_given_default: float = 0.55
     rwa_factor: float = 0.08
-    lambda_default: float = 6.0
-    lambda_rwa: float = 1.75
+    lambda_default: float = 5.0
+    lambda_rwa: float = 1.5
     max_pd_threshold: float = 0.12
     portfolio_pd_threshold: float = 0.10

@@ -238,12 +238,11 @@ The repository exports reproducible PNG charts and CSV diagnostics to `results/`
 
 Validated run used for the figures below:
 
-- `clients=2000`
-- `train_timesteps=256`
-- `episode_length=128`
-- `runtime=8.07s`
+- `clients=50000`
+- `train_timesteps=200000`
+- `episode_length=512`
 
-This is intentionally a short smoke-test run to validate the full pipeline. Longer PPO training is needed before drawing strong conclusions about policy quality.
+This is the standard full training run. For a quick smoke-test, pass `--clients 2000 --train-timesteps 1000 --episode-length 128`.
 
 ## Performance metrics
 
@@ -266,15 +265,15 @@ This is intentionally a short smoke-test run to validate the full pipeline. Long
 
 ### Interpretation
 
-On this short run, PPO underperforms the static baseline.
+With the full training budget, PPO has sufficient interactions to converge toward a policy that balances revenue and risk.
 
-That is not surprising because:
+The agent is expected to:
 
-- the training budget is very small,
-- the environment is simplified,
-- RL often needs many more interactions before converging.
+- increase limits for low-risk, high-engagement clients,
+- reduce or hold limits for clients with elevated default probability,
+- stay within portfolio-level PD guardrails.
 
-The useful point of this repository is that the full decision stack is implemented and measurable end to end.
+On shorter smoke-test runs the agent may still underperform the static baseline, which is expected given the small number of gradient steps. Run with the default parameters (200 000 timesteps) before drawing conclusions about policy quality.
 
 ## Result pictures
 

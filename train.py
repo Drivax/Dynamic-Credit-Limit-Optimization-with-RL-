@@ -203,9 +203,9 @@ def save_policy_charts(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train and evaluate a dynamic credit limit RL policy.")
-    parser.add_argument("--clients", type=int, default=25_000, help="Number of synthetic clients to generate.")
-    parser.add_argument("--train-timesteps", type=int, default=8_000, help="PPO training timesteps.")
-    parser.add_argument("--episode-length", type=int, default=256, help="Episode length for the custom environment.")
+    parser.add_argument("--clients", type=int, default=50_000, help="Number of synthetic clients to generate.")
+    parser.add_argument("--train-timesteps", type=int, default=200_000, help="PPO training timesteps.")
+    parser.add_argument("--episode-length", type=int, default=512, help="Episode length for the custom environment.")
     parser.add_argument("--seed", type=int, default=42, help="Random seed.")
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts"), help="Folder where trained artifacts are saved.")
     parser.add_argument("--results-dir", type=Path, default=Path("results"), help="Folder where charts and performance snapshots are saved.")
@@ -246,12 +246,14 @@ def main() -> None:
         "MlpPolicy",
         train_env,
         verbose=0,
-        gamma=0.96,
-        learning_rate=3e-4,
-        n_steps=256,
-        batch_size=128,
-        ent_coef=0.01,
-        policy_kwargs={"net_arch": [128, 128]},
+        gamma=0.98,
+        learning_rate=2.5e-4,
+        n_steps=1024,
+        batch_size=256,
+        n_epochs=10,
+        ent_coef=0.02,
+        clip_range=0.2,
+        policy_kwargs={"net_arch": [256, 256]},
         seed=args.seed,
     )
     print(f"Training PPO for {args.train_timesteps:,} timesteps...")
