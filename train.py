@@ -14,69 +14,12 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 
 from credit_limit_rl.config import PortfolioConfig
 from credit_limit_rl.data import generate_synthetic_portfolio
-from credit_limit_rl.env import ACTION_ADJUSTMENTS, ACTION_LABELS, CreditLimitEnv, build_observation, simulate_credit_decision
+from credit_limit_rl.env import ACTION_ADJUSTMENTS, ACTION_LABELS, CreditLimitEnv
+from credit_limit_rl.evaluation import evaluate_policy, evaluate_across_regimes, kfold_split
 from credit_limit_rl.risk import train_risk_model
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
-
-def evaluate_policy(
-    policy_name: str,
-    portfolio: pd.DataFrame,
-    risk_model,
-    config: PortfolioConfig,
-    model: PPO | None = None,
-) -> tuple[dict[str, float | str], pd.DataFrame]:
-    rng = np.random.default_rng(123)
-    rows: list[dict[str, float | int | str]] = []
-
-    for _, client in portfolio.iterrows():
-        if model is None:
-            action_index = 2
-        else:
-            action_index, _ = model.predict(build_observation(client), deterministic=True)
-            action_index = int(action_index)
-
-        outcome = simulate_credit_decision(client, float(ACTION_ADJUSTMENTS[action_index]), risk_model, config, rng)
-        rows.append(
-            {
-                "policy": policy_name,
-                "action_index": action_index,
-                "action_label": ACTION_LABELS[action_index],
-                "adjustment": float(ACTION_ADJUSTMENTS[action_index]),
-                "reward": float(outcome["reward"]),
-                "defaulted": int(outcome["defaulted"]),
-                "predicted_pd": float(outcome["predicted_pd"]),
-                "new_limit": float(outcome["new_limit"]),
-                "monthly_interest": float(outcome["monthly_interest"]),
-                "fee_income": float(outcome["fee_income"]),
-                "expected_loss": float(outcome["expected_loss"]),
-                "rwa_cost": float(outcome["rwa_cost"]),
-                "constraint_penalty": float(outcome["constraint_penalty"]),
-            }
-        )
-
-    details = pd.DataFrame(rows)
-    summary = {
-        "policy": policy_name,
-        "avg_reward": float(details["reward"].mean()),
-        "median_reward": float(details["reward"].median()),
-        "reward_std": float(details["reward"].std(ddof=0)),
-        "reward_p05": float(details["reward"].quantile(0.05)),
-        "reward_p95": float(details["reward"].quantile(0.95)),
-        "default_rate": float(details["defaulted"].mean()),
-        "avg_predicted_pd": float(details["predicted_pd"].mean()),
-        "avg_limit": float(details["new_limit"].mean()),
-        "avg_adjustment": float(details["adjustment"].mean()),
-        "avg_monthly_interest": float(details["monthly_interest"].mean()),
-        "avg_fee_income": float(details["fee_income"].mean()),
-        "avg_expected_loss": float(details["expected_loss"].mean()),
-        "avg_rwa_cost": float(details["rwa_cost"].mean()),
-        "avg_constraint_penalty": float(details["constraint_penalty"].mean()),
-        "portfolio_reward": float(details["reward"].sum()),
-    }
-    return summary, details
 
 
 def save_risk_charts(validation_predictions: pd.DataFrame, feature_importance: pd.DataFrame, output_dir: Path) -> dict[str, str]:
@@ -209,6 +152,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=42, help="Random seed.")
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts"), help="Folder where trained artifacts are saved.")
     parser.add_argument("--results-dir", type=Path, default=Path("results"), help="Folder where charts and performance snapshots are saved.")
+    
+    # Evaluation modes
+    parser.add_argument("--eval-kfold", type=int, default=0, 
+                       help="Run k-fold cross-validation evaluation (set to number of folds, e.g., 5). Default: 0 (disabled).")
+    parser.add_argument("--eval-risk-regimes", action="store_true", 
+                       help="Evaluate policy separately on high-risk, medium-risk, and low-risk client segments.")
+    parser.add_argument("--eval-timeseries", type=int, default=0,
+                       help="Run time-series walk-forward evaluation (set to number of folds, e.g., 5). Default: 0 (disabled).")
+    
+    # Hyperparameter optimization
+    parser.add_argument("--hpo-trials", type=int, default=0,
+                       help="Run hyperparameter optimization with this many trials. Default: 0 (disabled).")
+    parser.add_argument("--hpo-train-timesteps", type=int, default=100_000,
+                       help="Training budget per HPO trial. Default: 100000.")
+    
     return parser.parse_args()
 
 
@@ -281,6 +239,54 @@ def main() -> None:
 
     risk_chart_paths = save_risk_charts(risk_report["validation_predictions"], risk_report["feature_importance"], results_dir)
     policy_chart_paths = save_policy_charts(pd.DataFrame(evaluation), ppo_details, results_dir, config)
+    
+    # Run additional evaluation modes if requested
+    if args.eval_kfold > 0:
+        run_kfold_evaluation(portfolio, risk_model, config, args.eval_kfold, args.train_timesteps, args.episode_length, args.seed, results_dir)
+    
+    if args.eval_risk_regimes:
+        run_risk_regime_evaluation(train_portfolio, test_portfolio, risk_model, config, args.train_timesteps, args.episode_length, args.seed, results_dir)
+    
+    if args.eval_timeseries > 0:
+        from credit_limit_rl.evaluation import timeseries_split
+        print(f"\nRunning {args.eval_timeseries}-fold time-series evaluation...")
+        ts_folds = timeseries_split(portfolio, n_splits=args.eval_timeseries)
+        ts_results = []
+        for fold_idx, (train_fold, test_fold) in enumerate(ts_folds):
+            print(f"  Time-series fold {fold_idx + 1}/{args.eval_timeseries}...")
+            train_env = DummyVecEnv([
+                lambda: CreditLimitEnv(
+                    portfolio=train_fold,
+                    risk_model=risk_model,
+                    config=config,
+                    episode_length=args.episode_length,
+                    seed=args.seed + fold_idx,
+                )
+            ])
+            model_ts = PPO(
+                "MlpPolicy",
+                train_env,
+                verbose=0,
+                gamma=0.98,
+                learning_rate=2.5e-4,
+                n_steps=1024,
+                batch_size=256,
+                n_epochs=10,
+                ent_coef=0.02,
+                clip_range=0.2,
+                policy_kwargs={"net_arch": [256, 256]},
+                seed=args.seed + fold_idx,
+            )
+            model_ts.learn(total_timesteps=args.train_timesteps, progress_bar=False)
+            
+            summary, _ = evaluate_policy("ppo_timeseries", test_fold, risk_model, config, model=model_ts)
+            ts_results.append({"fold": fold_idx, "avg_reward": summary["avg_reward"], "default_rate": summary["default_rate"]})
+        
+        ts_df = pd.DataFrame(ts_results)
+        ts_df.to_csv(results_dir / "timeseries_results.csv", index=False)
+        print("Time-series evaluation results:")
+        print(ts_df.to_string(index=False))
+    
     reward_lift = float(ppo_summary["portfolio_reward"] - static_summary["portfolio_reward"])
     reward_lift_pct = float(reward_lift / abs(static_summary["portfolio_reward"])) if static_summary["portfolio_reward"] else 0.0
     elapsed_seconds = float(time.perf_counter() - start_time)
@@ -317,5 +323,159 @@ def main() -> None:
     print(f"Artifacts saved in {output_dir.resolve()}")
 
 
+def run_kfold_evaluation(
+    portfolio: pd.DataFrame,
+    risk_model,
+    config: PortfolioConfig,
+    n_splits: int,
+    train_timesteps: int,
+    episode_length: int,
+    seed: int,
+    results_dir: Path,
+) -> None:
+    """Run k-fold cross-validation evaluation."""
+    print(f"\nRunning {n_splits}-fold cross-validation...")
+    folds = kfold_split(portfolio, n_splits=n_splits, seed=seed)
+    kfold_results = []
+    
+    for fold_idx, (train_fold, test_fold) in enumerate(folds):
+        print(f"  Fold {fold_idx + 1}/{n_splits}...")
+        
+        train_env = DummyVecEnv([
+            lambda: CreditLimitEnv(
+                portfolio=train_fold,
+                risk_model=risk_model,
+                config=config,
+                episode_length=episode_length,
+                seed=seed + fold_idx,
+            )
+        ])
+        
+        model = PPO(
+            "MlpPolicy",
+            train_env,
+            verbose=0,
+            gamma=0.98,
+            learning_rate=2.5e-4,
+            n_steps=1024,
+            batch_size=256,
+            n_epochs=10,
+            ent_coef=0.02,
+            clip_range=0.2,
+            policy_kwargs={"net_arch": [256, 256]},
+            seed=seed + fold_idx,
+        )
+        model.learn(total_timesteps=train_timesteps, progress_bar=False)
+        
+        static_summary, _ = evaluate_policy("static_maintain", test_fold, risk_model, config, model=None)
+        ppo_summary, _ = evaluate_policy("ppo_dynamic", test_fold, risk_model, config, model=model)
+        
+        kfold_results.append({
+            "fold": fold_idx,
+            "static_avg_reward": static_summary["avg_reward"],
+            "ppo_avg_reward": ppo_summary["avg_reward"],
+            "reward_lift": ppo_summary["avg_reward"] - static_summary["avg_reward"],
+            "static_default_rate": static_summary["default_rate"],
+            "ppo_default_rate": ppo_summary["default_rate"],
+        })
+    
+    kfold_df = pd.DataFrame(kfold_results)
+    kfold_df.to_csv(results_dir / "kfold_results.csv", index=False)
+    print(f"\nK-fold cross-validation results:")
+    print(kfold_df.to_string(index=False))
+    print(f"Mean reward lift: {kfold_df['reward_lift'].mean():.2f} ± {kfold_df['reward_lift'].std():.2f}")
+
+
+def run_risk_regime_evaluation(
+    train_portfolio: pd.DataFrame,
+    test_portfolio: pd.DataFrame,
+    risk_model,
+    config: PortfolioConfig,
+    train_timesteps: int,
+    episode_length: int,
+    seed: int,
+    results_dir: Path,
+) -> None:
+    """Evaluate policy separately on different risk regimes."""
+    print("\nEvaluating on risk regimes (low/medium/high)...")
+    
+    train_env = DummyVecEnv([
+        lambda: CreditLimitEnv(
+            portfolio=train_portfolio,
+            risk_model=risk_model,
+            config=config,
+            episode_length=episode_length,
+            seed=seed,
+        )
+    ])
+    
+    model = PPO(
+        "MlpPolicy",
+        train_env,
+        verbose=0,
+        gamma=0.98,
+        learning_rate=2.5e-4,
+        n_steps=1024,
+        batch_size=256,
+        n_epochs=10,
+        ent_coef=0.02,
+        clip_range=0.2,
+        policy_kwargs={"net_arch": [256, 256]},
+        seed=seed,
+    )
+    model.learn(total_timesteps=train_timesteps, progress_bar=False)
+    
+    regime_results = evaluate_across_regimes(test_portfolio, risk_model, config, model=model)
+    regime_results.to_csv(results_dir / "risk_regime_evaluation.csv", index=False)
+    
+    print("Policy performance by risk regime:")
+    print(regime_results.to_string(index=False))
+
+
+def run_hpo(
+    train_portfolio: pd.DataFrame,
+    test_portfolio: pd.DataFrame,
+    risk_model,
+    n_trials: int,
+    train_timesteps: int,
+    seed: int,
+    output_dir: Path,
+) -> None:
+    """Run hyperparameter optimization."""
+    from credit_limit_rl.hpo import run_hpo_study
+    
+    print(f"\nStarting hyperparameter optimization with {n_trials} trials...")
+    hpo_dir = output_dir / "hpo"
+    
+    study, best_params = run_hpo_study(
+        train_portfolio,
+        test_portfolio,
+        risk_model,
+        n_trials=n_trials,
+        train_timesteps=train_timesteps,
+        seed=seed,
+        output_dir=hpo_dir,
+    )
+    
+    print(f"\nBest hyperparameters saved to {hpo_dir / 'best_params.json'}")
+    print(f"All trial results saved to {hpo_dir / 'hpo_trials.csv'}")
+
+
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    
+    # HPO mode
+    if args.hpo_trials > 0:
+        print("HPO mode: generating portfolio and risk model...")
+        portfolio = generate_synthetic_portfolio(n_clients=args.clients, seed=args.seed)
+        split_index = int(len(portfolio) * 0.8)
+        train_portfolio = portfolio.iloc[:split_index].reset_index(drop=True)
+        test_portfolio = portfolio.iloc[split_index:].reset_index(drop=True)
+        
+        risk_model, _ = train_risk_model(train_portfolio, random_state=args.seed)
+        
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        run_hpo(train_portfolio, test_portfolio, risk_model, args.hpo_trials, args.hpo_train_timesteps, args.seed, args.output_dir)
+    else:
+        # Standard training + evaluation modes
+        main()

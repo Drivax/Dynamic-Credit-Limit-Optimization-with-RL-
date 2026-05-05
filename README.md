@@ -186,7 +186,9 @@ That is why this use case is interesting: it links machine learning to a real bu
 	|-- config.py
 	|-- data.py
 	|-- env.py
-	`-- risk.py
+	|-- risk.py
+	|-- evaluation.py
+	`-- hpo.py
 ```
 
 ## What is implemented
@@ -232,6 +234,18 @@ The trained policy is compared with a baseline strategy:
 - `static_maintain`: always keep the current limit,
 - `ppo_dynamic`: dynamically adjust the limit.
 
+### 6. Robust generalization testing
+
+Three evaluation modes to validate policy robustness:
+
+- K-fold cross-validation with risk stratification,
+- Risk regime evaluation (high/medium/low segments),
+- Time-series walk-forward evaluation.
+
+### 7. Hyperparameter optimization
+
+Bayesian optimization (Optuna) over reward weights and PPO hyperparameters to maximize test-set performance.
+
 ## Latest results snapshot
 
 The repository exports reproducible PNG charts and CSV diagnostics to `results/` after each training run.
@@ -274,6 +288,57 @@ The agent is expected to:
 - stay within portfolio-level PD guardrails.
 
 On shorter smoke-test runs the agent may still underperform the static baseline, which is expected given the small number of gradient steps. Run with the default parameters (200 000 timesteps) before drawing conclusions about policy quality.
+
+## Advanced Evaluation & Hyperparameter Optimization
+
+### Robust Generalization Testing
+
+The project now includes three modes to test policy robustness beyond a single train/test split:
+
+**1. K-fold cross-validation**
+
+```bash
+python train.py --eval-kfold 5
+```
+
+Splits the portfolio into 5 folds with stratification by risk level. Trains and evaluates a separate model on each fold. Outputs average reward and default rate across folds to assess generalization variance.
+
+**2. Risk regime evaluation**
+
+```bash
+python train.py --eval-risk-regimes
+```
+
+Evaluates the trained policy separately on high-risk, medium-risk, and low-risk client segments (by internal score percentile). Reveals whether the policy works equally well across the risk spectrum or exhibits segment-specific biases.
+
+**3. Time-series walk-forward splits**
+
+```bash
+python train.py --eval-timeseries 5
+```
+
+Simulates deployment drift by using walk-forward evaluation: train on periods 1-N, test on N+1; train on 1-(N+1), test on N+2, etc. Helps catch temporal instability.
+
+### Hyperparameter Optimization
+
+With the increased training budget (200k timesteps), systematic tuning can unlock significant policy improvements.
+
+```bash
+python train.py --hpo-trials 50 --hpo-train-timesteps 100000
+```
+
+Runs 50 trials of Bayesian optimization over:
+
+- **Reward weights**: `lambda_default` (3.0–8.0), `lambda_rwa` (1.0–2.5)
+- **PPO parameters**: `gamma` (0.95–0.99), learning rate (1e-5–1e-3), entropy coefficient, network size, batch size, epochs
+- **Training collection**: `n_steps`, `batch_size`, `clip_range`
+
+Results are saved to `hpo_results/` with:
+
+- `hpo_trials.csv` — all trial metrics,
+- `best_params.json` — optimal hyperparameters.
+
+The study uses TPE sampling with median pruning to skip unpromising trials early.
 
 ## Result pictures
 

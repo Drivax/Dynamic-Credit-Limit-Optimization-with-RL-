@@ -7,3 +7,4 @@ plotly>=5.24
 scikit-learn>=1.5
 stable-baselines3>=2.4
 streamlit>=1.39
+optuna>=3.0
