@@ -14,12 +14,97 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 
 from credit_limit_rl.config import PortfolioConfig
 from credit_limit_rl.data import generate_synthetic_portfolio
+from credit_limit_rl.hpo import load_best_params
 from credit_limit_rl.env import ACTION_ADJUSTMENTS, ACTION_LABELS, CreditLimitEnv
 from credit_limit_rl.evaluation import evaluate_policy, evaluate_across_regimes, kfold_split
 from credit_limit_rl.risk import train_risk_model
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+
+DEFAULT_PPO_PARAMS = {
+    "gamma": 0.98,
+    "learning_rate": 2.5e-4,
+    "n_steps": 1024,
+    "batch_size": 256,
+    "n_epochs": 10,
+    "ent_coef": 0.02,
+    "clip_range": 0.2,
+    "net_arch": [256, 256],
+}
+
+
+def align_batch_size(n_steps: int, requested_batch_size: int) -> int:
+    """Return the largest batch size <= request that evenly divides the rollout size."""
+    n_steps = int(n_steps)
+    requested_batch_size = max(1, min(int(requested_batch_size), n_steps))
+    if n_steps % requested_batch_size == 0:
+        return requested_batch_size
+
+    for candidate in range(requested_batch_size - 1, 0, -1):
+        if n_steps % candidate == 0:
+            return candidate
+
+    return 1
+
+
+def load_retrain_ppo_params(output_dir: Path) -> dict:
+    """Load the winning HPO params when available, otherwise use the default PPO setup."""
+    candidate_paths = [output_dir / "hpo" / "best_params.json", Path("artifacts") / "hpo" / "best_params.json"]
+    for params_path in candidate_paths:
+        if params_path.exists():
+            params = load_best_params(params_path)
+            print(f"Using winning HPO params from {params_path}")
+            return {
+                "gamma": float(params.get("gamma", DEFAULT_PPO_PARAMS["gamma"])),
+                "learning_rate": float(params.get("learning_rate", DEFAULT_PPO_PARAMS["learning_rate"])),
+                "n_steps": int(round(float(params.get("n_steps", DEFAULT_PPO_PARAMS["n_steps"])))),
+                "batch_size": int(round(float(params.get("batch_size", DEFAULT_PPO_PARAMS["batch_size"])))),
+                "n_epochs": int(round(float(params.get("n_epochs", DEFAULT_PPO_PARAMS["n_epochs"])))),
+                "ent_coef": float(params.get("ent_coef", DEFAULT_PPO_PARAMS["ent_coef"])),
+                "clip_range": float(params.get("clip_range", DEFAULT_PPO_PARAMS["clip_range"])),
+                "net_arch": [
+                    int(round(float(params.get("net_arch_size", DEFAULT_PPO_PARAMS["net_arch"][0])))),
+                    int(round(float(params.get("net_arch_size", DEFAULT_PPO_PARAMS["net_arch"][1])))),
+                ],
+            }
+
+    print("No HPO params found; falling back to the default PPO configuration.")
+    return DEFAULT_PPO_PARAMS.copy()
+
+
+def build_ppo_model(train_env: DummyVecEnv, seed: int, ppo_params: dict) -> PPO:
+    """Construct a PPO model with rollout-compatible minibatch sizing."""
+    n_steps = int(ppo_params["n_steps"])
+    batch_size = align_batch_size(n_steps, int(ppo_params["batch_size"]))
+    if batch_size != int(ppo_params["batch_size"]):
+        print(f"Adjusted batch_size from {ppo_params['batch_size']} to {batch_size} so it divides n_steps={n_steps}.")
+
+    return PPO(
+        "MlpPolicy",
+        train_env,
+        verbose=0,
+        gamma=float(ppo_params["gamma"]),
+        learning_rate=float(ppo_params["learning_rate"]),
+        n_steps=n_steps,
+        batch_size=batch_size,
+        n_epochs=int(ppo_params["n_epochs"]),
+        ent_coef=float(ppo_params["ent_coef"]),
+        clip_range=float(ppo_params["clip_range"]),
+        policy_kwargs={"net_arch": list(ppo_params["net_arch"])},
+        seed=seed,
+    )
+
+
+def summarize_action_distribution(policy_details: pd.DataFrame, policy_order: list[str]) -> pd.DataFrame:
+    """Return per-policy action counts aligned to the canonical action labels."""
+    return (
+        policy_details.groupby(["policy", "action_label"]).size().unstack(fill_value=0)
+        .reindex(index=policy_order, fill_value=0)
+        .reindex(columns=ACTION_LABELS, fill_value=0)
+        .astype(int)
+    )
 
 
 def save_risk_charts(validation_predictions: pd.DataFrame, feature_importance: pd.DataFrame, output_dir: Path) -> dict[str, str]:
@@ -73,7 +158,7 @@ def save_risk_charts(validation_predictions: pd.DataFrame, feature_importance: p
 
 def save_policy_charts(
     policy_summaries: pd.DataFrame,
-    ppo_details: pd.DataFrame,
+    policy_details: pd.DataFrame,
     output_dir: Path,
     config: PortfolioConfig,
 ) -> dict[str, str]:
@@ -101,25 +186,44 @@ def save_policy_charts(
     plt.close(fig)
     chart_paths["policy_comparison"] = str(comparison_path)
 
-    action_path = output_dir / "ppo_action_distribution.png"
-    action_counts = (
-        ppo_details["action_label"]
+    action_path = output_dir / "policy_action_distribution.png"
+    action_counts = summarize_action_distribution(policy_details, policy_summaries["policy"].tolist())
+    x_positions = np.arange(len(ACTION_LABELS))
+    bar_width = 0.35 if len(action_counts.index) > 1 else 0.55
+    plt.figure(figsize=(7.5, 5.0))
+    for idx, policy_name in enumerate(action_counts.index):
+        offsets = x_positions + (idx - (len(action_counts.index) - 1) / 2.0) * bar_width
+        plt.bar(offsets, action_counts.loc[policy_name].values, width=bar_width, label=policy_name)
+    plt.xticks(x_positions, ACTION_LABELS)
+    plt.title("Action Distribution on Test Portfolio")
+    plt.xlabel("Action")
+    plt.ylabel("Clients")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(action_path, dpi=180)
+    plt.close()
+    chart_paths["policy_action_distribution"] = str(action_path)
+
+    ppo_only_path = output_dir / "ppo_action_distribution.png"
+    ppo_counts = (
+        policy_details.loc[policy_details["policy"] == "ppo_dynamic", "action_label"]
         .value_counts()
         .reindex(ACTION_LABELS, fill_value=0)
     )
     plt.figure(figsize=(7.5, 5.0))
-    plt.bar(action_counts.index, action_counts.values, color="#264653")
+    plt.bar(ppo_counts.index, ppo_counts.values, color="#264653")
     plt.title("PPO Action Distribution on Test Portfolio")
     plt.xlabel("Action")
     plt.ylabel("Clients")
     plt.tight_layout()
-    plt.savefig(action_path, dpi=180)
+    plt.savefig(ppo_only_path, dpi=180)
     plt.close()
-    chart_paths["ppo_action_distribution"] = str(action_path)
+    chart_paths["ppo_action_distribution"] = str(ppo_only_path)
 
     waterfall_path = output_dir / "ppo_reward_components.png"
-    component_means = ppo_details[
-        ["monthly_interest", "fee_income", "expected_loss", "rwa_cost", "constraint_penalty"]
+    component_means = policy_details.loc[
+        policy_details["policy"] == "ppo_dynamic",
+        ["monthly_interest", "fee_income", "expected_loss", "rwa_cost", "constraint_penalty"],
     ].mean()
     signed_components = pd.Series(
         {
@@ -200,20 +304,8 @@ def main() -> None:
         )
     ])
 
-    model = PPO(
-        "MlpPolicy",
-        train_env,
-        verbose=0,
-        gamma=0.98,
-        learning_rate=2.5e-4,
-        n_steps=1024,
-        batch_size=256,
-        n_epochs=10,
-        ent_coef=0.02,
-        clip_range=0.2,
-        policy_kwargs={"net_arch": [256, 256]},
-        seed=args.seed,
-    )
+    ppo_params = load_retrain_ppo_params(output_dir)
+    model = build_ppo_model(train_env, args.seed, ppo_params)
     print(f"Training PPO for {args.train_timesteps:,} timesteps...")
     model.learn(total_timesteps=args.train_timesteps, progress_bar=False)
 
@@ -238,14 +330,14 @@ def main() -> None:
     policy_details.to_csv(policy_details_path, index=False)
 
     risk_chart_paths = save_risk_charts(risk_report["validation_predictions"], risk_report["feature_importance"], results_dir)
-    policy_chart_paths = save_policy_charts(pd.DataFrame(evaluation), ppo_details, results_dir, config)
+    policy_chart_paths = save_policy_charts(pd.DataFrame(evaluation), policy_details, results_dir, config)
     
     # Run additional evaluation modes if requested
     if args.eval_kfold > 0:
-        run_kfold_evaluation(portfolio, risk_model, config, args.eval_kfold, args.train_timesteps, args.episode_length, args.seed, results_dir)
+        run_kfold_evaluation(portfolio, risk_model, config, args.eval_kfold, args.train_timesteps, args.episode_length, args.seed, results_dir, ppo_params=ppo_params)
     
     if args.eval_risk_regimes:
-        run_risk_regime_evaluation(train_portfolio, test_portfolio, risk_model, config, args.train_timesteps, args.episode_length, args.seed, results_dir)
+        run_risk_regime_evaluation(train_portfolio, test_portfolio, risk_model, config, args.train_timesteps, args.episode_length, args.seed, results_dir, ppo_params=ppo_params)
     
     if args.eval_timeseries > 0:
         from credit_limit_rl.evaluation import timeseries_split
@@ -263,20 +355,7 @@ def main() -> None:
                     seed=args.seed + fold_idx,
                 )
             ])
-            model_ts = PPO(
-                "MlpPolicy",
-                train_env,
-                verbose=0,
-                gamma=0.98,
-                learning_rate=2.5e-4,
-                n_steps=1024,
-                batch_size=256,
-                n_epochs=10,
-                ent_coef=0.02,
-                clip_range=0.2,
-                policy_kwargs={"net_arch": [256, 256]},
-                seed=args.seed + fold_idx,
-            )
+            model_ts = build_ppo_model(train_env, args.seed + fold_idx, ppo_params)
             model_ts.learn(total_timesteps=args.train_timesteps, progress_bar=False)
             
             summary, _ = evaluate_policy("ppo_timeseries", test_fold, risk_model, config, model=model_ts)
@@ -307,6 +386,17 @@ def main() -> None:
             "avg_limit_delta": float(ppo_summary["avg_limit"] - static_summary["avg_limit"]),
         },
         "ppo_action_distribution": ppo_details["action_label"].value_counts().reindex(ACTION_LABELS, fill_value=0).to_dict(),
+        "policy_action_distribution": summarize_action_distribution(policy_details, ["static_maintain", "ppo_dynamic"]).to_dict(orient="index"),
+        "ppo_training_params": {
+            "gamma": float(ppo_params["gamma"]),
+            "learning_rate": float(ppo_params["learning_rate"]),
+            "n_steps": int(ppo_params["n_steps"]),
+            "batch_size": int(align_batch_size(int(ppo_params["n_steps"]), int(ppo_params["batch_size"]))),
+            "n_epochs": int(ppo_params["n_epochs"]),
+            "ent_coef": float(ppo_params["ent_coef"]),
+            "clip_range": float(ppo_params["clip_range"]),
+            "net_arch": list(ppo_params["net_arch"]),
+        },
         "generated_files": {
             "policy_decisions_csv": policy_details_path.as_posix(),
             "risk_feature_importance_csv": feature_importance_path.as_posix(),
@@ -332,6 +422,7 @@ def run_kfold_evaluation(
     episode_length: int,
     seed: int,
     results_dir: Path,
+    ppo_params: dict | None = None,
 ) -> None:
     """Run k-fold cross-validation evaluation."""
     print(f"\nRunning {n_splits}-fold cross-validation...")
@@ -351,20 +442,7 @@ def run_kfold_evaluation(
             )
         ])
         
-        model = PPO(
-            "MlpPolicy",
-            train_env,
-            verbose=0,
-            gamma=0.98,
-            learning_rate=2.5e-4,
-            n_steps=1024,
-            batch_size=256,
-            n_epochs=10,
-            ent_coef=0.02,
-            clip_range=0.2,
-            policy_kwargs={"net_arch": [256, 256]},
-            seed=seed + fold_idx,
-        )
+        model = build_ppo_model(train_env, seed + fold_idx, ppo_params or DEFAULT_PPO_PARAMS)
         model.learn(total_timesteps=train_timesteps, progress_bar=False)
         
         static_summary, _ = evaluate_policy("static_maintain", test_fold, risk_model, config, model=None)
@@ -395,6 +473,7 @@ def run_risk_regime_evaluation(
     episode_length: int,
     seed: int,
     results_dir: Path,
+    ppo_params: dict | None = None,
 ) -> None:
     """Evaluate policy separately on different risk regimes."""
     print("\nEvaluating on risk regimes (low/medium/high)...")
@@ -409,20 +488,7 @@ def run_risk_regime_evaluation(
         )
     ])
     
-    model = PPO(
-        "MlpPolicy",
-        train_env,
-        verbose=0,
-        gamma=0.98,
-        learning_rate=2.5e-4,
-        n_steps=1024,
-        batch_size=256,
-        n_epochs=10,
-        ent_coef=0.02,
-        clip_range=0.2,
-        policy_kwargs={"net_arch": [256, 256]},
-        seed=seed,
-    )
+    model = build_ppo_model(train_env, seed, ppo_params or DEFAULT_PPO_PARAMS)
     model.learn(total_timesteps=train_timesteps, progress_bar=False)
     
     regime_results = evaluate_across_regimes(test_portfolio, risk_model, config, model=model)
