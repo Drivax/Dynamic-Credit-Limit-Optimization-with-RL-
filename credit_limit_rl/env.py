@@ -14,6 +14,29 @@ ACTION_ADJUSTMENTS = np.array([-0.20, -0.10, 0.0, 0.10, 0.20], dtype=np.float32)
 ACTION_LABELS = ["-20%", "-10%", "0%", "+10%", "+20%"]
 
 
+def get_pd_threshold_by_score(internal_score: float) -> float:
+    """
+    Return maximum acceptable PD based on internal risk score.
+    Higher score = lower risk = higher tolerance.
+    
+    Args:
+        internal_score: Client's internal risk score (0-1000)
+    
+    Returns:
+        Maximum acceptable predicted PD (0-1)
+    """
+    if internal_score < 500:
+        return 0.04  # Very strict: high-risk clients
+    elif internal_score < 600:
+        return 0.06  # Strict
+    elif internal_score < 700:
+        return 0.10  # Moderate
+    elif internal_score < 800:
+        return 0.15  # Loose
+    else:
+        return 0.25  # Very loose: low-risk clients
+
+
 def _to_series(record: pd.Series | Mapping[str, float]) -> pd.Series:
     if isinstance(record, pd.Series):
         return record
@@ -91,8 +114,16 @@ def simulate_credit_decision(
     rwa_cost = config.rwa_factor * predicted_pd * current_balance
 
     constraint_penalty = 0.0
+    
+    # Per-client PD threshold: hard constraint based on risk score
+    pd_threshold = get_pd_threshold_by_score(client["internal_score"])
+    if predicted_pd > pd_threshold:
+        # Strong penalty for violating per-client risk limit
+        excess_pd = predicted_pd - pd_threshold
+        constraint_penalty += 1000.0 * excess_pd
+    
+    # Portfolio-level constraint (kept for redundancy)
     if predicted_pd > config.max_pd_threshold:
-        # Local guardrail: penalize actions that breach per-client risk appetite.
         constraint_penalty += 25.0 * (predicted_pd - config.max_pd_threshold)
 
     reward = monthly_interest + fee_income - config.lambda_default * expected_loss - config.lambda_rwa * rwa_cost - constraint_penalty

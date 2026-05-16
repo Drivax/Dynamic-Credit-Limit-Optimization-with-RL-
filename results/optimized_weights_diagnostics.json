@@ -1,0 +1,19 @@
+{
+  "config": {
+    "lambda_default": 15.0,
+    "lambda_rwa": 5.0,
+    "entropy_coef": 0.15
+  },
+  "policy_comparison": {
+    "ppo_avg_reward": -3425.651337277568,
+    "ppo_default_rate": 0.103,
+    "ppo_avg_limit": 8195.056557179012
+  },
+  "action_distribution": {
+    "-20%": 0,
+    "-10%": 0,
+    "0%": 0,
+    "+10%": 0,
+    "+20%": 1000
+  }
+}

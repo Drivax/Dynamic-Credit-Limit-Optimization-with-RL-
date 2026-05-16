@@ -1,0 +1,33 @@
+{
+  "model_name": "ppo_credit_limit_high_ent",
+  "training_config": {
+    "clients": 5000,
+    "train_timesteps": 50000,
+    "episode_length": 128,
+    "entropy_coef": 0.1,
+    "learning_rate": 0.000658628931758311
+  },
+  "policy_comparison": {
+    "static_maintain": {
+      "avg_reward": -1518.1602311468375,
+      "default_rate": 0.115,
+      "avg_limit": 6943.878886568025
+    },
+    "ppo_dynamic": {
+      "avg_reward": -1231.3150199286556,
+      "default_rate": 0.103,
+      "avg_limit": 8195.056557179012
+    }
+  },
+  "ppo_action_distribution": {
+    "-20%": 0,
+    "-10%": 0,
+    "0%": 0,
+    "+10%": 0,
+    "+20%": 1000
+  },
+  "reward_improvement": {
+    "absolute": 286.84521121818193,
+    "percentage": 18.894264606147367
+  }
+}
