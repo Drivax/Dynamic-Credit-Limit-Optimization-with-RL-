@@ -1,0 +1,255 @@
+{
+  "verified": [
+    {
+      "original": "ACTION_COLLAPSE_ROOT_CAUSE_AND_SOLUTIONS.md",
+      "archived": "experiments/legacy/ACTION_COLLAPSE_ROOT_CAUSE_AND_SOLUTIONS.md",
+      "sha256": "6D3B22A2736AC55B9DB213422DB7928A3E2049EF3C5016F3E1274E67FCCF31D1"
+    },
+    {
+      "original": "analyze_action_collapse.py",
+      "archived": "experiments/legacy/analyze_action_collapse.py",
+      "sha256": "61B8B619C17602C6CEE6518B034FF5826EB073775672512866E9120FE05EB086"
+    },
+    {
+      "original": "app.py",
+      "archived": "experiments/legacy/app.py",
+      "sha256": "DF029F0657D446F82460AF77FDFA1F1E512E9BB0A73F6299C7FCFB604032A3F7"
+    },
+    {
+      "original": "QUICK_FIX_HARD_PD_CONSTRAINTS.py",
+      "archived": "experiments/legacy/QUICK_FIX_HARD_PD_CONSTRAINTS.py",
+      "sha256": "67F42B677A22A70C1FAACA55E4A6FE5ACB62BD769455B3C70CF2785511B6636D"
+    },
+    {
+      "original": "README.md",
+      "archived": "experiments/legacy/README.md",
+      "sha256": "EDA7F94430372C76757841A23E870B8F6ECE7C2BE35FF5EDFD6BD97A288214DE"
+    },
+    {
+      "original": "requirements.txt",
+      "archived": "experiments/legacy/requirements.txt",
+      "sha256": "095287C113A78F638F245F8A773FEE3C966F5F79281651FD201E97CDBAD3D1A9"
+    },
+    {
+      "original": "retrain_fixed.py",
+      "archived": "experiments/legacy/retrain_fixed.py",
+      "sha256": "3A2FA8DFC9FCD69098FBCB6F38CADC399A75042244A1C07691AB0C92F3C79A64"
+    },
+    {
+      "original": "retrain_optimized_weights.py",
+      "archived": "experiments/legacy/retrain_optimized_weights.py",
+      "sha256": "3226D8DB9F0973A6CA650D55666026DC0030FF72328E01423ABBCA5B72FBA807"
+    },
+    {
+      "original": "train.py",
+      "archived": "experiments/legacy/train.py",
+      "sha256": "547D30E792098AFCA57B5EAFD90FEABC203CAD55A188350596E7C81F519776FE"
+    },
+    {
+      "original": "artifacts/metrics.json",
+      "archived": "outputs/legacy/artifacts/metrics.json",
+      "sha256": "33D4F9A571B6A323E61B0E55FE6E33B14689FAB3B48180BA63512FB39C913FDF"
+    },
+    {
+      "original": "artifacts/ppo_credit_limit_high_ent.zip",
+      "archived": "outputs/legacy/artifacts/ppo_credit_limit_high_ent.zip",
+      "sha256": "BC09BB047D02CED92864047FD4DD3E993D40C68F5C0A30F71CB46A8C1BF0D562"
+    },
+    {
+      "original": "artifacts/ppo_credit_limit_with_pd_constraints.zip",
+      "archived": "outputs/legacy/artifacts/ppo_credit_limit_with_pd_constraints.zip",
+      "sha256": "41CC5B4A11F228776D6AAD9803DA81111F19C2B4E34B49BF52858ED81D055960"
+    },
+    {
+      "original": "artifacts/ppo_credit_limit.zip",
+      "archived": "outputs/legacy/artifacts/ppo_credit_limit.zip",
+      "sha256": "A01FE948A4A8B1BE1442E1170875A6198B14965EF3ABD313B17129BB31EAF856"
+    },
+    {
+      "original": "artifacts/ppo_optimized_weights.zip",
+      "archived": "outputs/legacy/artifacts/ppo_optimized_weights.zip",
+      "sha256": "DD9ED57BD068F8C131BCE5243104992518E5F8B42ED650E1CDF572DA8B9A792C"
+    },
+    {
+      "original": "artifacts/risk_model.joblib",
+      "archived": "outputs/legacy/artifacts/risk_model.joblib",
+      "sha256": "6E0BA18C8BBF3D78A4CC7B9F9ED1DEFE8695AE267FD8A9193FC8A33CD8B78B19"
+    },
+    {
+      "original": "artifacts/sample_clients.csv",
+      "archived": "outputs/legacy/artifacts/sample_clients.csv",
+      "sha256": "634761A7A7C5ED9F7AAEEDFD625EAAE7C2C9399BBDC4BC2D7E429FA44BC6D2FC"
+    },
+    {
+      "original": "artifacts/hpo/best_params.json",
+      "archived": "outputs/legacy/artifacts/hpo/best_params.json",
+      "sha256": "5591D989FE58BE30BBA65247F789E6BE223A798EF4838B9DEC6F3A1AD2610760"
+    },
+    {
+      "original": "artifacts/hpo/hpo_trials.csv",
+      "archived": "outputs/legacy/artifacts/hpo/hpo_trials.csv",
+      "sha256": "CE3A62109C7E7DE1CAC4959561651043FA02A8D6B7A85B45A8DF8A5077560098"
+    },
+    {
+      "original": "credit_limit_rl/__init__.py",
+      "archived": "experiments/legacy/credit_limit_rl/__init__.py",
+      "sha256": "1255A1639985028F91D9E69D6A0A52BAA9F992AAC61C0E484EB15752352A002A"
+    },
+    {
+      "original": "credit_limit_rl/config.py",
+      "archived": "experiments/legacy/credit_limit_rl/config.py",
+      "sha256": "433928613B9A08C81285FB80CA8EB113EF3A6B24E357CDBA5F8F01EF6DAACC31"
+    },
+    {
+      "original": "credit_limit_rl/data.py",
+      "archived": "experiments/legacy/credit_limit_rl/data.py",
+      "sha256": "E132C010B284F30CD930596CEFE3649A835A964009A1C756ADC598961425E24E"
+    },
+    {
+      "original": "credit_limit_rl/env.py",
+      "archived": "experiments/legacy/credit_limit_rl/env.py",
+      "sha256": "7C229EF60DCFEF963FF485A70B0BC40194F7C283C0ED556CE4188EA8456655BA"
+    },
+    {
+      "original": "credit_limit_rl/evaluation.py",
+      "archived": "experiments/legacy/credit_limit_rl/evaluation.py",
+      "sha256": "98AC5F122B163CBEE9423000735B3F30B477BCA819B686D069116B52C96970FA"
+    },
+    {
+      "original": "credit_limit_rl/hpo.py",
+      "archived": "experiments/legacy/credit_limit_rl/hpo.py",
+      "sha256": "C5A0D6D0F0694C6D398FD19E30550935E59E418EEC2D956E27097B20795EEE90"
+    },
+    {
+      "original": "credit_limit_rl/risk.py",
+      "archived": "experiments/legacy/credit_limit_rl/risk.py",
+      "sha256": "AC4C2970DFBA3BE097897DA3A0C41F1EA2D726DBB4177BAE1647B660E7B83DFD"
+    },
+    {
+      "original": "results/optimized_weights_diagnostics.json",
+      "archived": "outputs/legacy/results/optimized_weights_diagnostics.json",
+      "sha256": "D7E6F4E8A6D2BC614465BD727A0C10B4D0EC68C3292BB21924580A257BE1EF38"
+    },
+    {
+      "original": "results/policy_action_distribution.png",
+      "archived": "outputs/legacy/results/policy_action_distribution.png",
+      "sha256": "4E4BDE8A482C1B358B5E6A07032AF076B1AD69C993CBB6CA0D9CDA7BABC68BA6"
+    },
+    {
+      "original": "results/policy_comparison.png",
+      "archived": "outputs/legacy/results/policy_comparison.png",
+      "sha256": "9A73E98FBA8684AEFFC343817CC75CB77A25179AF3ACA41B9530EE5EDBBFC450"
+    },
+    {
+      "original": "results/policy_decisions_high_ent.csv",
+      "archived": "outputs/legacy/results/policy_decisions_high_ent.csv",
+      "sha256": "DD372B8B87D1F877DF8520474F24ACCBA6394307FA25DE46232819D4262BBCA2"
+    },
+    {
+      "original": "results/policy_decisions_with_pd_constraints.csv",
+      "archived": "outputs/legacy/results/policy_decisions_with_pd_constraints.csv",
+      "sha256": "26922DC647115A121FBB9ADF16AF087C1FC42C79FE67E895AA479597E8A62ABC"
+    },
+    {
+      "original": "results/policy_decisions.csv",
+      "archived": "outputs/legacy/results/policy_decisions.csv",
+      "sha256": "D0676573BC58416BC5F4E4314A6FF3C7A7A092D621D85AD666FE409C8B4571BD"
+    },
+    {
+      "original": "results/policy_optimized_weights.csv",
+      "archived": "outputs/legacy/results/policy_optimized_weights.csv",
+      "sha256": "D500294FEB49F1F3CE5A9686EA248F9D321A151869A18284B8B1FE2EB3C0895F"
+    },
+    {
+      "original": "results/ppo_action_distribution.png",
+      "archived": "outputs/legacy/results/ppo_action_distribution.png",
+      "sha256": "85A78E25F0878253586C3CC6EC3F9DD20278BFC3E4DE90ECE294BEEE107A36BF"
+    },
+    {
+      "original": "results/ppo_reward_components.png",
+      "archived": "outputs/legacy/results/ppo_reward_components.png",
+      "sha256": "6EC52AB3CC36A4BB0629A7A1F8A952510390566DD85B4DB0500008E8B4227DA0"
+    },
+    {
+      "original": "results/retrain_diagnostics_high_ent.json",
+      "archived": "outputs/legacy/results/retrain_diagnostics_high_ent.json",
+      "sha256": "E65D6C564B71C0825DF0D63E4F9401C14DF2BA273B32CF7640DA9024AE25AECE"
+    },
+    {
+      "original": "results/retrain_diagnostics_with_pd_constraints.json",
+      "archived": "outputs/legacy/results/retrain_diagnostics_with_pd_constraints.json",
+      "sha256": "DCF35BE13B794495B0D4D8730EEB1D3F52F06A42473D80922C6AB79E9F38F2CB"
+    },
+    {
+      "original": "results/risk_feature_importance.csv",
+      "archived": "outputs/legacy/results/risk_feature_importance.csv",
+      "sha256": "C68601F83239A4952BB04546388E2E10FA24F6EB3C1BB0516043CEC4AA9001AF"
+    },
+    {
+      "original": "results/risk_feature_importance.png",
+      "archived": "outputs/legacy/results/risk_feature_importance.png",
+      "sha256": "444DF5CF5B488D69A35860C1B4C37EF0BF54FDD7470F4D0E43F15CEFE791BD4B"
+    },
+    {
+      "original": "results/risk_precision_recall_curve.png",
+      "archived": "outputs/legacy/results/risk_precision_recall_curve.png",
+      "sha256": "22CF8007D0E4937FC283F81B402D2A36BA07F53DF40C7661E51DB6D667EA4F51"
+    },
+    {
+      "original": "results/risk_roc_curve.png",
+      "archived": "outputs/legacy/results/risk_roc_curve.png",
+      "sha256": "1268CCECCBB1FF518955A6446A9A9E36158FF436598100827DAB126E145B436E"
+    },
+    {
+      "original": "results/risk_validation_predictions.csv",
+      "archived": "outputs/legacy/results/risk_validation_predictions.csv",
+      "sha256": "5E9CAF9AF71B344FE66A3A77C274E513E4E977683470DCAC6DD0EEA325F1DA7A"
+    },
+    {
+      "original": "results/diagnostics/action_distribution.png",
+      "archived": "outputs/legacy/results/diagnostics/action_distribution.png",
+      "sha256": "FBB8D5A1FCF802E0179A6620C300869E254F0EDC7E27F09E732FF71EE6E44B49"
+    },
+    {
+      "original": "results/diagnostics/baseline_comparison.csv",
+      "archived": "outputs/legacy/results/diagnostics/baseline_comparison.csv",
+      "sha256": "7F813AF56CAA6AC6BA7B3D14BE99738874DC581F2DDC8C36FA044C9FE64E1C89"
+    },
+    {
+      "original": "results/diagnostics/logit_variance_vs_risk.png",
+      "archived": "outputs/legacy/results/diagnostics/logit_variance_vs_risk.png",
+      "sha256": "956DF19A3D351BFCE0D06F80746E1F2F78C8275D7286F3462D87D146413E654C"
+    },
+    {
+      "original": "results/diagnostics/logits_by_risk_segment.png",
+      "archived": "outputs/legacy/results/diagnostics/logits_by_risk_segment.png",
+      "sha256": "B3031BFB0D82348C2C413C56EA8390269565C060E4657429FA136434E90BE050"
+    },
+    {
+      "original": "results/diagnostics/portfolio_analysis.csv",
+      "archived": "outputs/legacy/results/diagnostics/portfolio_analysis.csv",
+      "sha256": "5BF0092717B7DF17D299CC5617241DB2CEE86E5AC3FD9DD7B5C4F1A1BEEA6D09"
+    },
+    {
+      "original": "results/diagnostics/reward_components_by_action.png",
+      "archived": "outputs/legacy/results/diagnostics/reward_components_by_action.png",
+      "sha256": "620D5975C38255DA2FA8C074A0F4EAB59143759F18C3A38CE433E70DA1F58B6D"
+    },
+    {
+      "original": "results/diagnostics/reward_distribution.png",
+      "archived": "outputs/legacy/results/diagnostics/reward_distribution.png",
+      "sha256": "C2072EBE356774A983722C66A5C811657572BEF7A42FB091060123397E94D6C3"
+    }
+  ],
+  "removed_disposable": [
+    ".vscode/settings.json",
+    "credit_limit_rl/__pycache__/__init__.cpython-312.pyc",
+    "credit_limit_rl/__pycache__/config.cpython-312.pyc",
+    "credit_limit_rl/__pycache__/data.cpython-312.pyc",
+    "credit_limit_rl/__pycache__/env.cpython-312.pyc",
+    "credit_limit_rl/__pycache__/evaluation.cpython-312.pyc",
+    "credit_limit_rl/__pycache__/hpo.cpython-312.pyc",
+    "credit_limit_rl/__pycache__/risk.cpython-312.pyc",
+    "__pycache__/train.cpython-312.pyc"
+  ]
+}

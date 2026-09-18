@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "credit-rl"
+version = "0.1.0"
+description = "Longitudinal credit-limit decision simulation for research"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "pandas>=2.2", "gymnasium>=0.29,<2", "PyYAML>=6"]
+
+[project.optional-dependencies]
+experiments = ["matplotlib>=3.9", "scikit-learn>=1.5", "joblib>=1.4"]
+rl = ["stable-baselines3>=2.4"]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
