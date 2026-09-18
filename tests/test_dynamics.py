@@ -4,13 +4,14 @@ import numpy as np
 import pytest
 
 from credit_rl import SimulationConfig
-from credit_rl.simulation.customer import MacroState
-from credit_rl.simulation.dynamics import TransitionModel
+from credit_rl.simulation.macro import MacroState, MacroRegime
+from credit_rl.simulation.dgp import CreditDGP
+from credit_rl.simulation.shocks import ShockPath
 
 
 def transition(state, traits, config, multiplier=1.0, seed=4):
-    return TransitionModel(config).step(state, multiplier, traits,
-                                        np.random.default_rng(seed), np.random.default_rng(seed + 1))
+    return CreditDGP(config).step(state, multiplier, traits,
+        ShockPath.generate(state.customer_id, seed, 1).months[0], state.macro_state)
 
 
 def test_balance_accounting_and_no_debt_forgiveness(initial_state, traits, no_default_config):
@@ -37,7 +38,7 @@ def test_default_absorption_in_transition(initial_state, traits):
 
 
 def test_zero_debt_default_probability(initial_state, traits):
-    assert TransitionModel(SimulationConfig()).true_default_probability(
+    assert CreditDGP(SimulationConfig()).true_default_probability(
         replace(initial_state, balance=0), traits) == 0
 
 
@@ -73,6 +74,6 @@ def test_macro_stress_worsens_risk_statistically(initial_state, traits):
     normal, stress = [], []
     for seed in range(1000):
         normal.append(transition(initial_state, traits, cfg, seed=seed).state)
-        stress.append(transition(replace(initial_state, macro_state=MacroState.STRESS), traits, cfg, seed=seed).state)
+        stress.append(transition(replace(initial_state, macro_state=MacroState.from_config(MacroRegime.STRESS, cfg.macro)), traits, cfg, seed=seed).state)
     assert np.mean([s.payment_ratio for s in stress]) < np.mean([s.payment_ratio for s in normal])
     assert np.mean([s.defaulted for s in stress]) > np.mean([s.defaulted for s in normal])

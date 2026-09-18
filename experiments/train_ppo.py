@@ -41,8 +41,8 @@ def main() -> None:
     check_env(env, warn=True)
     model = PPO("MlpPolicy", env, seed=seed, device="cpu", verbose=0, **run["ppo"])
     model.learn(total_timesteps=run["ppo_timesteps"])
-    models = args.output / "models" / "ppo_smoke"
-    results = args.output / "results" / "ppo_smoke"
+    models = args.output / "models" / "ppo_smoke_v2"
+    results = args.output / "results" / "ppo_smoke_v2"
     models.mkdir(parents=True, exist_ok=True)
     results.mkdir(parents=True, exist_ok=True)
     model.save(models / "ppo_longitudinal")

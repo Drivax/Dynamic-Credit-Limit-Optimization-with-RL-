@@ -2,7 +2,7 @@
 
 import argparse
 import os
-from dataclasses import replace
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import joblib
@@ -20,7 +20,8 @@ from credit_rl.evaluation.metrics import summarize_trajectories
 from credit_rl.policies.baselines import ConstantPolicy, RiskThresholdPolicy, StaticPolicy
 from credit_rl.risk.pd_model import SnapshotPDModel
 from credit_rl.risk.training import train_risk_model
-from credit_rl.simulation.customer import MacroState, initialize_customer
+from credit_rl.simulation.customer import initialize_customer
+from credit_rl.simulation.macro import MacroState, MacroRegime, MacroPath
 from credit_rl.simulation.simulator import simulate_customer
 from credit_rl.simulation.synthetic_snapshot import generate_synthetic_portfolio
 from .common import load_run_config, write_manifest
@@ -48,9 +49,9 @@ def plot_customer(history: pd.DataFrame, title: str, path: Path) -> None:
 
 
 def run(config: SimulationConfig, settings: dict, output: Path) -> dict:
-    results = output / "results" / "trajectory_sanity"
-    figures = output / "figures" / "trajectory_sanity"
-    models = output / "models" / "trajectory_sanity"
+    results = output / "results" / "trajectory_sanity_v2"
+    figures = output / "figures" / "trajectory_sanity_v2"
+    models = output / "models" / "trajectory_sanity_v2"
     for folder in (results, figures, models):
         folder.mkdir(parents=True, exist_ok=True)
     seed = settings["seed"]
@@ -98,13 +99,13 @@ def run(config: SimulationConfig, settings: dict, output: Path) -> dict:
 
     # Lock macro regimes for an explicit stress intervention. Both transitions
     # are disabled; all other coefficients, customers and random shocks match.
-    locked = replace(config, dynamics=replace(config.dynamics, normal_to_stress=0, stress_to_normal=0))
     stress_rows = []
     for trial in range(settings["stress_trials"]):
-        for name, macro in (("normal", MacroState.NORMAL), ("stress", MacroState.STRESS)):
-            frame = simulate_customer(CreditLimitEnv(pd_model=pd_model, config=locked), StaticPolicy(config.environment),
+        for name, macro in (("normal", MacroRegime.NORMAL), ("stress", MacroRegime.STRESS)):
+            macro_path = MacroPath.constant(MacroState.from_config(macro, config.macro), config.environment.horizon)
+            frame = simulate_customer(CreditLimitEnv(pd_model=pd_model, config=config), StaticPolicy(config.environment),
                 seed=seed + 4000 + trial,
-                options={"initial_state": state, "traits": traits, "macro_state": macro}).to_dataframe()
+                options={"initial_state": state, "traits": traits, "macro_path": macro_path}).to_dataframe()
             stress_rows.append({"regime": name, "trial": trial, "defaulted": bool(frame.defaulted.iloc[-1]),
                 "return": float(frame.reward.sum()), "months": len(frame) - 1,
                 "first_payment_ratio": frame.payment_ratio.iloc[1],
@@ -127,7 +128,7 @@ def run(config: SimulationConfig, settings: dict, output: Path) -> dict:
     write_manifest(results / "manifest.json", config, settings,
                    pd_model="Snapshot GradientBoosting; domain shift is not calibrated",
                    snapshot_validation=risk_report["metrics"],
-                   controlled_initial_state=replace(state, macro_state=MacroState.NORMAL).__dict__,
+                   controlled_initial_state=asdict(state),
                    controlled_traits=traits.__dict__,
                    note="Controlled traits are experiment metadata, never policy input or env info/history.")
     print(summary.to_string(index=False))

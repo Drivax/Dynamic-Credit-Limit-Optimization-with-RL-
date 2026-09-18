@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 
 from .config import RewardConfig
 from .simulation.customer import CustomerState
-from .simulation.dynamics import TransitionOutcome
+from .simulation.dgp import TransitionOutcome
 
 
 @dataclass(frozen=True)

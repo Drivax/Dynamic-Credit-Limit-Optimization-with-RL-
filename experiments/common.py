@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-from credit_rl.config import SimulationConfig
+from credit_rl.config import DGP_VERSION, SimulationConfig
 
 
 def load_run_config(path: Path) -> dict:
@@ -36,7 +36,7 @@ def write_manifest(path: Path, config: SimulationConfig, run: dict, **extra) -> 
     sources = sorted((root / "src" / "credit_rl").rglob("*.py"))
     sources += sorted((root / "experiments").glob("*.py"))
     path.write_text(json.dumps({
-        "environment_version": "longitudinal-v1", "python": platform.python_version(),
+        "dgp_version": DGP_VERSION, "environment_version": "longitudinal-v2", "python": platform.python_version(),
         "packages": packages, "simulation": asdict(config), "run": run,
         "source_sha256": {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
         **extra,

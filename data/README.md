@@ -21,3 +21,14 @@ longitudinal transition inputs or agent features.
 No raw/processed datasets are required currently, so no empty directories are added.
 If future work adds external inputs under `data/raw/` or `data/processed/`, both are
 ignored by default; record source, license, consent and permitted uses before sharing.
+
+## Sprint 2 diagnostic data
+
+`experiments.dgp_sanity` retains the original synthetic snapshot generator, discards
+its labels when initializing the environment, and generates longitudinal outcomes
+with DGP 2.0. `observed_learning_check.csv.gz` uses opening observations and a
+next-month default label, with customer-level train/test separation. Do not join
+`DIAGNOSTIC_ONLY` histories or `initial_customers.json` into training features:
+they contain hidden types, simulator hazards, and realized within-month shocks.
+Macro and shock paths are reusable for controlled paired experiments. All exported
+data remain synthetic and uncalibrated; see `docs/dgp.md` and `docs/sprint2_report.md`.

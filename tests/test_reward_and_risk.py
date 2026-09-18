@@ -8,7 +8,7 @@ from credit_rl import CreditLimitEnv, SimulationConfig
 from credit_rl.evaluation.metrics import summarize_trajectories
 from credit_rl.reward import calculate_reward
 from credit_rl.risk.pd_model import ObservedRiskFeatures, SnapshotPDModel
-from credit_rl.simulation.dynamics import TransitionOutcome
+from credit_rl.simulation.dgp import TransitionOutcome
 
 
 def test_reward_formula_by_hand(initial_state):
@@ -34,8 +34,8 @@ def test_adapter_feature_allowlist_and_refresh(initial_state):
 
     class SpyClassifier:
         def predict_proba(self, frame):
-            assert list(frame.columns) == RISK_FEATURES
-            self.frame = frame.copy()
+            assert isinstance(frame, np.ndarray)
+            self.frame = pd.DataFrame(frame, columns=RISK_FEATURES)
             return np.array([[0.7, 0.3]])
 
     classifier = SpyClassifier()
@@ -92,7 +92,7 @@ def test_config_yaml_matches_defaults_and_rejects_unknown(tmp_path):
 @pytest.mark.parametrize("section,overrides", [
     ("environment", {"min_limit": 0}),
     ("environment", {"action_multipliers": (0.8, 1.2)}),
-    ("dynamics", {"stress_to_normal": 1.1}),
+    ("dynamics", {"income_adverse_probability": 1.1}),
     ("dynamics", {"spend_shock_sigma": -0.1}),
     ("reward", {"loss_given_default": 1.1}),
     ("default", {"intercept": float("nan")}),
