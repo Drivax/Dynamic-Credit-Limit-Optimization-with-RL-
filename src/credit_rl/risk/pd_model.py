@@ -33,6 +33,11 @@ class PDModel(Protocol):
     def predict(self, features: ObservedRiskFeatures) -> float: ...
 
 
+class HistoryPDModel(Protocol):
+    """Stateless forecast from a bounded sequence of explicitly observable rows."""
+    def predict_history(self, observable_history: tuple[dict, ...]) -> float: ...
+
+
 @dataclass(frozen=True)
 class ObservedLogisticPD:
     """Transparent fallback proxy; assumed coefficients, no calibration claim."""

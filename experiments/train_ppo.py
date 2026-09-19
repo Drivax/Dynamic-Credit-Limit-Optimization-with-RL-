@@ -11,8 +11,7 @@ from stable_baselines3.common.env_checker import check_env
 from credit_rl import CreditLimitEnv, SimulationConfig
 from credit_rl.evaluation.metrics import summarize_trajectories
 from credit_rl.policies.baselines import RiskThresholdPolicy, SB3Policy, StaticPolicy
-from credit_rl.risk.pd_model import SnapshotPDModel
-from credit_rl.risk.training import train_risk_model
+from credit_rl.risk.longitudinal import LongitudinalPDModel
 from credit_rl.simulation.simulator import simulate_customer
 from credit_rl.simulation.synthetic_snapshot import generate_synthetic_portfolio
 from credit_rl.utils.seeding import seed_everything
@@ -25,6 +24,7 @@ def main() -> None:
     parser.add_argument("--experiments", type=Path, default=Path("configs/experiments.yaml"))
     parser.add_argument("--timesteps", type=int)
     parser.add_argument("--output", type=Path, default=Path("outputs"))
+    parser.add_argument("--pd-model", type=Path, default=Path("outputs/models/pd/logistic_calibrated.joblib"))
     args = parser.parse_args()
     config, run = SimulationConfig.from_yaml(args.config), load_run_config(args.experiments)
     if args.timesteps is not None:
@@ -35,8 +35,9 @@ def main() -> None:
     seed_everything(seed, torch=True)
     train = generate_synthetic_portfolio(run["risk_training_clients"], seed=seed)
     test = generate_synthetic_portfolio(run["ppo_eval_customers"], seed=seed + 1)
-    classifier, risk_report = train_risk_model(train, random_state=seed)
-    risk_model = SnapshotPDModel(classifier, config.pd)
+    if not args.pd_model.exists():
+        parser.error("Train the longitudinal risk model with python -m experiments.train_pd first")
+    risk_model = LongitudinalPDModel.load(args.pd_model)
     env = CreditLimitEnv(train, risk_model, config)
     check_env(env, warn=True)
     model = PPO("MlpPolicy", env, seed=seed, device="cpu", verbose=0, **run["ppo"])
@@ -46,7 +47,7 @@ def main() -> None:
     models.mkdir(parents=True, exist_ok=True)
     results.mkdir(parents=True, exist_ok=True)
     model.save(models / "ppo_longitudinal")
-    joblib.dump(classifier, models / "snapshot_pd.joblib")
+    risk_model.save(models / "longitudinal_pd.joblib")
     # Reload verifies the artifact against the actual observation/action spaces.
     reloaded = PPO.load(models / "ppo_longitudinal", env=env, device="cpu")
     frames = []
@@ -63,7 +64,7 @@ def main() -> None:
     summary = summarize_trajectories(history)
     summary.to_csv(results / "summary.csv", index=False)
     write_manifest(results / "manifest.json", config, run,
-        actual_timesteps=model.num_timesteps, snapshot_validation=risk_report["metrics"],
+        actual_timesteps=model.num_timesteps, pd_metadata=risk_model.metadata,
         purpose="Integration smoke test; no tuning, no claim of comparative policy performance")
     env.close()
     print(summary.to_string(index=False))

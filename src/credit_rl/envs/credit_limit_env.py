@@ -1,6 +1,7 @@
 """One customer per episode, until default or a configurable monthly horizon."""
 
 from dataclasses import asdict, replace
+from collections import deque
 from typing import Any
 
 import gymnasium as gym
@@ -10,7 +11,8 @@ from gymnasium import spaces
 
 from credit_rl.config import SimulationConfig
 from credit_rl.reward import calculate_reward
-from credit_rl.risk.pd_model import ObservedLogisticPD, ObservedRiskFeatures, PDModel
+from credit_rl.risk.pd_model import ObservedLogisticPD, ObservedRiskFeatures, PDModel, HistoryPDModel
+from credit_rl.risk.features import observable_row
 from credit_rl.simulation.customer import CustomerState, CustomerTraits, initialize_customer
 from credit_rl.simulation.dgp import CreditDGP
 from credit_rl.simulation.macro import MacroPath, MacroProcess, MacroState
@@ -29,7 +31,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
     """
     metadata = {"render_modes": []}
 
-    def __init__(self, portfolio: pd.DataFrame | None = None, pd_model: PDModel | None = None,
+    def __init__(self, portfolio: pd.DataFrame | None = None, pd_model: PDModel | HistoryPDModel | None = None,
                  config: SimulationConfig | None = None, *, record_diagnostics: bool = False,
                  record_history: bool = True) -> None:
         super().__init__()
@@ -56,6 +58,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         self._done = True
         self._elapsed = 0
         self._predicted_pd = 0.0
+        self._risk_history = deque(maxlen=7)
 
     @property
     def state(self) -> CustomerState:
@@ -65,7 +68,13 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         return self._state
 
     def _predict_pd(self, state: CustomerState) -> float:
-        value = float(self.pd_model.predict(ObservedRiskFeatures.from_state(state)))
+        self._risk_history.append(observable_row(state))
+        if state.defaulted and hasattr(self.pd_model, "predict_history"):
+            return 1.0  # terminal sentinel, never used for an active decision
+        if hasattr(self.pd_model, "predict_history"):
+            value = float(self.pd_model.predict_history(tuple(self._risk_history)))
+        else:
+            value = float(self.pd_model.predict(ObservedRiskFeatures.from_state(state)))
         if not np.isfinite(value) or not 0 <= value <= 1:
             raise ValueError("PD model must return a finite probability in [0, 1]")
         return value
@@ -126,6 +135,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         state = replace(state, macro_state=macro_path.states[0])
         self._state, self._traits = state, traits
         self._elapsed, self._done = 0, False
+        self._risk_history.clear()
         self._predicted_pd = self._predict_pd(state)
         self._history = [self._history_row(action=None, reward=0.0, terminated=False, truncated=False)] if self._record_history else []
         self._diagnostics = []

@@ -1,0 +1,216 @@
+# Longitudinal probability of default
+
+## Estimand and information set
+
+For an active customer with first default time T, the model estimates
+
+\[
+ PD_{i,t}(H)=P(t<T_i\leq t+H\mid T_i>t,\mathcal F^{obs}_{i,t};\pi_b).
+\]
+
+The binary training target is `1{t < T <= t+H}`. H defaults to **12 months**,
+configurable in `configs/pd_model.yaml`, within the 24-month simulated episodes.
+The behavior policy π_b determines future actions and therefore this predictive
+risk. The estimate is neither action-conditional nor a causal counterfactual PD.
+
+Observation t is the closing observed state after t completed transitions, immediately
+before the next limit decision. Its performance window is t+1,...,t+H inclusive.
+Default is the simulator's first Bernoulli default event conditional on realized
+behavior and hidden characteristics. Delinquency is an observed principal-payment
+shortfall process; it is not a legal DPD definition and does not itself force default.
+`F_obs` excludes hidden traits, true hazard, future macro values/actions/shocks and
+any summary computed over the future part of the trajectory.
+
+## Eligibility and censoring
+
+Every active monthly snapshot is a candidate, including enrollment with no measured
+history. Already-defaulted rows are excluded. For a planned administrative end L,
+require `t+H <= L` **regardless of the outcome**. Thus no tail-window positive is
+included merely because an early default happens to be known. With full planned
+follow-up this leaves months 0,...,12 for a surviving 24-month episode.
+
+A first default inside the eligible window resolves Y=1 even though the episode
+terminates early. A zero requires actual observation through t+H. Unresolved windows
+with unexpectedly incomplete follow-up are dropped and counted, never assigned zero.
+This complete-case treatment assumes censoring is administrative/non-informative;
+informative external dropout would require a survival/IPCW approach not implemented here.
+Contiguous monthly histories, unique customer/month keys and absorbing default are
+validated. Counts are exported in `censoring_audit.csv`.
+
+Each row receives equal fitting/evaluation weight. The estimand is over eligible
+customer-month decisions, not uniformly weighted customers. Overlapping labels and
+survivorship cause dependence and alter prevalence relative to lifetime event incidence.
+Both positive snapshot counts and distinct realized default-event counts are reported.
+
+## Reviewed feature schema
+
+`risk/features.py` is the source of truth. Current observables are:
+
+- credit limit, balance, utilization, income, payment ratio;
+- consecutive delinquency months, behavioral score, tenure, latest monthly spending;
+- recent six-month late-payment count and observed income log change;
+- current macro income growth, spending growth and credit stress.
+
+Historical/derived features are:
+
+- available measured history length, capped at six months; balance/income;
+- previous utilization; mean utilization over the previous three months;
+- maximum utilization over the previous six months;
+- mean payment ratio over the previous three months; minimum over the previous six;
+- standard deviation of previous six income log changes (population ddof=0; at least two);
+- proportional balance change from t−1, income change from t−3 and limit change from t−6.
+
+Changes divide by `max(abs(previous value), 1 EUR)`. Summary windows exclude current t,
+so `mean3` uses t−3,...,t−1; current measurements enter separately. Each customer is
+grouped and ordered before the common offline/online prefix routine is applied.
+The seven-row deque is an explicit equivalent of groupwise shifted rolling windows.
+No cross-customer history is possible. Prefix mutation tests and offline/online parity
+tests check the implementation rather than assuming a rolling call is safe.
+
+Short windows use available measured months; missing exact lags stay missing.
+Imputation uses **training-only medians**, with missing indicators and history length.
+No snapshot is dropped for a short feature history. Synthesized enrollment late-counts
+are retained as provided by the DGP; they are not reconstructed as measured prior months.
+Macro factors are numeric; no ordinal regime encoding is used as a predictor.
+The regime index is retained only for diagnostics. There are no categorical predictors.
+
+Forbidden simulator quantities include `p_default_true`, `true_pd`, latent
+creditworthiness/spending/payment/income stability, shocks, income-event flags,
+spending elasticity, future state and future label fields. Explicit allowlists fail
+on all unreviewed feature names; dataframe model scoring requires the exact ordered
+schema. Additional numeric trajectory columns cannot silently become inputs.
+
+## Data generation and behavior policy
+
+The unchanged DGP uses the existing synthetic initial population. Initializer snapshot
+targets and true PD are discarded. Default is generated by `CreditDGP`, independently
+of the fitted estimator. Modeling trajectories have no predicted-PD feedback.
+
+The behavior policy draws independently among configured actions with probabilities
+0.1,0.2,0.4,0.2,0.1 for −20%,−10%,0,+10%,+20%, subject to existing monthly/absolute
+bounds. This spans both increase/decrease states, without inspecting latent risk.
+It is an exploratory reference policy, not a lending recommendation.
+
+Separate RNG streams/seeds govern population draws, traits/shocks, macro path, actions,
+model fitting and bootstrap. Customer-indexed streams make paired interventions
+reproducible. Split assignment is deterministic by cohort, so no split RNG is needed.
+The saved calendar macro path is common to all customers within each calendar month.
+
+## Validation protocol
+
+| Partition | Customers | Entry month | Observation months | Latest target endpoint | Use |
+|---|---:|---:|---|---:|---|
+| Train | 2500 | 0 | 0–12 | 24 | Fit preprocessing and base estimators |
+| Validation | 800 | 25 | 25–37 | 49 | Untuned independent diagnostic |
+| Calibration | 800 | 50 | 50–62 | 74 | Fit sigmoid calibrators only |
+| Test | 1000 | 75 | 75–87 | 99 | Locked future-cohort evaluation |
+| OOT | 1000 | 100 | 100–112 | 124 | Further future calendar block |
+
+Actual retained rows depend on survival. The first four groups and OOT use successive
+segments of one pre-generated Markov macro history. These are real new simulation
+cohorts with their own future trajectories, not random row partitions or date labels
+attached to copies of the same customers. Population initialization is stationary;
+calendar variation is provided by the actual shared macro path. Actual regimes are
+exported in the macro calendar and trajectory tables.
+
+All five identity sets are disjoint. Full training label windows finish before the
+first validation observation, and the same maturity rule separates every later group.
+No calibration input is used by imputation, scaling or base estimator fitting.
+Validation is reported without searching hyperparameters. No final test or OOT metric
+selects a model or calibrator. This is a single temporal split, not rolling backtesting.
+
+## Models and calibration
+
+1. Constant probability equal to the eligible training snapshot default prevalence.
+2. Median/missing-indicator preprocessing, standardization and L2 logistic regression.
+3. The same imputation followed by sklearn HistGradientBoostingClassifier (150
+   iterations, 15 leaves, L2=1, no random internal early-stopping split).
+4. Raw and separately sigmoid-calibrated variants of both learned estimators.
+
+Calibration fits `sigmoid(a + b * logit(raw_PD))` on the dedicated calibration cohort.
+Probabilities are clipped only for finite log-odds calculations. Both classes are
+required. No SMOTE, resampling, class weights, latent supervision or feature selection
+is used. Isotonic calibration is omitted to limit variance and methodological scope.
+
+The configured environment reference is `logistic_calibrated`, predeclared for
+interpretability and low inference cost. It is **not declared the best model**.
+Temporal calibration changes can worsen subsequent performance; raw and calibrated
+results remain visible. Selection is configurable, with no arbitrary composite score.
+
+Artifacts bundle preprocessing, estimator, calibrator, feature order and metadata.
+Metadata records target, seeds, DGP version/config, population, behavior policy,
+macro scenario, periods, prevalence and model settings. The manifest adds package
+versions and source hashes. Joblib files must be trusted; they are not safe external inputs.
+
+## Evaluation, uncertainty and shift
+
+Reports contain ROC-AUC, average precision (reported as PR-AUC, not trapezoidal PR area),
+Brier score, log loss, prevalence and mean PD. ECE uses 10 fixed equal-width probability
+bins with observation-count weighting. Reliability and quantile risk tables include
+counts; identical predictions stay together, so fewer than ten risk buckets are possible.
+Single-class AUC/AP are undefined and exported as null/NaN rather than fabricated.
+
+95% percentile intervals use 200 **customer-cluster** bootstrap replicates. A sampled
+customer contributes their entire eligible trajectory, including multiplicity.
+One-class replicates are skipped for ranking metrics and valid replicate counts are
+reported. These intervals condition on the fitted model and realized common macro path;
+they do not represent training uncertainty, macro-path uncertainty or DGP uncertainty.
+
+Subgroup reports use current macro regime, utilization bands [0,.5,.9,1,∞], income
+bands [0,2000,4000,∞] EUR and delinquency buckets 0/1/2/3+. Counts and prevalence
+contextualize small cells. Calendar-month metrics distinguish risk changes, survivor
+composition and calibration drift. Feature means, q10/median/q90 and missing fractions,
+plus prediction distributions, expose covariate shift without constructing a large
+monitoring library.
+
+The OOT customers are additionally replayed under baseline, mild and severe configured
+macro scenarios with the behavior policy, and under baseline static, always-increase
+and always-decrease policies. These six runs share initial states/traits/shocks and
+customer identities, deliberately: they are paired diagnostics, not new independent
+test sets. No paired customers overlap training/validation/calibration/test.
+Scenario paths are imposed experiments, not forecasts. Policy comparisons on eligible
+active snapshots also reflect different survival; they are not causal PD estimates
+for a common set of future decision states.
+
+## Simulator-only diagnostics
+
+Representative trajectories export H-month forecasts alongside the realized closing
+monthly hazard. These quantities have different horizons **and information sets**.
+They are shown on labeled trajectory curves only; no Brier/calibration error is
+computed between them. Multiplying realized hazards along a single endogenous path
+would not recover the conditional H-month forecast over uncertain future actions,
+macro paths and behavior. No such oracle PD claim is made.
+
+## Online environment contract
+
+Load `LongitudinalPDModel.load(path)` and pass it as `pd_model` to `CreditLimitEnv`.
+The environment stores seven explicitly observable rows per episode, even when full
+history recording is disabled. At reset and after every transition it computes the
+forecast from the available prefix; the next action and reward use that opening
+forecast. The fitted model stores no per-customer mutable history and can be shared
+across environments. The DGP never receives the estimator. Terminal default uses PD=1
+as a sentinel, not a prediction for an active borrower.
+
+Without an artifact, the explicit assumed-coefficient `ObservedLogisticPD` fallback
+remains available for simulator tests; it has no calibrated H-month interpretation.
+The observation shape stays fixed. The reward's capital/constraint terms and policy
+thresholds now inherit the supplied PD horizon; existing numerical coefficients are
+stylized and have **not** been economically validated for 12-month risk. No claim of
+improved RL returns follows from supplying a better risk estimate. Decisions after
+month 12 can still be scored, but the 24-month experiment does not validate their
+full 12-month future outcome; longer trajectories are needed for that claim.
+
+## Reproduction and limits
+
+Run from the repository root with the experiment extras installed:
+`python -m experiments.train_pd`. This generates trajectories, datasets, all models,
+calibration, intervals, tables, figures and provenance. `--evaluate-only` loads saved
+datasets/models without refitting. Outputs are under `outputs/{models,results,figures}/pd`.
+An alternate `--output` keeps a separate run. Reproduction means identical generated
+data and predictions for the same code/config/runtime; wall-clock benchmarks vary.
+
+Remaining limitations: stylized synthetic credit and macro dynamics, no empirical
+calibration, one shared calendar realization, overlapping-window dependence, finite
+follow-up, simplified default/recovery economics, possible informative-censoring bias
+outside this simulation, policy-induced distribution shift and limited external validity.
+These results do not establish that a real lender should adopt any policy.
