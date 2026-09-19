@@ -29,6 +29,12 @@ def load_settings(path, simulation):
         raise ValueError("Behavior probabilities must cover every action and sum to 1")
     if settings["calibration"]["method"] != "sigmoid_log_odds":
         raise ValueError("Only sigmoid_log_odds calibration is supported")
+    models = settings["models"]
+    if not np.isfinite(models["logistic_C"]) or models["logistic_C"] <= 0:
+        raise ValueError("logistic_C must be positive and finite")
+    for key, minimum in (("boosting_iterations", 1), ("boosting_leaves", 2)):
+        if type(models[key]) is not int or models[key] < minimum:
+            raise ValueError(f"Invalid {key}")
     if settings["evaluation"]["selected_model"] not in ("logistic", "boosting", "logistic_calibrated", "boosting_calibrated"):
         raise ValueError("Unknown selected model")
     if type(settings["evaluation"]["bootstrap_repetitions"]) is not int or settings["evaluation"]["bootstrap_repetitions"] < 20:

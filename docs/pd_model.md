@@ -118,6 +118,8 @@ first validation observation, and the same maturity rule separates every later g
 No calibration input is used by imputation, scaling or base estimator fitting.
 Validation is reported without searching hyperparameters. No final test or OOT metric
 selects a model or calibrator. This is a single temporal split, not rolling backtesting.
+Only raw models and the constant baseline are evaluated on validation: the later
+calibrator cannot be used for a prospective evaluation of that earlier period.
 
 ## Models and calibration
 

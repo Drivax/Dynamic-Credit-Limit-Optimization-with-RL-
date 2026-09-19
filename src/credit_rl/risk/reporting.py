@@ -35,7 +35,8 @@ def figures(predictions, comparison, destination):
         ax.legend()
     fig.savefig(destination/"pd_distribution.png", dpi=150)
     plt.close(fig)
-    selected = comparison[comparison.model.isin(["constant", "logistic_calibrated", "boosting_calibrated"])]
+    selected = comparison[comparison.model.isin(["constant", "logistic_calibrated", "boosting_calibrated"])
+                          & (comparison["sample"] != "validation")]
     fig, axes = plt.subplots(1, 2, figsize=(13, 5), layout="constrained")
     for name, group in selected.groupby("model"):
         axes[0].plot(group["sample"], group.brier, "o-", label=name)
@@ -82,6 +83,8 @@ def trajectory_figure(frame, destination):
         group = frame[frame.customer_id == identity]
         axes_row[0].plot(group.month, group.predicted_pd, label="Forecast over H months")
         axes_row[0].plot(group.month, group.p_default_true, "--", label="Closing monthly hazard (diagnostic)")
+        for month in group.loc[group.defaulted, "month"]:
+            axes_row[0].axvline(month, color="black", linestyle=":", label="Realized default")
         axes_row[0].set(title=identity, xlabel="Month", ylabel="Probability; different horizons")
         axes_row[1].plot(group.month, group.utilization, label="Utilization")
         axes_row[1].plot(group.month, group.payment_ratio, label="Payment ratio")

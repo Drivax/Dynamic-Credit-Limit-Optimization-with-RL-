@@ -1,50 +1,47 @@
-# Experiments
+# Reproducible experiments
 
-Install from the project root: `python -m pip install -e ".[dev,experiments]"`.
-Then run `python -m experiments.trajectory_sanity`.
+Run from the repository root after installing `.[dev,experiments]`.
 
-For the full Sprint 2 diagnostic, run
-`python -m experiments.dgp_sanity --customers 5000 --seed 42`.
-It runs one Markov cohort and six paired policy/scenario cohorts on the same initial
-customers and indexed shocks. Horizon is in `configs/simulation.yaml`; macro effects,
-matrix and phases are in `configs/macro_scenarios.yaml` (`--macro-config` overrides).
-Results are in `outputs/results/dgp/`; six figures are in `outputs/figures/dgp/`.
-The command fails if directional, stress, learnability or nondegeneracy checks fail.
-
-The learnability check uses opening observations and next-month defaults, splitting
-by customer. `DIAGNOSTIC_ONLY` files and `initial_customers.json` contain privileged
-information and must not become policy features. Initial states, macro paths, named
-shocks/seeds, config and source hashes support replay. Use `--output` for separate runs.
-The older trajectory check now writes to `trajectory_sanity_v2` output subdirectories.
-
-This fits the preserved snapshot PD classifier on 5,000 synthetic customers,
-evaluates static, repeated +10%, repeated -10%, and risk-threshold policies on six
-different customers, and saves trajectories, episode-level summaries, fitted PD
-model, five diagnostic figures, and a run manifest. Paired policy runs share seeds.
-The latent-risk comparison holds observed initial conditions fixed while changing
-hidden creditworthiness/payment propensity. The macro check runs 200 paired
-trajectories of a fixed customer in locked normal/stress regimes.
-
-Inputs are `configs/simulation.yaml` and `configs/experiments.yaml`. Both can be
-overridden with `--config`/`--experiments`. `--output` changes the output root.
-Named +10%/-10% diagnostic policies require those multipliers in the configuration.
-Re-running a command replaces that command's diagnostic outputs. Use a separate
-`--output outputs/run-name` to retain multiple runs. Manifests contain the complete
-resolved config, Python/package versions, source hashes and experiment settings.
-
-For a small PPO integration test:
+## Longitudinal risk
 
 ```shell
-python -m pip install -e ".[dev,experiments,rl]"
-python -m experiments.train_ppo --timesteps 256
+python -m experiments.train_pd
+python -m experiments.train_pd --evaluate-only
+python -m experiments.pd_env_smoke
 ```
 
-This checks SB3 compatibility, trains briefly, saves/reloads a new model and evaluates
-30 held-out customers against static and risk-threshold policies with common seeds.
-Results are under `outputs/results/ppo_smoke_v2/`. The configurable default budget is
-4,096 steps. These are smoke tests, not performance claims. Historical 11-feature
-PPO checkpoints, and Sprint 1 15-feature checkpoints, cannot be loaded into the new
-21-feature environment. PPO tuning is outside Sprint 2.
+Training owns generation, point-in-time labels/features, customer-disjoint temporal cohorts, base models, dedicated calibration, cluster-bootstrap evaluation, stress/policy replays, artifacts and figures. Settings are in `configs/pd_model.yaml`; the DGP uses `configs/simulation.yaml` and its sibling macro configuration. Use `--output` for a separate run. Outputs go to `{models,results,figures}/pd` below it. Evaluation-only requires completed training outputs and never refits.
 
-`legacy/` contains the original row-based workflow and its historical README.
-Read `legacy/ARCHIVE.md` before interpreting or attempting to execute it.
+The environment smoke test loads the bundled artifact, runs ten customer episodes and compares every active online PD against offline feature construction. Use `--model` to select a different trusted local artifact.
+
+## DGP checks
+
+```shell
+python -m experiments.dgp_sanity --customers 100 --seed 42 --output outputs/pd_dgp_check
+```
+
+This checked small run exercises structural checks, paired macro/policy simulations and figures. Larger populations improve precision. Simulator-only exports contain hidden hazards/traits/shocks and must never be used as PD features.
+
+## Controlled policy benchmark
+
+Install `.[dev,experiments,rl]`, generate the PD artifact above, then run:
+
+```shell
+python -m experiments.compare_policies --stage all
+```
+
+The stages `audit`, `smoke`, `train`, `evaluate`, and `figures` can also run separately. `train` selects thresholds and PPO hyperparameters on validation only, then trains five seeds with PD and five without PD. `evaluate` uses the frozen selected checkpoints on shared held-out customer scenarios; `figures` reads those traces without fitting. All settings are in `configs/policy_evaluation.yaml`. Completed training runs are reused only when their input fingerprint matches. Use a separate `--output` directory for different configurations.
+
+Outputs live under `outputs/{models,results,figures}/policy_evaluation`. Large model files and trajectories remain local; compact results and report figures are versionable. See [methodology](../docs/policy_evaluation.md), [reward audit](../docs/policy_audit.md), and [results](../docs/policy_results.md).
+
+## PPO integration smoke
+
+With the optional `rl` dependencies installed:
+
+```shell
+python -m experiments.train_ppo --timesteps 256 --output outputs/pd_ppo_check
+```
+
+The default PD artifact is `outputs/models/pd/logistic_calibrated.joblib`; override with `--pd-model`. This command loads the longitudinal risk model and checks Gymnasium/SB3 compatibility, including saving/reloading PPO. It is a short integration check, not a policy performance claim. Risk thresholds and reward coefficients need economic validation for the supplied PD horizon.
+
+`trajectory_sanity.py` remains an independent snapshot-adapter diagnostic; its snapshot targets and probabilities are not the longitudinal PD experiment. `legacy/` is isolated from the active package and is not part of reproduction.

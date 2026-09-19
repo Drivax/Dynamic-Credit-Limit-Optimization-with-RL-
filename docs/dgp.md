@@ -337,8 +337,9 @@ estimator is mutated. History recording can be disabled for training/benchmarkin
   and recent history are synthesized, not estimated from actual customer histories.
 - Cumulative default rates may be high. Nondegenerate and directionally coherent does
   not mean quantitatively realistic. Survivor-only monthly summaries have selection effects.
-- Current PD is a proxy or snapshot-trained model with a distribution mismatch.
-  A quick logistic diagnostic establishes signal, not a production risk model.
+- The longitudinal PD pipeline estimates future H-month default from observable
+  histories; see [pd_model.md](pd_model.md). The fallback proxy and independent
+  one-month learnability diagnostic have different targets and calibration status.
 - Finite-horizon truncation lacks terminal asset valuation. Early defaults change
   exposure/survival; reward under stress need not order exactly like default risk.
 - Paired diagnostic differences are conditional on one specified DGP/config/seed;

@@ -1,0 +1,29 @@
+{
+  "training_seconds": {
+    "logistic": 0.1379311999771744,
+    "boosting": 0.9111671999562532
+  },
+  "single_feature_row_ms": 0.7106854999437928,
+  "batch_rows": 10050,
+  "batch_seconds": 0.006090400042012334,
+  "batch_rows_per_second": 1650137.9105927122,
+  "online_models": {
+    "logistic": {
+      "history_prediction_ms": 0.5916539998725057,
+      "batch_rows_per_second": 1916183.646359694
+    },
+    "logistic_calibrated": {
+      "history_prediction_ms": 0.739797999849543,
+      "batch_rows_per_second": 1741647.0462194092
+    },
+    "boosting": {
+      "history_prediction_ms": 1.6096200002357364,
+      "batch_rows_per_second": 203738.65527012604
+    },
+    "boosting_calibrated": {
+      "history_prediction_ms": 1.7773120000492781,
+      "batch_rows_per_second": 214662.86223242906
+    }
+  },
+  "pipeline_seconds": 184.92472390003968
+}

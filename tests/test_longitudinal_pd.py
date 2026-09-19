@@ -15,6 +15,8 @@ from credit_rl.risk.longitudinal import LongitudinalPDModel, train_models
 from credit_rl.risk.settings import load_settings
 from credit_rl.risk.evaluation import cluster_intervals, metrics, calibration_table
 from credit_rl.simulation.macro import MacroProcess
+from credit_rl.simulation.macro import MacroPath, MacroRegime, MacroState
+from credit_rl.simulation.shocks import ShockPath
 
 
 def trajectory(state, length=8, event=None, identity="A", start=0, scheduled=8):
@@ -134,6 +136,9 @@ def test_train_only_preprocessing_and_probability_roundtrip(fitted, tmp_path):
     expected = np.nanmedian(feature_matrix(train).to_numpy(), axis=0)
     for name, model in models.items():
         np.testing.assert_allclose(model.estimator[0].statistics_, expected)
+        if name.startswith("logistic"):
+            transformed_train = model.estimator[0].transform(feature_matrix(train).to_numpy())
+            np.testing.assert_allclose(model.estimator[1].mean_, transformed_train.mean(axis=0), atol=1e-10)
         x = feature_matrix(cal)
         with threadpool_limits(limits=1):
             p = model.predict_proba(x)
@@ -206,3 +211,37 @@ def test_quantile_plot_handles_filtered_nonzero_index():
     result = calibration_table(y, p, quantile=True)
     assert result.n_obs.sum() == 4
     assert len(result) == 4
+
+
+def test_fitted_pd_ignores_latent_and_future_paths(fitted, initial_state, traits):
+    model = fitted[0]["logistic_calibrated"]
+    cfg = SimulationConfig()
+    baseline = MacroProcess(cfg.macro).scenario("baseline", 24)
+    stress = MacroState.from_config(MacroRegime.STRESS, cfg.macro)
+    changed = MacroPath((baseline.states[0],)+(stress,)*24)
+    shocks = ShockPath.generate(initial_state.customer_id, 11, 24)
+    poisoned = replace(shocks, months=tuple(replace(s, default_uniform=0.) for s in shocks.months))
+    observations = []
+    for macro, path, latent in ((baseline, shocks, traits),
+            (changed, poisoned, replace(traits, creditworthiness=-5.))):
+        env = CreditLimitEnv(pd_model=model)
+        obs, _ = env.reset(seed=1, options=dict(initial_state=initial_state, traits=latent,
+                                               macro_path=macro, shock_path=path))
+        observations.append(obs)
+    np.testing.assert_array_equal(*observations)
+
+
+def test_shared_estimator_has_no_cross_environment_history(fitted, initial_state, traits):
+    model = fitted[0]["logistic_calibrated"]
+    a, b = CreditLimitEnv(pd_model=model), CreditLimitEnv(pd_model=model)
+    options = dict(initial_state=initial_state, traits=traits)
+    a.reset(seed=5, options=options)
+    b.reset(seed=5, options=options)
+    for _ in range(3):
+        a.step(2)
+    assert len(b._risk_history) == 1
+    first, _, _, _, _ = b.step(2)
+    reference = CreditLimitEnv(pd_model=model)
+    reference.reset(seed=5, options=options)
+    second, _, _, _, _ = reference.step(2)
+    np.testing.assert_array_equal(first, second)

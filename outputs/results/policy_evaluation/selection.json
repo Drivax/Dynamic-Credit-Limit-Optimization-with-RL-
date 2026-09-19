@@ -1,0 +1,12 @@
+{
+  "run_id": "e1e8cda5340cc105612c6e4b8b8f5d8efe8be3f7e695aaee9e270313990f3bb6",
+  "thresholds": [
+    0.1,
+    0.5
+  ],
+  "ppo_overrides": {
+    "learning_rate": 0.0003,
+    "ent_coef": 0.01
+  },
+  "selected_candidate": 0
+}

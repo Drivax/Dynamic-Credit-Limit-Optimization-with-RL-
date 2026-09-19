@@ -14,6 +14,8 @@ def build_dataset(trajectories, horizon_months=12):
     outputs, audit = [], []
     for customer, group in trajectories.groupby("customer_id", sort=False):
         group = group.sort_values("month")
+        if (group.month < 0).any() or not np.equal(group.month, np.floor(group.month)).all():
+            raise ValueError("Observation months must be nonnegative integers")
         if not group.defaulted.isin([True, False]).all():
             raise ValueError("Invalid default indicator")
         defaults = group.loc[group.defaulted, "month"]

@@ -19,6 +19,7 @@ from credit_rl.simulation.macro import MacroPath, MacroProcess, MacroState
 from credit_rl.simulation.shocks import ShockPath
 from credit_rl.utils.seeding import episode_generators
 from .observation import OBSERVATION_NAMES, build_observation
+from .constraints import effective_limit
 
 
 class CreditLimitEnv(gym.Env[np.ndarray, int]):
@@ -33,9 +34,12 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
 
     def __init__(self, portfolio: pd.DataFrame | None = None, pd_model: PDModel | HistoryPDModel | None = None,
                  config: SimulationConfig | None = None, *, record_diagnostics: bool = False,
-                 record_history: bool = True) -> None:
+                 record_history: bool = True, severe_delinquency_months: int | None = None) -> None:
         super().__init__()
         self.config = config or SimulationConfig()
+        if severe_delinquency_months is not None and (type(severe_delinquency_months) is not int or severe_delinquency_months < 1):
+            raise ValueError("severe_delinquency_months must be a positive integer or None")
+        self.severe_delinquency_months = severe_delinquency_months
         if portfolio is not None and portfolio.empty:
             raise ValueError("portfolio must not be empty")
         # Only initialization fields survive ingestion, even if targets are supplied.
@@ -172,8 +176,10 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
         previous = self.state
         decision_pd = self._predicted_pd
         multiplier = self.config.environment.action_multipliers[action]
+        admitted_limit, guardrail_blocked = effective_limit(previous.credit_limit, previous.months_delinquent,
+            multiplier, self.config.environment, self.severe_delinquency_months)
         shocks = self._shock_path.months[self._elapsed]
-        outcome = self._dgp.step(previous, multiplier, self._traits,
+        outcome = self._dgp.step(previous, admitted_limit/previous.credit_limit, self._traits,
                                  shocks, self._macro_path.states[self._elapsed+1])
         breakdown = calculate_reward(previous, outcome, decision_pd, self.config.reward)
         self._state = outcome.state
@@ -188,6 +194,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
                     payment=outcome.payment, spending=outcome.spending, exposure=outcome.exposure,
                     macro_state_used=int(previous.macro_state.regime), requested_action=multiplier-1,
                     effective_action=outcome.effective_multiplier-1)
+        info["guardrail_blocked"] = guardrail_blocked
         if self._record_history or self._record_diagnostics:
             row = self._history_row(action=action, reward=breakdown.total,
                                     terminated=terminated, truncated=truncated)
@@ -197,6 +204,7 @@ class CreditLimitEnv(gym.Env[np.ndarray, int]):
                        macro_state_used=int(previous.macro_state.regime),
                        requested_action=multiplier-1, effective_action=outcome.effective_multiplier-1,
                        credit_limit_before_action=previous.credit_limit)
+            row["guardrail_blocked"] = guardrail_blocked
             if self._record_history:
                 self._history.append(row)
             if self._record_diagnostics:

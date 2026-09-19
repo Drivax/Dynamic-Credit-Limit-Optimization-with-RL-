@@ -171,6 +171,7 @@ def run(config, settings, output):
     representatives = raw[raw.customer_id.isin(ids)].copy()
     f = build_features(representatives)
     representatives["predicted_pd"] = selected.predict_proba(feature_matrix(f, selected.feature_names))
+    representatives.loc[representatives.defaulted, "predicted_pd"] = np.nan
     representatives = representatives.merge(diagnostics["test"], on=["customer_id", "month"], how="left")
     representatives.to_csv(results/"representative_trajectories_DIAGNOSTIC_ONLY.csv", index=False)
     trajectory_figure(representatives, fig_dir/"representative_trajectories.png")
