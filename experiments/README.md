@@ -34,6 +34,23 @@ The stages `audit`, `smoke`, `train`, `evaluate`, and `figures` can also run sep
 
 Outputs live under `outputs/{models,results,figures}/policy_evaluation`. Large model files and trajectories remain local; compact results and report figures are versionable. See [methodology](../docs/policy_evaluation.md), [reward audit](../docs/policy_audit.md), and [results](../docs/policy_results.md).
 
+## World robustness and logged-policy evaluation
+
+These experiments require the completed nominal policy benchmark's selected agents and frozen PD artifact. They never retrain PPO automatically.
+
+```shell
+python -m experiments.robustness --profile smoke --stage evaluate
+python -m experiments.robustness --profile smoke --stage report
+python -m experiments.robustness --profile standard --stage evaluate
+python -m experiments.robustness --profile standard --stage report
+python -m experiments.off_policy_evaluation --profile smoke --stage evaluate
+python -m experiments.off_policy_evaluation --profile smoke --stage report
+python -m experiments.off_policy_evaluation --profile standard --stage evaluate
+python -m experiments.off_policy_evaluation --profile standard --stage report
+```
+
+`--stage all` composes evaluation and reporting. `full` is the larger configured budget; standard is the measured local study. Robustness uses three independent Windows worker processes with one computation thread each. Configs are `configs/robustness.yaml` and `configs/ope.yaml`; registry snapshots live in `outputs/experiments/{robustness,ope}_<profile>`. Tables and figures are under `outputs/{results,figures}/{robustness,ope}/<profile>`. See [world methodology](../docs/robustness.md) and [OPE methodology](../docs/off_policy_evaluation.md).
+
 ## PPO integration smoke
 
 With the optional `rl` dependencies installed:

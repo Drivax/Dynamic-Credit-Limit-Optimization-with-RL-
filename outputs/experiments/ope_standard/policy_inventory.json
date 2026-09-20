@@ -1,0 +1,121 @@
+[
+  {
+    "policy": "Static",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  },
+  {
+    "policy": "AlwaysDecrease20",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  },
+  {
+    "policy": "PDThreshold",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  },
+  {
+    "policy": "UtilizationPD",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  },
+  {
+    "policy": "MyopicEconomic",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  },
+  {
+    "policy": "PPO",
+    "policy_seed": 101,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\with_pd_101\\selected.zip",
+    "without_pd": false
+  },
+  {
+    "policy": "PPO",
+    "policy_seed": 202,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\with_pd_202\\selected.zip",
+    "without_pd": false
+  },
+  {
+    "policy": "PPO",
+    "policy_seed": 303,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\with_pd_303\\selected.zip",
+    "without_pd": false
+  },
+  {
+    "policy": "PPO",
+    "policy_seed": 404,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\with_pd_404\\selected.zip",
+    "without_pd": false
+  },
+  {
+    "policy": "PPO",
+    "policy_seed": 505,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\with_pd_505\\selected.zip",
+    "without_pd": false
+  },
+  {
+    "policy": "PPO_without_PD",
+    "policy_seed": 101,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\without_pd_101\\selected.zip",
+    "without_pd": true
+  },
+  {
+    "policy": "PPO_without_PD",
+    "policy_seed": 202,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\without_pd_202\\selected.zip",
+    "without_pd": true
+  },
+  {
+    "policy": "PPO_without_PD",
+    "policy_seed": 303,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\without_pd_303\\selected.zip",
+    "without_pd": true
+  },
+  {
+    "policy": "PPO_without_PD",
+    "policy_seed": 404,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\without_pd_404\\selected.zip",
+    "without_pd": true
+  },
+  {
+    "policy": "PPO_without_PD",
+    "policy_seed": 505,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "outputs\\models\\policy_evaluation\\without_pd_505\\selected.zip",
+    "without_pd": true
+  },
+  {
+    "policy": "Behavior",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  },
+  {
+    "policy": "SoftPDThreshold",
+    "policy_seed": -1,
+    "information_set": "OBSERVABLE_ONLY",
+    "model_identifier": "rule",
+    "without_pd": false
+  }
+]

@@ -2,6 +2,8 @@
 
 `CreditLimitEnv` follows one customer for up to 24 monthly transitions. Actions are configured limit multipliers, subject to monthly and absolute bounds. Default terminates; survival to the horizon truncates. Calling step after either raises.
 
+The optional `severe_delinquency_months` admission rule blocks increases after that many consecutive delinquency months. The policy benchmark sets it to 3 for every policy. The default `None` leaves this optional rule disabled for other experiments. Projection happens before the DGP transition; histories retain the original requested action, the effective change and `guardrail_blocked`. Debt remains outstanding when the limit falls below the balance.
+
 `reset(seed=..., options=...)` accepts a portfolio `customer_index` or an explicit `initial_state` and hidden `traits` pair for controlled research. Optional immutable `macro_path` and `shock_path` inputs support paired experiments. These inputs are simulation setup, never policy observations. Unknown options and inconsistent paths fail.
 
 The 21 float32 observation entries are ordered by `OBSERVATION_NAMES`: elapsed month, limit, balance, utilization, payment ratio, delinquency indicator/count, income, behavioral score, macro credit stress, predicted PD, latest spending, late-payment fraction, tenure, terminal default indicator, income log change, macro income/spending growth and expansion/normal/stress indicators. Ratios are bounded as x/(1+x); signed factors are rescaled. No hidden trait, hazard, future shock or future macro is included.
@@ -15,3 +17,5 @@ Pass a trusted `LongitudinalPDModel.load(path)` as `pd_model`. The environment s
 Default is generated solely by `CreditDGP`. The supplied estimator affects policy decisions and economic reward proxies but is not passed to the transition mechanism. Principal obeys B'=B-P+C. A limit cut never forgives debt; credit loss is charged once.
 
 See [PD methodology](pd_model.md), [DGP specification](dgp.md) and [measured results](pd_results.md). The executable integration check is `python -m experiments.pd_env_smoke` after the PD training pipeline.
+
+The [policy benchmark](policy_evaluation.md) specifies held-out populations, policy information sets, the reward audit, PPO validation and paired economic/risk metrics.

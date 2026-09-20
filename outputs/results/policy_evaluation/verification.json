@@ -1,0 +1,30 @@
+{
+  "verified": true,
+  "evaluated_episodes": 30600,
+  "unique_test_and_independent_customers": 600,
+  "policy_seed_scenario_groups": 102,
+  "main_agents": 10,
+  "pathwise_equivalence_panels": 55,
+  "max_pathwise_numerical_difference": 1.7053025658242404e-13,
+  "severe_delinquent_increases": 0,
+  "readme_numeric_rows_checked": 10,
+  "local_document_links_checked": 29,
+  "figures": 12,
+  "pd_sha256": "a5aa166d3db55a2d2b779e19d1d1c1c421aad619a1c02ed7e9384da96f7187fe",
+  "checks": [
+    "disjoint train/validation/test/independent cohort",
+    "finite episode metrics",
+    "reward accounting identity",
+    "all groups have 300 customers",
+    "oracle information labels",
+    "main agent budgets and provenance",
+    "frozen PD across train/evaluate/figures",
+    "pathwise constant-rule equivalence",
+    "README table agrees with summary CSV",
+    "document links resolve"
+  ],
+  "unit_tests_passed": 108,
+  "unit_tests_failed": 0,
+  "unit_test_seconds": 9.27,
+  "git_diff_check_passed": true
+}

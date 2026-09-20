@@ -24,6 +24,28 @@ def savefig(fig, path):
     plt.close(fig)
 
 
+def constant_rule_equivalence(results):
+    """Verify pathwise equivalence, not merely similar aggregate returns."""
+    rows = []
+    columns = ["customer_id", "month", "effective_action", "balance", "credit_limit", "reward", "predicted_pd"]
+    for path in sorted((results/"trajectories").glob("*__PPO*.csv.gz")):
+        scenario, policy, seed = path.name.removesuffix(".csv.gz").split("__")
+        reference_scenario = "baseline" if scenario == "baseline_biased_pd" else scenario
+        reference_path = results/"trajectories"/f"{reference_scenario}__AlwaysDecrease20__-1.csv.gz"
+        if not reference_path.exists():
+            continue
+        a, b = pd.read_csv(path)[columns], pd.read_csv(reference_path)[columns]
+        joined = a.merge(b, on=["customer_id", "month"], how="outer", suffixes=("_ppo", "_rule"),
+                         indicator=True, validate="one_to_one")
+        row = dict(scenario=scenario, policy=policy, policy_seed=int(seed),
+                   unmatched_rows=int((joined["_merge"] != "both").sum()))
+        for column in columns[2:]:
+            delta = (joined[column+"_ppo"].fillna(0)-joined[column+"_rule"].fillna(0)).abs()
+            row[column+"_max_abs_difference"] = float(delta.max())
+        rows.append(row)
+    pd.DataFrame(rows).to_csv(results/"constant_rule_equivalence.csv", index=False)
+
+
 def diagnostics(settings, results):
     monthly, actions, pd_scores, distributions = [], [], [], []
     for path in sorted((results/"trajectories").glob("*.csv.gz")):
@@ -64,7 +86,14 @@ def diagnostics(settings, results):
         shifts.to_csv(results/"pd_feature_shift_from_training.csv", index=False)
 
 
-def convergence(models, figures):
+def convergence(models, figures, results):
+    rows = []
+    for path in sorted(models.glob("*_pd_*/metadata.json")):
+        metadata = json.loads(path.read_text())
+        rows.append({key: metadata[key] for key in ("seed", "without_pd", "actual_timesteps",
+            "selected_timesteps", "training_seconds", "validation_seconds",
+            "training_steps_per_second", "validation_score")})
+    pd.DataFrame(rows).to_csv(results/"training_benchmark.csv", index=False)
     fig, axes = plt.subplots(2, 3, figsize=(13, 7), layout="constrained")
     fields = ["rollout/ep_rew_mean", "train/value_loss", "train/policy_gradient_loss",
               "train/entropy_loss", "train/approx_kl", "train/explained_variance"]
@@ -169,16 +198,23 @@ def summary_figures(results, figures):
     ax.set(ylabel="Mean net economic value (EUR/customer)", title="Held-out baseline; 95% customer/seed bootstrap intervals")
     savefig(fig, figures/"economic_value.png")
     fig, ax = plt.subplots(figsize=(10, 5), layout="constrained")
-    for r in baseline.itertuples():
-        ax.scatter(r.default_rate, r.net_economic_value, s=50)
-        ax.annotate(r.policy, (r.default_rate,r.net_economic_value), fontsize=8)
+    # Co-located policies are labeled together rather than hiding overlapping text.
+    points = baseline.assign(risk_point=baseline.default_rate.round(6), value_point=baseline.net_economic_value.round(3))
+    for (risk, value), group in points.groupby(["risk_point", "value_point"]):
+        ax.scatter(risk, value, s=50)
+        offsets = {"PDThreshold": (-92, 24), "AlwaysDecrease": (12, 24), "UtilizationPD": (12, -20)}
+        ax.annotate("\n".join(group.policy), (risk, value), fontsize=8,
+                    xytext=offsets.get(group.policy.iloc[0], (6, 8)), textcoords="offset points",
+                    arrowprops=dict(arrowstyle="-", color="gray", lw=.5))
+    ax.margins(x=.3, y=.2)
     ax.set(xlabel="Defaults / initial customers", ylabel="Net economic value (EUR/customer)", title="Economics and risk; no composite ranking")
     savefig(fig, figures/"risk_return.png")
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5), layout="constrained")
     for policy in ("Static", "UtilizationPD", "MyopicEconomic", "PPO", "PPO_without_PD"):
         g=summary[(summary.policy==policy)&summary.scenario.isin(["baseline","mild_stress","severe_stress","recovery"])].set_index("scenario").reindex(["baseline","mild_stress","severe_stress","recovery"])
-        axes[0].plot(g.index,g.net_economic_value,"o-",label=policy)
-        axes[1].plot(g.index,g.default_rate,"o-",label=policy)
+        style = dict(linestyle="--", marker="s", markerfacecolor="none") if policy == "PPO_without_PD" else dict(linestyle="-", marker="o")
+        axes[0].plot(g.index,g.net_economic_value,label=policy,**style)
+        axes[1].plot(g.index,g.default_rate,label=policy,**style)
     for ax in axes:
         ax.tick_params(axis="x",rotation=25)
         ax.legend(fontsize=7)
@@ -195,9 +231,13 @@ def summary_figures(results, figures):
     savefig(fig,figures/"action_distribution.png")
     differences=pd.read_csv(results/"paired_distributions.csv.gz")
     fig,ax=plt.subplots(figsize=(8,4),layout="constrained")
+    shown = differences[(differences.policy.isin(["PPO", "UtilizationPD", "MyopicEconomic"]))
+        & (differences.reference == "Static") & (differences.scenario == "baseline")
+        & (differences.metric == "net_economic_value")]
+    edges = np.histogram_bin_edges(shown.seed_mean_difference, bins=35)
     for policy in ("PPO","UtilizationPD","MyopicEconomic"):
-        vals=differences[(differences.policy==policy)&(differences.reference=="Static")&(differences.scenario=="baseline")&(differences.metric=="net_economic_value")].seed_mean_difference
-        ax.hist(vals,bins=35,alpha=.4,label=policy)
+        vals=shown[shown.policy==policy].seed_mean_difference
+        ax.hist(vals,bins=edges,alpha=.4,label=policy)
     ax.axvline(0,color="black",linestyle="--"); ax.legend()
     ax.set(xlabel="Paired value difference vs Static (EUR/customer)",ylabel="Customers")
     savefig(fig,figures/"paired_value_distribution.png")
@@ -205,12 +245,14 @@ def summary_figures(results, figures):
     fig,axes=plt.subplots(1,2,figsize=(11,4),layout="constrained")
     for name,g in scores.groupby("policy"):
         mean=g.groupby("scenario")[["default_rate","mean_predicted_pd","brier"]].mean().reindex(["baseline","mild_stress","severe_stress","recovery"])
-        axes[0].plot(mean.index,mean.mean_predicted_pd-mean.default_rate,"o-",label=name)
-        axes[1].plot(mean.index,mean.brier,"o-",label=name)
+        style = dict(linestyle="--", marker="s", markerfacecolor="none") if name == "PPO_without_PD" else dict(linestyle="-", marker="o")
+        axes[0].plot(mean.index,mean.mean_predicted_pd-mean.default_rate,label=name,**style)
+        axes[1].plot(mean.index,mean.brier,label=name,**style)
     axes[0].axhline(0,color="black",alpha=.3)
     for ax in axes: ax.tick_params(axis="x",rotation=25); ax.legend(fontsize=7)
-    axes[0].set(ylabel="Mean forecast minus H-month prevalence")
-    axes[1].set(ylabel="Brier score on eligible policy-generated snapshots")
+    axes[0].set(ylabel="Mean PD minus observed H-month default rate")
+    axes[1].set(ylabel="Brier score")
+    fig.suptitle("Frozen PD model on eligible policy-generated H-month snapshots")
     savefig(fig,figures/"pd_feedback.png")
 
 
@@ -218,8 +260,9 @@ def report(config, settings, pd_model, results, models, figures, identity):
     from experiments.compare_policies import load_specs
     settings={**settings,"pd_horizon_months":int(pd_model.metadata["horizon_months"])}
     diagnostics(settings, results)
+    constant_rule_equivalence(results)
     specs=load_specs(config,settings,results,models,identity)
     summary_figures(results,figures)
-    convergence(models,figures)
+    convergence(models,figures,results)
     policy_slices(config,settings,pd_model,specs,figures,results)
     representative_trajectories(results,figures,config,settings)

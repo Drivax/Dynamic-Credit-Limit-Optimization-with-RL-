@@ -1,151 +1,146 @@
 # Dynamic Credit Limit Optimization with Reinforcement Learning
 
-A reproducible research environment for **credit-risk modeling and sequential credit-limit decisions**. A hidden synthetic world generates customer trajectories; a separate probability-of-default model observes only information available at each decision.
+A reproducible experimental platform for **sequential credit-limit decisions under partially observed risk**. A synthetic longitudinal world, an imperfect observable probability-of-default model, and decision policies are separate components.
 
-## Motivation
+**Measured finding:** on the held-out baseline, all five PPO seeds reproduce the economic outcomes of always requesting a 20% limit reduction. They reduce losses relative to Static, but increase default incidence. The experiment does **not** establish an advantage from sequential learning or from supplying PD to PPO.
 
-A credit-limit decision changes more than immediate revenue. Available credit affects spending, balances, utilization, subsequent risk estimates and future decisions. A static analysis can miss those delayed effects. This project studies them with controlled simulation, observable risk models, baseline policies and a Gymnasium interface. It does not assume reinforcement learning will outperform simpler rules.
+## The decision problem
 
-## Problem formulation
+Credit availability affects purchases, balances, utilization, delinquency and future risk. Each month, a policy observes 21 public features and requests −20%, −10%, unchanged, +10% or +20%. One episode follows one customer until first default or 24 months. PPO maximizes expected discounted reward with **γ = 0.98**.
 
-At month t, a policy chooses a limit multiplier from −20%, −10%, unchanged, +10%, +20%, subject to bounds. Each episode follows one customer for up to 24 months or first default. The economic reward combines interest and fee proxies, realized credit losses, funding costs, a capital charge and a risk penalty.
-
-The independent risk estimator targets:
-
-**PD(i,t,H) = P(first default in (t,t+H] | observable history through t, active at t)**,
-
-with **H=12 months** by default. Future actions follow the modeling behavior policy; this is a predictive, policy-dependent probability, not a causal estimate for a proposed action.
-
-## System architecture
+Limits remain between EUR 500 and 15,000. In the benchmark, three consecutive delinquency months block increases. Reducing a limit never removes outstanding debt. Requested and effective actions are both recorded.
 
 ```mermaid
 flowchart TD
-    Hidden[Hidden customer characteristics] --> Dynamics[Customer dynamics]
-    Macro[Macro scenario] --> Dynamics
-    History[Observable history through t] --> PD[PD model]
-    PD --> Forecast[Predicted H-month PD]
-    Forecast --> Policy[Decision policy]
-    History --> Policy
-    Policy --> Action[Credit-limit action]
-    Action --> Transition[Customer transition]
-    Dynamics --> Transition
-    Shocks[Indexed random shocks] --> Transition
-    Transition --> Outcome[Economic outcome]
-    Transition --> Next[Next observation]
-    Forecast --> Outcome
+    Hidden[Hidden customer traits] --> World[Longitudinal synthetic world]
+    Macro[Observable macro conditions] --> World
+    Shocks[Indexed exogenous shocks] --> World
+    History[Observed history through t] --> Risk[Frozen 12-month PD model]
+    History --> Policy[Rules / Myopic / PPO]
+    Risk --> Policy
+    Macro --> Policy
+    Policy --> Action[Constrained credit-limit action]
+    Action --> World
+    World --> Next[Next observable state]
     Next --> History
+    World --> Outcomes[Revenue / losses / exposure / default]
+    Risk --> Reward[Economic reward proxy]
+    Outcomes --> Reward
 ```
 
-The DGP determines realized behavior and default independently of the risk estimator. Predicted PD informs the policy and reward proxies; it does not determine the simulator's true default hazard.
+The world generates defaults from hidden customer dynamics. The risk estimator forecasts from observable history; it does not determine the true default mechanism. Deployable policies cannot access hidden traits, true hazard, future shocks or future macro states.
 
-## Synthetic longitudinal environment
+## Synthetic world and observable risk
 
-Persistent hidden creditworthiness, spending propensity, payment propensity and income stability create customer heterogeneity. Observable income, spending, payment ratios, balances, behavioral scores and delinquency evolve monthly. Balance accounting follows `B_next = B - repayment + purchases`; reducing a limit never erases outstanding debt.
+Persistent creditworthiness, spending propensity, payment propensity and income stability produce heterogeneous behavior. Monthly principal accounting is `next balance = balance − repayment + purchases`. Expansion, normal and stress regimes affect income, spending and default risk. The coefficients are stylized, not fitted to a bank portfolio.
 
-Expansion, normal and stress regimes influence behavior and default. Common random numbers align customer/month/shock channels across controlled policy comparisons. The world is partially observable: similar observed customers can have different latent characteristics and outcomes.
+The risk pipeline predicts first default in the next **12 months**, conditional on being active and on history available at the decision. It uses 25 explicit current/history features, chronological customer-disjoint training/validation/calibration/test/OOT cohorts, mature labels and dedicated calibration. Logistic and histogram boosting models are compared using discrimination, calibration and customer-cluster uncertainty.
 
-The DGP is **synthetic and stylized**. Neither coefficients nor macro dynamics are calibrated to a real bank portfolio. [Structural equations](docs/dgp.md) describe its assumptions.
+The benchmark freezes `logistic_calibrated.joblib`. Its PD-model test ROC-AUC is **0.842**, Brier **0.162**; OOT Brier is **0.172**. A useful ranking does not imply calibration under a new action policy. Future actions affect both inputs and outcomes, so PD is policy-dependent rather than a causal estimate for a proposed action. See [risk methodology](docs/pd_model.md) and [risk results](docs/pd_results.md).
 
-## Probability of Default modeling
+## Policies
 
-The reproducible pipeline builds multiple point-in-time snapshots per customer using an explicit 25-feature schema. It combines current observable measurements with strictly backward-looking history. Short histories use training-only imputation and missing indicators.
+Every policy runs through the same evaluator and admission rules.
 
-- Twelve-month labels require a complete planned performance window; unresolved censored windows never become zeros.
-- Chronological, customer-disjoint train/validation/calibration/test/OOT cohorts have non-overlapping label-maturity periods.
-- Models include a training-prevalence baseline, logistic regression and histogram gradient boosting, with raw and separately sigmoid-calibrated probabilities.
-- Evaluation covers ROC-AUC, average precision, Brier score, log loss, calibration, risk deciles, subgroups, time drift and customer-cluster bootstrap intervals.
-- Baseline/mild/severe macro scenarios and static/increase/decrease policies expose distribution shift.
+| Deployable information set | Decision |
+|---|---|
+| Static | Keep the limit |
+| AlwaysDecrease / AlwaysDecrease20 | Reduce by 10% / 20% when feasible |
+| AlwaysIncrease | Increase by 10% when feasible |
+| Random | Uniform among feasible actions; independent reproducible RNG |
+| PDThreshold | Increase below PD 0.10; decrease at or above 0.50; otherwise maintain |
+| UtilizationPD | Combine those thresholds with utilization ≥0.75 and delinquency |
+| MyopicEconomic | Maximize an observable one-step expected-reward surrogate |
+| PPO | Trained categorical actor, deterministic evaluation, all five seeds |
+| PPO_without_PD | Same training budget and seeds, explicit actor PD coordinate removed |
 
-**True simulator risk ≠ predicted PD.** The hidden closing monthly hazard is not the same quantity as a forecast over the next 12 months. It is used only in clearly labeled trajectory diagnostics.
+The myopic baseline estimates repayment, purchases and action-sensitive risk from public information and declared approximations. It never calls the hidden DGP. Its complete equations and all rules are in [policy methodology](docs/policy_evaluation.md).
 
-The [methodology](docs/pd_model.md) specifies the information cutoff, features, censoring, splits and limits. The [measured report](docs/pd_results.md) contains complete tables and uncertainty intervals.
+A separate **SIMULATOR-ONLY ORACLE** uses hidden traits and independent hypothetical shocks for one-step decisions. It is neither deployable nor an upper bound on multi-period performance; its results are separated from same-information comparisons.
 
-## Sequential decision interface
+## Controlled evaluation
 
-`LongitudinalPDModel.load(path)` returns a bundled estimator, preprocessing and calibrator. Pass it to `CreditLimitEnv(..., pd_model=model)`: the environment computes PD from at most seven observed snapshots before the next action. The online path uses NumPy arrays and no Pandas feature construction. The assumed-coefficient fallback remains explicit when no artifact is supplied; it is not a calibrated 12-month PD.
+- **Populations:** 1,500 training, 100 validation and 300 final test customers with disjoint IDs and seed namespaces. An additional 300-customer Markov cohort is independent synthetic generalization, not an empirical calendar OOT test.
+- **Pairing:** policies receive identical initial observed/latent states, macro paths and indexed exogenous shocks. Different actions change endogenous states without shifting future random draws.
+- **Selection:** thresholds and two PPO pilot settings use validation only. Five seeds with PD and five without PD each train for 32,768 transitions. Each actor/critic has two 64-unit tanh layers. The selected checkpoint maximizes validation discounted raw reward, earliest on a tie.
+- **Scaling:** fixed bounded public observations and a fixed EUR-to-kEUR reward conversion. No normalization statistics are learned from test customers.
+- **Uncertainty:** 300 bootstrap replicates resample whole customers, jointly across PPO seeds, with seed resampling. Paired differences subtract outcomes for the same customer. Shared macro-path uncertainty is outside these intervals.
+- **Robustness:** baseline, mild stress, severe stress, recovery, the independent Markov cohort, and actor-visible PD halved while reward and world inputs remain unchanged.
 
-The supplied PPO script consumes a trained longitudinal PD artifact. Its short integration run demonstrates compatibility, not economic superiority. Reward coefficients and risk thresholds remain stylized and require horizon-aware economic validation.
+## Economic and risk results
 
-## Repository structure
+Baseline results use 300 held-out customers over up to 24 months. PPO rows average **all five training seeds**. Values are EUR per initial customer. Default incidence is defaults divided by initial customers.
 
-```text
-configs/                    Simulation, macro and PD experiment settings
-src/credit_rl/
-  simulation/               Hidden DGP, behavior, macro paths and shocks
-  risk/                     Features, labels, fitting, calibration and evaluation
-  envs/                     Gymnasium observation and decision interface
-  policies/                 Static, threshold and constant-action baselines
-  evaluation/               DGP and economic diagnostics
-experiments/                PD pipeline, environment smoke test, DGP and PPO runs
-tests/                      Timing, leakage, accounting and reproducibility checks
-docs/                       Methodology, audit and measured results
-outputs/{models,results,figures}/pd/
-                            Bundled estimators, CSV/JSON diagnostics and figures
-```
+| Policy | Net economic value | Revenue | Credit loss | Default incidence |
+|---|---:|---:|---:|---:|
+| Static | −1,379.3 | 1,012.6 | 2,237.3 | 64.0% |
+| AlwaysDecrease | −826.2 | 600.5 | 1,336.4 | 65.3% |
+| AlwaysDecrease20 | −779.4 | 385.3 | 1,105.9 | 71.3% |
+| AlwaysIncrease | −1,703.1 | 1,103.2 | 2,638.0 | 59.3% |
+| Random | −1,294.6 | 912.7 | 2,068.4 | 64.3% |
+| PDThreshold | −828.0 | 802.7 | 1,511.5 | 64.0% |
+| UtilizationPD | −852.9 | 799.0 | 1,533.0 | 65.0% |
+| MyopicEconomic | −1,285.2 | 1,066.2 | 2,191.3 | 57.0% |
+| PPO | −779.4 | 385.3 | 1,105.9 | 71.3% |
+| PPO_without_PD | −779.4 | 385.3 | 1,105.9 | 71.3% |
 
-## Installation
+**Net economic value** is recognized interest plus fees, minus realized credit losses and funding. It excludes the synthetic capital charge and risk penalty. **Reward** subtracts those additional terms: PPO cumulative reward is −2,363.5 EUR/customer versus −5,588.6 for Static. No terminal loan valuation is included. These proxies are not accounting profit.
 
-Python 3.11+ is required. From the repository root, use a Python environment with pip and setuptools installed:
+PPO's baseline value has a 95% customer/seed bootstrap interval of **[−923.6, −646.3] EUR**. Its paired value difference versus Static is **+599.9 [405.2, 801.4] EUR**, alongside **+7.3 [3.8, 11.2] percentage points of default incidence**. Across training seeds, the standard deviation of the baseline value is zero because deterministic outcomes coincide; customer uncertainty remains substantial.
+
+Compared with MyopicEconomic, PPO gains **505.8 [276.5, 706.1] EUR** but increases defaults by **14.3 [10.5, 19.2] points**. The constant −20% rule reproduces the gain. This provides no evidence of learned continuation value. Cutting limits reduces exposure but can push outstanding balances above limits and worsen utilization-driven risk. Increasing limits produces more revenue and larger losses here, while sometimes lowering default frequency.
+
+![Economic value and uncertainty](outputs/figures/policy_evaluation/economic_value.png)
+
+![Macroeconomic robustness](outputs/figures/policy_evaluation/stress_robustness.png)
+
+Under severe stress, PPO reaches **95.3% defaults** with value **−1,280.8 EUR/customer**; recovery produces **89.3% defaults** and **−1,514.1 EUR**. Its constant action does not adapt to recovery. On the independent Markov cohort, the −10% rule has a better mean value than PPO (−703.4 versus −738.3 EUR), with fewer defaults. These results remain conditional on the synthetic scenarios.
+
+![Controlled action slices](outputs/figures/policy_evaluation/policy_heatmaps.png)
+
+The [complete measured report](docs/policy_results.md) includes stress outcomes, risk alerts, all seed results, churn, trajectories, PD feedback and runtime. [Machine-readable summary](outputs/results/policy_evaluation/summary.csv), [paired comparisons](outputs/results/policy_evaluation/paired_comparisons.csv) and [individual seeds](outputs/results/policy_evaluation/seed_metrics.csv) retain the full evidence. Large models and trajectories are generated locally and excluded from Git.
+
+## Reproduction
+
+Python 3.11+ with pip and setuptools is required. Run from the repository root:
 
 ```shell
-python -m pip install -e ".[dev,experiments]" --no-build-isolation
-```
-
-On this Windows checkout, `.venv\Scripts\python.exe` is the tested interpreter; use that path instead of `python` if the Windows application alias is unresolved. No external datasets or network services are needed to run the experiments after dependencies are installed.
-
-## Reproducing the experiments
-
-Run from the repository root:
-
-```shell
+python -m pip install -e ".[dev,experiments,rl]" --no-build-isolation
 python -m pytest -q
 python -m experiments.train_pd
-python -m experiments.train_pd --evaluate-only
 python -m experiments.pd_env_smoke
-python -m experiments.dgp_sanity --customers 100 --seed 42 --output outputs/pd_dgp_check
+python -m experiments.compare_policies --stage audit
+python -m experiments.compare_policies --stage smoke
+python -m experiments.compare_policies --stage train
+python -m experiments.compare_policies --stage evaluate
+python -m experiments.compare_policies --stage figures
 ```
 
-Training also runs evaluation and generates figures automatically. Evaluation-only loads saved models/datasets and never refits. `--config configs/pd_model.yaml` controls the target, population sizes, seeds, features and models; `--output` preserves a separate run. Default training uses 6,100 distinct customers plus six paired replays of the 1,000 OOT customers. The 100-customer DGP command is a smoke diagnostic, not a precision study.
+The local tested interpreter is `.venv\Scripts\python.exe`; use it instead of `python` when the Windows application alias is unresolved. Dependencies need installation access; experiments then run locally without external datasets or services. `--stage all` composes audit, train, evaluate and figures. Completed training agents are reused when input fingerprints match. Use `--output` for a separate experiment directory.
 
-The commands above were executed successfully in the local environment. With the optional `rl` dependencies installed, `python -m experiments.train_ppo --timesteps 256 --output outputs/pd_ppo_check` was also checked. Larger PPO searches are outside this experiment.
+The executed suite has **108 passing tests**. Main training completed all ten runs; final evaluation covers 102 policy/seed/scenario combinations and 341,051 transitions. The report records timings and the checks performed.
 
-## Results
+Settings are centralized in `configs/simulation.yaml`, its macro configuration, `configs/pd_model.yaml` and `configs/policy_evaluation.yaml`. Manifests record configuration, package versions, source hashes and PD artifact identity. The [experiment guide](experiments/README.md) describes independent stages and artifact requirements.
 
-Measured with the checked-in PD configuration, DGP 2.0 and 200 customer-cluster bootstrap replicates. Test prevalence is **45.8% of eligible snapshots**, OOT **56.7%**, and severe stress **76.8%**. These high rates reflect the synthetic DGP, not a representative bank portfolio. Average precision is reported as PR-AUC.
+## Repository
 
-| Sample | Model | ROC-AUC | PR-AUC | Brier | Log loss |
-|---|---|---:|---:|---:|---:|
-| test | constant | 0.500 | 0.458 | 0.249 | 0.691 |
-| test | logistic | 0.842 | 0.823 | 0.162 | 0.487 |
-| test | logistic_calibrated | 0.842 | 0.823 | 0.162 | 0.486 |
-| test | boosting_calibrated | 0.846 | 0.831 | 0.160 | 0.483 |
-| oot | constant | 0.500 | 0.567 | 0.263 | 0.720 |
-| oot | logistic | 0.845 | 0.875 | 0.163 | 0.487 |
-| oot | logistic_calibrated | 0.845 | 0.875 | 0.172 | 0.511 |
-| oot | boosting_calibrated | 0.845 | 0.875 | 0.158 | 0.478 |
-| severe_stress_behavior | constant | 0.500 | 0.768 | 0.290 | 0.773 |
-| severe_stress_behavior | logistic | 0.807 | 0.928 | 0.181 | 0.531 |
-| severe_stress_behavior | logistic_calibrated | 0.807 | 0.928 | 0.164 | 0.489 |
-| severe_stress_behavior | boosting_calibrated | 0.848 | 0.945 | 0.186 | 0.552 |
+```text
+src/credit_rl/simulation/   Hidden dynamics, customer states, macro paths and shocks
+src/credit_rl/risk/         Observable features, labels, PD fitting and diagnostics
+src/credit_rl/envs/         Gymnasium interface, observations and action projection
+src/credit_rl/policies/     Rules, myopic/oracle adapters, PPO training and validation
+src/credit_rl/evaluation/   Shared scenarios, paired metrics and policy diagnostics
+experiments/               Executable risk and policy experiments
+configs/                   Centralized simulation, risk and policy settings
+tests/                     Leakage, accounting, pairing and saved-model checks
+docs/                      Equations, audits and measured reports
+outputs/                   Models, detailed traces, tables, manifests and figures
+```
 
-Logistic test AUC has a 95% customer-cluster interval of **[0.825, 0.859]**. Calibrated boosting test Brier is **0.160 [0.149, 0.170]**. Intervals condition on the fitted models and realized shared macro path.
+## Limits and research priorities
 
-Calibration does not improve every setting: logistic calibration worsens OOT Brier from **0.163 to 0.172**. Under severe stress, calibrated boosting retains useful ranking while predicting a mean PD of **54.7%** against **76.8%** observed. The training calendar contains no stress months, which limits stress extrapolation. The predeclared configurable reference is calibrated logistic; no overall winner is inferred from these results.
+The synthetic portfolio has very high default rates. Reward capital charges use a stylized monthly proxy driven by a 12-month PD; their magnitude materially shapes incentives. Terminal valuation, customer welfare, operational adjustment costs and detailed recovery timing are absent. Portfolio risk alerts are experimental, not regulatory, and do not guarantee feasibility. The myopic surrogate has assumed action sensitivities; PPO has a modest budget, one pilot seed and fixed training trajectories.
 
-![Test calibration and risk buckets](outputs/figures/pd/calibration_deciles.png)
+Customer/seed intervals do not capture uncertainty in the DGP or common macro scenarios. Policy-induced PD shift remains unresolved, and decisions after month 12 lack a full 12-month outcome window within these episodes. Results establish neither real-world profitability nor a deployable lending policy.
 
-![Macro and policy shift diagnostics](outputs/figures/pd/stress_policy_comparison.png)
-
-Full [machine-readable metrics](outputs/results/pd/metrics.csv), [sample counts](outputs/results/pd/sample_counts.csv) and [benchmarks](outputs/results/pd/benchmark.json) are retained. Large trajectories and fitted artifacts are generated locally and excluded from Git.
-
-## Methodological safeguards
-
-Explicit point-in-time feature selection; no latent variables or hidden hazard in X; customer-disjoint chronological cohorts; matured label windows; separate calibration; no test-set tuning; no class rebalancing; deterministic independent RNG streams; customer-level bootstrap; common random numbers for controlled comparisons; exact offline/online feature parity and artifact reload checks.
-
-## Limitations
-
-Synthetic credit population, assumed behavioral coefficients, non-calibrated macro dynamics, simplified default/recovery economics and one macro calendar limit external validity. Shared macro uncertainty is not captured by customer-only bootstrap. Future actions affect the prediction target, so policy-induced covariate and outcome shift remain unresolved. Full H-month validation is unavailable for decisions after month 12 in 24-month episodes. Results do not establish that any policy should be used by a real lender.
-
-## Roadmap
-
-Priorities are independent macro-path backtests, longer follow-up, horizon-aware reward validation, policy-conditioned risk analysis, calibration stability, latent-state uncertainty diagnostics and eventual validation against appropriately governed empirical data.
+Priorities are horizon-consistent economic validation, terminal accounting, independent macro-path replication, stronger observable transition estimates, policy-conditioned risk calibration, and empirical validation. The [full report](docs/policy_results.md) ranks concrete next steps without expanding the algorithm list.

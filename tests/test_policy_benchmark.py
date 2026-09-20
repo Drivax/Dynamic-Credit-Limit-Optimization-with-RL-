@@ -22,6 +22,8 @@ from credit_rl.policies.registry import baseline_specs, ppo_spec
 from credit_rl.policies.training import TrainingEnvironment, train_agent
 from credit_rl.risk.longitudinal import LongitudinalPDModel
 from credit_rl.risk.features import FEATURE_NAMES
+from credit_rl.simulation.macro import MacroState, MacroRegime
+from credit_rl.simulation.shocks import ShockPath
 
 
 @pytest.fixture
@@ -154,6 +156,13 @@ def test_no_hidden_or_future_ppo_observation(settings, risk):
     env2 = TrainingEnvironment([poisoned], risk, cfg, settings)
     same, _ = env2.reset(seed=5)
     np.testing.assert_array_equal(obs,same)
+    future_path = replace(s.macro_path, states=(s.macro_path.states[0],) +
+        (MacroState.from_config(MacroRegime.STRESS, cfg.macro),)*cfg.environment.horizon)
+    different_future = replace(s, macro_path=future_path,
+        shock_path=ShockPath.generate(s.customer_id, 999, cfg.environment.horizon))
+    env3 = TrainingEnvironment([different_future], risk, cfg, settings)
+    future_obs, _ = env3.reset(seed=5)
+    np.testing.assert_array_equal(obs, future_obs)
     hidden = transform_observation(obs, without_pd=True)
     assert hidden[10] == 0
     np.testing.assert_array_equal(np.delete(obs,10),np.delete(hidden,10))

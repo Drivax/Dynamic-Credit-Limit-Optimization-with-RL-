@@ -17,9 +17,10 @@ class PolicySpec:
     without_pd: bool = False
     pd_multiplier: float = 1.
     model_identifier: str = "rule"
+    observation_transform_factory: object = None
 
 
-def evaluate_policy(spec, scenarios, config, pd_model, settings, scenario_name, *, keep_history=True):
+def evaluate_policy(spec, scenarios, config, pd_model, settings, scenario_name, *, keep_history=True, transition_observer=None):
     started = perf_counter()
     episodes, histories = [], []
     inference_seconds = 0.
@@ -27,10 +28,12 @@ def evaluate_policy(spec, scenarios, config, pd_model, settings, scenario_name, 
         env = CreditLimitEnv(pd_model=pd_model, config=config, record_history=True,
                              severe_delinquency_months=settings["guardrails"]["severe_delinquency_months"])
         policy = spec.factory(env, scenario)
+        sensor = spec.observation_transform_factory(scenario) if spec.observation_transform_factory else None
         observation, _ = env.reset(seed=scenario.customer_seed, options=scenario.reset_options())
         actor_pd = [np.nan]
         while True:
-            actor_observation = transform_observation(observation, spec.without_pd, spec.pd_multiplier)
+            supplied = sensor(observation) if sensor else observation
+            actor_observation = transform_observation(supplied, spec.without_pd, spec.pd_multiplier)
             tick = perf_counter()
             action = policy.act(actor_observation)
             inference_seconds += perf_counter()-tick
@@ -38,6 +41,13 @@ def evaluate_policy(spec, scenarios, config, pd_model, settings, scenario_name, 
                 raise ValueError(f"Invalid action from {spec.name}: {action}")
             actor_pd.append(float(actor_observation[10]))
             observation, reward, term, trunc, info = env.step(action)
+            if transition_observer is not None:
+                components = info["reward_components"]
+                transition_observer(dict(customer_id=scenario.customer_id, month=len(actor_pd)-2,
+                    observation=actor_observation.copy(), action=int(action), reward=float(reward),
+                    economic_value=float(components["interest_income"]+components["fee_income"]
+                        -components["credit_loss"]-components["funding_cost"]),
+                    next_observation=observation.copy(), terminated=bool(term), truncated=bool(trunc)))
             if not np.isfinite(reward) or not np.isfinite(observation).all():
                 raise ValueError("Nonfinite environment result")
             if term or trunc:

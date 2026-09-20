@@ -1,0 +1,13 @@
+seed: 98117
+bootstrap_seed: 98119
+bootstrap_repetitions: 400
+discount: 1.0
+behavior_weights: {PDThreshold: 0.4, Static: 0.2, MyopicEconomic: 0.2, uniform: 0.2}
+soft_target_behavior_weight: 0.8
+support_threshold: 0.1
+minimum_reliable_ess: 30
+weight_clip: 20.0
+profiles:
+  smoke: {replicates: 2, logged_customers: 20, mc_customers: 40, ppo_seeds: [101]}
+  standard: {replicates: 5, logged_customers: 600, mc_customers: 2000, ppo_seeds: [101, 202, 303, 404, 505]}
+  full: {replicates: 10, logged_customers: 2000, mc_customers: 6000, ppo_seeds: [101, 202, 303, 404, 505]}

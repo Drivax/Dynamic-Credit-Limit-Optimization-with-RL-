@@ -1,0 +1,53 @@
+target:
+  horizon_months: 12
+seeds:
+  dataset: 410
+  dgp: 411
+  macro: 412
+  policy: 413
+  model: 414
+  bootstrap: 415
+split:
+  # Disjoint entrants, in successive non-overlapping 25-month calendar blocks.
+  train: 2500
+  validation: 800
+  calibration: 800
+  test: 1000
+  oot: 1000
+behavior_policy:
+  action_probabilities: [0.1, 0.2, 0.4, 0.2, 0.1]
+features:
+  - credit_limit
+  - balance
+  - utilization
+  - income
+  - payment_ratio
+  - months_delinquent
+  - behavioral_score
+  - tenure_months
+  - monthly_spend
+  - late_payments_6m
+  - income_log_change
+  - macro_income_growth
+  - macro_spending_growth
+  - macro_credit_stress
+  - history_months
+  - debt_to_income
+  - utilization_lag1
+  - utilization_mean3
+  - utilization_max6
+  - payment_mean3
+  - payment_min6
+  - income_volatility6
+  - balance_change1
+  - income_change3
+  - limit_change6
+models:
+  logistic_C: 1.0
+  boosting_iterations: 150
+  boosting_leaves: 15
+calibration:
+  method: sigmoid_log_odds
+evaluation:
+  bootstrap_repetitions: 200
+  selected_model: logistic_calibrated

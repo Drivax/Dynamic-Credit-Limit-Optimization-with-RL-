@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "process_start_method": "spawn",
+  "worlds": 2,
+  "customers": 8,
+  "comparison": "Exact per-episode equality with sequential smoke run"
+}

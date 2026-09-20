@@ -145,6 +145,14 @@ every policy and macro intervention. No Random-policy or oracle hypothetical dra
 can shift the evaluation world's random numbers. Named baseline/mild/severe/recovery
 paths are exactly the existing macro-engine scenarios.
 
+At a 24-month horizon, baseline stays normal. Mild stress is normal for decisions
+0–5, stress with severity 0.65 for 6–11, then normal. Severe stress is normal for
+0–3, stress with severity 1.6 for 4–19, then normal. Recovery starts in stress at
+severity 1.3 for 0–5, weakens to 0.6 for 6–11, becomes normal for 12–17 and expansion
+for 18–23. Recovery therefore does not simply append improvement to the severe
+scenario: early exposure and default timing differ, so cumulative losses need not
+be ordered by the scenario names.
+
 Training uses fixed per-customer Markov paths; validation uses baseline. The
 supplementary `oot_markov` sample is a fresh independent synthetic cohort/path draw,
 **not an empirical calendar out-of-time test**. The main robustness evidence is
@@ -253,6 +261,11 @@ before examining outcomes. Static, Myopic and every PPO seed share the shocks. L
 balances, utilization, PD, delinquency, reward and cumulative value are plotted. A
 positive difference alone is not evidence that PPO learned continuation value: the
 same effect must not be reproducible by a constant action rule.
+
+`constant_rule_equivalence.csv` explicitly joins customer/month trajectories against
+AlwaysDecrease20 and records unmatched rows and maximum differences in effective
+actions, balance, limit, reward and PD. Requested actions can differ at the minimum
+limit even when the effective transition is the same.
 
 ## Reproduction and limitations
 
