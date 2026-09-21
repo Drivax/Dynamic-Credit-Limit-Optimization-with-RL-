@@ -1,0 +1,22 @@
+{
+  "episodes": 100928,
+  "transitions": 1219102,
+  "jobs": 83,
+  "physical_worlds": 59,
+  "randomized_worlds": 32,
+  "customers": 64,
+  "policy_instances": 19,
+  "complete_panel": true,
+  "reward_accounting": true,
+  "zero_severe_delinquent_increases": true,
+  "constant_PPO_equivalence": true,
+  "frozen_sources_and_artifacts_unchanged": true,
+  "parallel_verification": "../parallel_verification.json",
+  "test_suite": {
+    "passed": 118,
+    "failed": 0,
+    "seconds": 13.31
+  },
+  "documentation_links_verified": true,
+  "figures_visually_inspected": true
+}

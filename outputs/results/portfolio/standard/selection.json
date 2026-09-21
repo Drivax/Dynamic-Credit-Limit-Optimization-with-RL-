@@ -1,0 +1,6 @@
+{
+  "experiment_id": "b16c68f5f312cd6a7c5971d65de77a94efaef9c958310c17294999fa79af6150",
+  "penalty": 0.5,
+  "safety_factor": 1.0,
+  "criterion": "minimum mean validation violation, then maximum economic value"
+}

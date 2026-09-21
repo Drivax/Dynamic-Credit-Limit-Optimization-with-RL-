@@ -62,3 +62,26 @@ python -m experiments.train_ppo --timesteps 256 --output outputs/pd_ppo_check
 The default PD artifact is `outputs/models/pd/logistic_calibrated.joblib`; override with `--pd-model`. This command loads the longitudinal risk model and checks Gymnasium/SB3 compatibility, including saving/reloading PPO. It is a short integration check, not a policy performance claim. Risk thresholds and reward coefficients need economic validation for the supplied PD horizon.
 
 `trajectory_sanity.py` remains an independent snapshot-adapter diagnostic; its snapshot targets and probabilities are not the longitudinal PD experiment. `legacy/` is isolated from the active package and is not part of reproduction.
+
+
+## Risk-constrained portfolios
+
+The portfolio study requires the frozen calibrated PD model, and trains its own 34-feature portfolio PPO agents. It does not require the independent-customer PPO checkpoints.
+
+```shell
+python -m experiments.portfolio_constraints --profile smoke --stage train
+python -m experiments.portfolio_constraints --profile smoke --stage evaluate
+python -m experiments.portfolio_constraints --profile smoke --stage ope
+python -m experiments.portfolio_constraints --profile smoke --stage report
+python -m experiments.portfolio_constraints --profile standard --stage train
+python -m experiments.portfolio_constraints --profile standard --stage evaluate
+python -m experiments.portfolio_constraints --profile standard --stage tail
+python -m experiments.portfolio_constraints --profile standard --stage ope
+python -m experiments.portfolio_constraints --profile standard --stage report
+```
+
+`--stage all` composes these stages. Three PPO formulations use every configured seed: structural guards only, EL penalty, and hard admission. Lambda and the risk-rule buffer are selected on validation only. Main held-out cases cross three risk budgets with normal/stress macro; separate cases cover PD errors, buffers, sizes, ordering and DGP worlds. The tail stage uses independent portfolios, while OPE logs complete coupled portfolios under a common hard constraint kernel.
+
+Configs are `configs/portfolio.yaml` and `configs/constrained_policy.yaml`. Outputs are `outputs/{models,results,figures}/portfolio/<profile>` and `outputs/experiments/portfolio/<profile>`. Raw job completion files support resumable evaluation with frozen identities; model hashes are checked before evaluation. Preserve a completed run before changing its inputs. The full profile is a larger configured budget, not an automatically executed unit test.
+
+[Portfolio equations and information boundary](../docs/portfolio_decisioning.md) explain why a hard admission rule cannot erase an inherited risk shortfall or guarantee next-month realized losses. The monthly predicted constraint, the independent hidden-DGP conditional-loss diagnostic and realized loss are separately recorded.

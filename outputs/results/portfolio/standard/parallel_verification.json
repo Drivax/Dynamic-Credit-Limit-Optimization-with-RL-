@@ -1,0 +1,9 @@
+{
+  "case": "normal_tight",
+  "policy": "Static",
+  "portfolio": 0,
+  "all_metrics_except_runtime": true,
+  "all_monthly_fields": true,
+  "all_action_fields": true,
+  "serial_parallel_match": true
+}

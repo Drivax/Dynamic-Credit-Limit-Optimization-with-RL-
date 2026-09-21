@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-09-21T13:18:35.617126+00:00",
+  "experiment_id": "b16c68f5f312cd6a7c5971d65de77a94efaef9c958310c17294999fa79af6150",
+  "source_sha256": {
+    "src/credit_rl/portfolio/reporting.py": "713f8443d1405be0bd0425f392874dd7b944eeabe689fd9ea8d624e98bf1c87b",
+    "experiments/portfolio_diagnostics.py": "fbdd60eba31fe942f6b92879f7df54d982b03f8926c8bd37967e1c95a3f46c78",
+    "experiments/verify_portfolio.py": "cab7a4c0c37958b8bcd42aadc3f20fbafa80e0322fcb2d20682301bc2926fa71"
+  }
+}

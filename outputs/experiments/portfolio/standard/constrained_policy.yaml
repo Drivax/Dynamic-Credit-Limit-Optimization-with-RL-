@@ -1,0 +1,19 @@
+seed: 840001
+bootstrap_seed: 840002
+bootstrap_repetitions: 500
+budgets: {tight: 90.0, medium: 150.0, loose: 240.0}
+penalties: [0.5, 2.0, 10.0]
+safety_factors: [1.0, 1.1, 1.25]
+ppo:
+  learning_rate: 0.0003
+  n_steps: 512
+  batch_size: 128
+  n_epochs: 5
+  gamma: 1.0
+  gae_lambda: 0.95
+  ent_coef: 0.01
+  network: [64, 64]
+profiles:
+  smoke: {size: 4, train_steps: 1024, pilot_steps: 512, seeds: [101], validation: 2, test: 2, worlds: 1, tail: 0}
+  standard: {size: 12, train_steps: 24576, pilot_steps: 8192, seeds: [101, 202, 303], validation: 8, test: 24, worlds: 3, tail: 200}
+  full: {size: 32, train_steps: 131072, pilot_steps: 32768, seeds: [101, 202, 303, 404, 505], validation: 30, test: 100, worlds: 12, tail: 1000}

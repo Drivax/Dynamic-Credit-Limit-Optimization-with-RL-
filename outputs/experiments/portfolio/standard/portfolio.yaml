@@ -1,0 +1,17 @@
+# Experimental one-month risk capacity, EUR per initial customer.
+size: 12
+ccf: 0.5
+lgd: 0.55
+pd_horizon: 12
+el_budget_per_customer: 150.0
+ead_budget_per_customer: 8000.0
+high_risk_pd: 0.6
+high_risk_share: 0.8
+stress_budget_multiplier: 0.75
+dynamic_budget: true
+safety_factor: 1.0
+mode: hard
+penalty: 0.0
+order: random
+diagnostic_draws: 16
+

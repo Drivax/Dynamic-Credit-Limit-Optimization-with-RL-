@@ -1,0 +1,4953 @@
+[
+  {
+    "name": "normal_tight",
+    "macro": {},
+    "sensor": {},
+    "count": 24,
+    "kind": "main",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 90.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "stress_tight",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 24,
+    "kind": "main",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 90.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "normal_medium",
+    "macro": {},
+    "sensor": {},
+    "count": 24,
+    "kind": "main",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "stress_medium",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 24,
+    "kind": "main",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "normal_loose",
+    "macro": {},
+    "sensor": {},
+    "count": 24,
+    "kind": "main",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 240.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "stress_loose",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 24,
+    "kind": "main",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 240.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "pd_under",
+    "macro": {},
+    "sensor": {
+      "intercept": -0.7
+    },
+    "count": 8,
+    "kind": "sensor",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "pd_over",
+    "macro": {},
+    "sensor": {
+      "intercept": 0.7
+    },
+    "count": 8,
+    "kind": "sensor",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "pd_slope",
+    "macro": {},
+    "sensor": {
+      "slope": 0.65
+    },
+    "count": 8,
+    "kind": "sensor",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "pd_noise",
+    "macro": {},
+    "sensor": {
+      "noise": 0.8
+    },
+    "count": 8,
+    "kind": "sensor",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "buffer_1.0",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 8,
+    "kind": "buffer",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "buffer_1.1",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 8,
+    "kind": "buffer",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.1,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "buffer_1.25",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 8,
+    "kind": "buffer",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.25,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "constant_budget_stress",
+    "macro": {
+      "onset": 8,
+      "duration": 10,
+      "recovery": 4,
+      "intensity": 1.5
+    },
+    "sensor": {},
+    "count": 24,
+    "kind": "budget_rule",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": false,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "size_8",
+    "macro": {},
+    "sensor": {},
+    "count": 24,
+    "kind": "size",
+    "config": {
+      "size": 8,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "size_24",
+    "macro": {},
+    "sensor": {},
+    "count": 24,
+    "kind": "size",
+    "config": {
+      "size": 24,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "order_fixed",
+    "macro": {},
+    "sensor": {},
+    "count": 8,
+    "kind": "order",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "fixed",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "order_reverse",
+    "macro": {},
+    "sensor": {},
+    "count": 8,
+    "kind": "order",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "reverse",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "portfolio_world_0",
+    "macro": {
+      "onset": 8,
+      "duration": 7,
+      "recovery": 5,
+      "intensity": 1.4926162862389987
+    },
+    "sensor": {},
+    "count": 8,
+    "kind": "world",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.020404801594138423,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.24960952143819454,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.3348043948908325,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.4175993936568487,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.36051079648674367,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.118980354302084,
+        "utilization": 0.8962562945801124,
+        "debt_to_income": 0.4052318913618752,
+        "months_delinquent": 0.7355905944231766,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 1.1188645475759662,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "portfolio_world_1",
+    "macro": {
+      "onset": 7,
+      "duration": 6,
+      "recovery": 6,
+      "intensity": 1.233354657351059
+    },
+    "sensor": {},
+    "count": 8,
+    "kind": "world",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.038573919490209906,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.1200865335544782,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.45925035001452813,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.4956882663047931,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.5038207629018084,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -5.7880933060390305,
+        "utilization": 1.5329235231225862,
+        "debt_to_income": 0.5683176345844705,
+        "months_delinquent": 0.6036749969156897,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 1.0467553094101119,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "portfolio_world_2",
+    "macro": {
+      "onset": 9,
+      "duration": 5,
+      "recovery": 3,
+      "intensity": 1.7337806113749759
+    },
+    "sensor": {},
+    "count": 8,
+    "kind": "world",
+    "config": {
+      "size": 12,
+      "ccf": 0.5,
+      "lgd": 0.55,
+      "pd_horizon": 12,
+      "el_budget_per_customer": 150.0,
+      "ead_budget_per_customer": 8000.0,
+      "high_risk_pd": 0.6,
+      "high_risk_share": 0.8,
+      "stress_budget_multiplier": 0.75,
+      "dynamic_budget": true,
+      "safety_factor": 1.0,
+      "mode": "hard",
+      "penalty": 0.0,
+      "order": "random",
+      "diagnostic_draws": 16
+    },
+    "world": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.024215196610966057,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.2171204534423129,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.4151619583494131,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5603546639145647,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.4368582019219006,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.329221117042231,
+        "utilization": 1.5160311178239412,
+        "debt_to_income": 0.6207446137626842,
+        "months_delinquent": 0.5619280375954828,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 1.141291003304507,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  }
+]

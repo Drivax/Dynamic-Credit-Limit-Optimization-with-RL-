@@ -1,0 +1,7 @@
+{
+  "seconds": 59.2283384000184,
+  "portfolios": 100,
+  "decisions": 17069,
+  "evaluation_unit": "whole coupled portfolio",
+  "same_hard_transition_kernel": true
+}

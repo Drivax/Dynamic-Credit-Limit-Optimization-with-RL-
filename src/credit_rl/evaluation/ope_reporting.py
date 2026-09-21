@@ -47,7 +47,7 @@ def report(output,settings):
     edges=np.linspace(np.log10(positive_all.min())-.1,np.log10(positive_all.max())+.1,40)
     for name in ('Behavior','SoftPDThreshold','Static','PDThreshold','PPO'):
         w=weights[weights.policy==name].weight.to_numpy(); positive=w[w>0]
-        if len(positive): ax.hist(np.log10(positive),bins=edges,histtype='step',density=True,label=f'{name}: {(w==0).mean():.0%} zero')
+        if len(positive): ax.hist(np.log10(positive),bins=edges,histtype='step',density=True,label=f'{name}: {(w==0).mean():.1%} zero')
     ax.set(xlabel='log10 trajectory importance weight (positive weights only)',ylabel='Density conditional on positive weights')
     ax.legend(fontsize=7); savefig(fig,figures/'importance_weights.png')
     fig,ax=plt.subplots(figsize=(10,4.5),layout='constrained')

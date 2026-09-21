@@ -1,0 +1,22 @@
+{
+  "logged_episodes": 3000,
+  "logged_decisions": 44183,
+  "replicates": 5,
+  "mc_customers_per_target": 2000,
+  "target_instances": 17,
+  "estimates": 340,
+  "positive_normalized_propensities": true,
+  "recorded_action_propensity_matches": true,
+  "whole_terminated_episodes": true,
+  "next_state_continuity": true,
+  "disjoint_log_MC_robustness_ids": true,
+  "behavior_equals_target_weights_one": true,
+  "frozen_sources_and_artifacts_unchanged": true,
+  "test_suite": {
+    "passed": 118,
+    "failed": 0,
+    "seconds": 13.31
+  },
+  "documentation_links_verified": true,
+  "figures_visually_inspected": true
+}

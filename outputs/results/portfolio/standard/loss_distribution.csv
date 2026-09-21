@@ -1,0 +1,5 @@
+policy,portfolios,mean,median,std,p90,p95,p99,tail_note
+Myopic,200,19711.525035033505,19216.715398140786,5228.043274780278,26333.90334063633,,,Quantile reporting requires at least 20 expected tail observations
+PPO_hard,200,13489.344965281076,13342.545523248296,4188.176166854276,18789.51830670141,,,Quantile reporting requires at least 20 expected tail observations
+RiskBased,200,16370.103905431688,16206.203701521697,4704.297112323899,22340.019607233397,,,Quantile reporting requires at least 20 expected tail observations
+Static,200,24858.091050868425,24322.347216557606,6785.364011138987,33687.900366014044,,,Quantile reporting requires at least 20 expected tail observations

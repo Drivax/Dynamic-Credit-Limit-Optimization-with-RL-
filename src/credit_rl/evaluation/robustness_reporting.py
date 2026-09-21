@@ -219,5 +219,5 @@ def figures_summary(worlds,distributions,violations,oat,wins,output,figures):
     fig.colorbar(mesh,ax=ax); savefig(fig,figures/'rank_stability.png')
     smooth=pd.read_csv(output/'local_smoothness.csv').groupby(['policy','feature']).action_changed.mean().unstack()
     fig,ax=plt.subplots(figsize=(10,4),layout='constrained'); smooth.plot.bar(ax=ax)
-    ax.set(ylabel='Fraction of small local perturbations changing action'); ax.tick_params(axis='x',rotation=30)
+    ax.set(ylabel='Fraction changing action'); ax.tick_params(axis='x',rotation=30)
     savefig(fig,figures/'local_smoothness.png')

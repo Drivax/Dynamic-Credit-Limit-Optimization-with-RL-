@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-09-21T13:18:37.963685+00:00",
+  "local_links_checked": 46,
+  "broken_links": 0,
+  "readme_current_state_only": true,
+  "report_sections": "A-W",
+  "figures": [
+    "budget_action_heatmap.png",
+    "budget_dynamics.png",
+    "budget_frontier.png",
+    "loss_distribution.png",
+    "model_risk.png",
+    "portfolio_0.png",
+    "portfolio_1.png",
+    "portfolio_2.png",
+    "risk_value.png",
+    "safety_buffer.png"
+  ],
+  "figure_visual_review": true,
+  "manually_reviewed_portfolios": [
+    0,
+    1,
+    2
+  ],
+  "source_sha256": {
+    "README.md": "f3dcc1a76c0aa39ee0cd318c95f93ade0226695a13e480f4caea22b48f7f6abb",
+    "docs\\portfolio_results.md": "58fdbc72703756cacf737e524f72d8d58cc2c26582033b6008f6c5f3691d5744",
+    "docs\\portfolio_decisioning.md": "8543669d19df186ecc9ef0f66bb8a8cd6e002bfc8d23888b6127e048484fd435",
+    "docs\\portfolio_audit.md": "20c6ef490f28d4ae6312cecdd4c917c8493ba5e70d0e8fd47d57b69af20ff61a",
+    "experiments\\README.md": "2b70a1ff275d1d13b07c4b7a081392297c867087b02caeed5df346a780e852b7",
+    "docs\\off_policy_evaluation.md": "5941d102624ad20fc8d548adae89065c062b7ec68f019571171c35e5708d4e25"
+  },
+  "readme_nine_result_rows_match_csv": true,
+  "measured_data_sha256": {
+    "outputs\\results\\portfolio\\standard\\summary.csv": "278f35ebaf423426bec08935b0915723275688762a5384658069e4c34dea3059",
+    "outputs\\results\\portfolio\\standard\\paired_comparisons.csv": "3b77cb1a3c6eb9415a23416769ccfe7234c84aaf9487d5661da5693dc669486c",
+    "outputs\\results\\portfolio\\standard\\verification.json": "ff7f05d030ac9cfba14f5af3abb7109c65840bc581a60c6c5482c47e2cb6d22a"
+  },
+  "figure_sha256": {
+    "budget_action_heatmap.png": "53cb5c6e778c2be0fc9d44cbafbc69acf2981588e5b02d25f1c7a6212475892c",
+    "budget_dynamics.png": "345b87626bd528b83b51713fc3da11ad8b537ffa95a8118022b3d0cc998ee16a",
+    "budget_frontier.png": "272fc696c17e37dc1101212f4c1689524e5874a815d168827f7e74c6552b1533",
+    "loss_distribution.png": "20800e912af5c0b5b392e9e120dc7c836f67cb8b8a3c7722af1bd39532d76372",
+    "model_risk.png": "135624b1bc8bd61af079af7789b2e388d15de30f412b77da1e780fb3a696cda2",
+    "portfolio_0.png": "82ea8a2075bf72e04cb2842edbc895c60dec3a3dcbef9136ef518cd8c3b582c4",
+    "portfolio_1.png": "45ad452462ad42d8e9e4567987814c35a2e845ec91ca4fed5b847b0d27efe8b5",
+    "portfolio_2.png": "296e1567cb6889452d2a4099d773bddc1a2d875987e6840f23305eab94d8678c",
+    "risk_value.png": "a7540fe142f143140dd0aa535b6e69951fca889297dd1d8f9a2ada170d1641f8",
+    "safety_buffer.png": "0aa162f1f5f648d8afd70bd01fa9ef4da6e09206926450cb724419ed4072f894"
+  }
+}

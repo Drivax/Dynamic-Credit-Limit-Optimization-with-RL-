@@ -1,0 +1,11 @@
+# Portfolio decisioning audit
+
+The customer environment represents one customer until default or month 24. A snapshot dataframe is only an initialization source; it is not a synchronized portfolio. The hidden DGP is RNG-free, accepts indexed exogenous shocks, and computes default hazard after behavior using current macro. The observable 21-vector excludes latent traits and true hazards. PD is a frozen 12-month history forecast.
+
+Monthly accounting recognizes opening-balance interest only without default, purchase fees, closing-balance funding and LGD times closing balance on first default. LGD is already 0.55. The existing reward additionally subtracts synthetic PD-dependent capital and a risk penalty. Existing robustness constraints are ex-post rates, not a coupled allocation resource. Existing OPE uses entire independent customer trajectories and cannot treat decisions within a coupled portfolio as independent episodes.
+
+The portfolio layer reuses CreditLimitEnv and indexed shock streams without modifying the DGP. It stages all allocations before a synchronized monthly transition. Predicted monthly loss uses an explicit flat-hazard conversion of the 12-month PD, a constant LGD matching realized-loss accounting, and balance plus CCF times undrawn credit. Capital proxies are not duplicated: portfolio economic objective is revenue minus realized loss and funding, with a separately recorded optional portfolio penalty.
+
+Important constraints on interpretation: existing balances and worsening forecasts can breach capacity independently of new actions; admission must expose these shortfalls. A budget stock is recomputed, not cumulatively spent like cash. Defaults remove customers from the live book but their realized loss remains in cumulative metrics. The true-risk diagnostic must integrate next-month hidden behavior with independent hypothetical shocks, rather than relabel a closing monthly hazard as a 12-month PD. No hidden risk is passed into deployable policies or their admission layer.
+
+The inspected customer benchmark has PPO equivalent in outcomes to a fixed 20% contraction, and deterministic OPE has low ESS. These findings motivate explicit baseline and support checks; they do not justify changing the DGP to favor a learner.

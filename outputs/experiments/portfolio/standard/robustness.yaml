@@ -1,0 +1,37 @@
+# Locked before evaluation. Ranges are synthetic assumptions, not estimated priors.
+seed: 94107
+world_seed: 52001
+sensor_seed: 62001
+bootstrap_seed: 72001
+bootstrap_repetitions: 400
+profiles:
+  smoke: {worlds: 2, customers: 8, workers: 1, ppo_seeds: [101], sensitivity: false}
+  standard: {worlds: 32, customers: 64, workers: 3, ppo_seeds: [101, 202, 303, 404, 505], sensitivity: true}
+  full: {worlds: 64, customers: 200, workers: 3, ppo_seeds: [101, 202, 303, 404, 505], sensitivity: true}
+parameters:
+  dynamics.spend_limit_elasticity: [0.05, 0.30]
+  dynamics.income_sigma: [0.018, 0.040]
+  dynamics.payment_persistence: [0.25, 0.75]
+  dynamics.missed_delinquency: [0.35, 0.90]
+  dynamics.payment_income_cap: [0.40, 0.60]
+  default.intercept: [-6.35, -5.65]
+  default.utilization: [0.85, 1.65]
+  default.months_delinquent: [0.45, 0.85]
+  default.debt_to_income: [0.30, 0.65]
+  default.stress: [0.60, 1.30]
+macro_ranges:
+  onset: [4, 12]
+  duration: [3, 10]
+  recovery: [2, 6]
+  intensity: [0.5, 1.8]
+signals:
+  identity: {}
+  pd_under: {intercept: -0.7}
+  pd_over: {intercept: 0.7}
+  pd_flat: {slope: 0.65}
+  pd_steep: {slope: 1.35}
+  pd_noise_low: {noise: 0.3}
+  pd_noise_high: {noise: 0.8}
+  pd_lag: {lag: 1}
+  reporting_error: {measurement_sigma: 0.05}
+dominance: {value_margin_eur: 1.0, default_margin: 0.005}

@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 dependencies = ["numpy>=1.26", "pandas>=2.2", "gymnasium>=0.29,<2", "PyYAML>=6"]
 
 [project.optional-dependencies]
-experiments = ["matplotlib>=3.9", "scikit-learn>=1.5", "joblib>=1.4"]
+experiments = ["matplotlib>=3.9", "scikit-learn>=1.5", "joblib>=1.4", "scipy>=1.11"]
 rl = ["stable-baselines3>=2.4"]
 dev = ["pytest>=8"]
 

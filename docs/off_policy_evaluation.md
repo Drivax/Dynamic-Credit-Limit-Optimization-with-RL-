@@ -123,3 +123,14 @@ Synthetic known propensities, no hidden behavior confounding, a fixed reward mod
 few logged replicates and finite MC precision strongly limit generalization to real
 logged credit decisions. Low ESS is a substantive negative result, not a reason to
 hide an estimator or retune the behavior policy after evaluation.
+
+
+## Coupled portfolio logs
+
+`experiments.portfolio_constraints --stage ope` records a separate portfolio dataset. Its sampling unit is one entire closed portfolio: multiplying ratios within an individual customer episode would be invalid because allocations share budget capacity. The known behavior is 60% RiskBased, 20% Static and 20% uniform requested commands. All targets use the same hard admission transition kernel; soft/unconstrained variants are excluded from this likelihood-ratio calculation.
+
+Each record includes the public 34-dimensional portfolio/customer observation, next observation, requested and effective commands, all five propensities, remaining EL capacity, current shortfall, budget and constraint reason. Intermediate decisions have zero economic flow; the synchronized month-end flow is expressed per initial customer. No simulator-only diagnostic is used by OPE.
+
+Full-portfolio IS/WIS and trajectory ESS are saved in the portfolio results. The much longer sequence can make all deterministic-target weights zero even with positive per-command support. WIS must then remain undefined and IS zero must not be interpreted as zero policy value. This extension is a support diagnostic, not a claim to solve constrained OPE. The independent-customer OPE and its independent MC benchmark remain separate and operational.
+
+Ratios are defined on requested commands. Different commands that the admission layer projects to the same effective action are not merged; this remains a valid but potentially higher-variance likelihood representation. The portfolio support study does not replace the replicated independent-customer OPE/MC benchmark.
