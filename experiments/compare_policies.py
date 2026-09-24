@@ -3,8 +3,8 @@ import argparse
 from dataclasses import asdict, replace
 import hashlib
 import json
+import inspect
 from pathlib import Path
-from time import perf_counter
 
 import numpy as np
 import pandas as pd
@@ -29,6 +29,7 @@ def json_write(path, data):
 
 def run_id(config, settings):
     return hashlib.sha256(json.dumps(dict(simulation=asdict(config), settings=settings,
+        training_sha256=hashlib.sha256(Path(inspect.getfile(train_agent)).read_bytes()).hexdigest(),
         pd_sha256=hashlib.sha256(Path(settings["pd_model"]).read_bytes()).hexdigest()), sort_keys=True).encode()).hexdigest()
 
 

@@ -19,7 +19,7 @@ from credit_rl.envs.observation import OBSERVATION_NAMES
 from credit_rl.evaluation.dgp_diagnostics import hazard_summary, paired_difference, population_summary
 from credit_rl.simulation.customer import initialize_customer
 from credit_rl.simulation.dgp import CreditDGP
-from credit_rl.simulation.macro import MacroPath, MacroProcess
+from credit_rl.simulation.macro import MacroProcess
 from credit_rl.simulation.shocks import ShockPath
 from credit_rl.simulation.synthetic_snapshot import generate_synthetic_portfolio
 from .common import write_manifest

@@ -5,7 +5,6 @@ from pathlib import Path
 from time import perf_counter
 
 import numpy as np
-import pandas as pd
 from threadpoolctl import threadpool_limits
 
 from credit_rl import CreditLimitEnv

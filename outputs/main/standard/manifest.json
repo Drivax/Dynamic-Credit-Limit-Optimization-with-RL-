@@ -1,0 +1,725 @@
+{
+  "timestamp": "2026-09-24T08:59:47.487531+00:00",
+  "git_commit": "cab92ced1dd780ea66f2e3a7acad1a43c19f2809",
+  "dgp_version": "2.0",
+  "environment_version": "longitudinal-v2",
+  "python": "3.12.14",
+  "packages": {
+    "credit-rl": "0.2.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "gymnasium": "1.3.0",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "stable-baselines3": "2.9.0",
+    "torch": "2.14.0"
+  },
+  "simulation": {
+    "environment": {
+      "horizon": 24,
+      "action_multipliers": [
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2
+      ],
+      "min_limit": 500.0,
+      "max_limit": 15000.0,
+      "max_monthly_increase": 0.2,
+      "max_monthly_decrease": 0.2
+    },
+    "dynamics": {
+      "latent_credit_noise": 0.6,
+      "score_reference": 650.0,
+      "score_scale": 100.0,
+      "spending_log_sigma": 0.25,
+      "payment_logit_mean": -0.4,
+      "payment_logit_sigma": 0.5,
+      "initial_payment_ratio": 0.4,
+      "latent_factor_loadings": [
+        0.7,
+        -0.25,
+        0.65,
+        0.65
+      ],
+      "stability_logit_mean": 0.8,
+      "stability_logit_sigma": 0.6,
+      "income_reversion": 0.08,
+      "income_sigma": 0.025,
+      "income_unstable_volatility": 2.0,
+      "income_stress_volatility": 0.5,
+      "income_macro_vulnerability": 1.0,
+      "income_adverse_probability": 0.01,
+      "income_stress_adverse_probability": 0.06,
+      "income_adverse_log_drop": 0.15,
+      "income_max_log_drop": 0.35,
+      "income_max_log_gain": 0.2,
+      "income_min": 300.0,
+      "income_max": 30000.0,
+      "spend_income_fraction": 0.35,
+      "spend_persistence": 0.35,
+      "spend_limit_elasticity": 0.15,
+      "spend_elasticity_loading": 1.0,
+      "spend_max_elasticity": 0.6,
+      "spend_shock_sigma": 0.25,
+      "shock_clip": 6.0,
+      "payment_persistence": 0.5,
+      "payment_credit": 0.35,
+      "payment_utilization": 0.65,
+      "payment_burden": 0.3,
+      "payment_delinquency": 0.65,
+      "payment_stress": 0.6,
+      "payment_shock_sigma": 0.4,
+      "payment_income_cap": 0.5,
+      "minimum_payment_ratio": 0.05,
+      "missed_intercept": -3.0,
+      "missed_utilization": 0.8,
+      "missed_burden": 0.3,
+      "missed_delinquency": 0.6,
+      "missed_credit": 0.7,
+      "missed_stress": 0.7,
+      "missed_payment_fraction": 0.02,
+      "score_reversion": 0.1,
+      "score_delinquency_drop": 18.0,
+      "score_payment_gain": 4.0,
+      "score_noise": 3.0,
+      "score_min": 300.0,
+      "score_max": 950.0
+    },
+    "default": {
+      "intercept": -6.0,
+      "utilization": 1.2,
+      "debt_to_income": 0.45,
+      "months_delinquent": 0.65,
+      "low_payment": 0.6,
+      "creditworthiness": 0.8,
+      "stress": 0.9,
+      "adverse_income": 1.5
+    },
+    "pd": {
+      "intercept": -5.0,
+      "utilization": 1.0,
+      "debt_to_income": 0.35,
+      "months_delinquent": 0.5,
+      "score": -0.004,
+      "score_reference": 650.0,
+      "stress": 0.5,
+      "normal_unemployment": 0.07,
+      "stress_unemployment": 0.1,
+      "normal_inflation": 0.024,
+      "stress_inflation": 0.04,
+      "normal_policy_rate": 0.022,
+      "stress_policy_rate": 0.04,
+      "spend_burden_weight": 0.35
+    },
+    "reward": {
+      "annual_percentage_rate": 0.18,
+      "fee_rate": 0.012,
+      "loss_given_default": 0.55,
+      "annual_funding_rate": 0.03,
+      "rwa_factor": 0.08,
+      "capital_weight": 1.5,
+      "max_pd_threshold": 0.12,
+      "constraint_weight": 25.0
+    },
+    "macro": {
+      "transition_matrix": [
+        [
+          0.88,
+          0.11,
+          0.01
+        ],
+        [
+          0.035,
+          0.93,
+          0.035
+        ],
+        [
+          0.01,
+          0.14,
+          0.85
+        ]
+      ],
+      "income_growth": [
+        0.003,
+        0.001,
+        -0.01
+      ],
+      "spending_growth": [
+        0.02,
+        0.0,
+        -0.12
+      ],
+      "credit_stress": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scenarios": {
+        "baseline": [
+          [
+            1.0,
+            1,
+            1.0
+          ]
+        ],
+        "mild_stress": [
+          [
+            0.25,
+            1,
+            1.0
+          ],
+          [
+            0.25,
+            2,
+            0.65
+          ],
+          [
+            0.5,
+            1,
+            1.0
+          ]
+        ],
+        "severe_stress": [
+          [
+            0.16666666666666666,
+            1,
+            1.0
+          ],
+          [
+            0.6666666666666666,
+            2,
+            1.6
+          ],
+          [
+            0.16666666666666666,
+            1,
+            1.0
+          ]
+        ],
+        "recovery": [
+          [
+            0.25,
+            2,
+            1.3
+          ],
+          [
+            0.25,
+            2,
+            0.6
+          ],
+          [
+            0.25,
+            1,
+            1.0
+          ],
+          [
+            0.25,
+            0,
+            1.0
+          ]
+        ]
+      }
+    }
+  },
+  "run": {
+    "simulation": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    "policy": {
+      "population": {
+        "seed": 73000,
+        "train": 1500,
+        "validation": 100,
+        "test": 300,
+        "oot": 300
+      },
+      "pd_model": "outputs/models/pd/logistic_calibrated.joblib",
+      "guardrails": {
+        "severe_delinquency_months": 3
+      },
+      "risk_constraints": {
+        "high_pd": 0.6,
+        "max_default_rate": 0.75,
+        "max_credit_loss_rate": 0.7,
+        "max_high_risk_exposure_share": 0.6
+      },
+      "heuristics": {
+        "low_pd": 0.2,
+        "high_pd": 0.6,
+        "utilization_threshold": 0.75,
+        "threshold_candidates": [
+          [
+            0.1,
+            0.5
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.3,
+            0.7
+          ]
+        ]
+      },
+      "ppo": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "total_timesteps": 32768,
+        "pilot_timesteps": 4096,
+        "validation_every": 8192,
+        "gamma": 0.98,
+        "learning_rate": 0.0003,
+        "gae_lambda": 0.95,
+        "clip_range": 0.2,
+        "n_steps": 512,
+        "batch_size": 128,
+        "n_epochs": 5,
+        "ent_coef": 0.01,
+        "vf_coef": 0.5,
+        "max_grad_norm": 0.5,
+        "network": [
+          64,
+          64
+        ],
+        "reward_scale": 0.001,
+        "candidates": [
+          {
+            "learning_rate": 0.0003,
+            "ent_coef": 0.01
+          },
+          {
+            "learning_rate": 0.0001,
+            "ent_coef": 0.02
+          }
+        ]
+      },
+      "evaluation": {
+        "bootstrap_repetitions": 300,
+        "bootstrap_seed": 73100,
+        "macro_scenarios": [
+          "baseline",
+          "severe_stress"
+        ],
+        "sensitivity_pd_multiplier": 0.5,
+        "oracle_draws": 12
+      }
+    },
+    "pd": {
+      "target": {
+        "horizon_months": 12
+      },
+      "seeds": {
+        "dataset": 410,
+        "dgp": 411,
+        "macro": 412,
+        "policy": 413,
+        "model": 414,
+        "bootstrap": 415
+      },
+      "split": {
+        "train": 2500,
+        "validation": 800,
+        "calibration": 800,
+        "test": 1000,
+        "oot": 1000
+      },
+      "behavior_policy": {
+        "action_probabilities": [
+          0.1,
+          0.2,
+          0.4,
+          0.2,
+          0.1
+        ]
+      },
+      "features": [
+        "credit_limit",
+        "balance",
+        "utilization",
+        "income",
+        "payment_ratio",
+        "months_delinquent",
+        "behavioral_score",
+        "tenure_months",
+        "monthly_spend",
+        "late_payments_6m",
+        "income_log_change",
+        "macro_income_growth",
+        "macro_spending_growth",
+        "macro_credit_stress",
+        "history_months",
+        "debt_to_income",
+        "utilization_lag1",
+        "utilization_mean3",
+        "utilization_max6",
+        "payment_mean3",
+        "payment_min6",
+        "income_volatility6",
+        "balance_change1",
+        "income_change3",
+        "limit_change6"
+      ],
+      "models": {
+        "logistic_C": 1.0,
+        "boosting_iterations": 150,
+        "boosting_leaves": 15
+      },
+      "calibration": {
+        "method": "sigmoid_log_odds"
+      },
+      "evaluation": {
+        "bootstrap_repetitions": 300,
+        "selected_model": "logistic_calibrated"
+      }
+    }
+  },
+  "source_sha256": {
+    "src\\credit_rl\\__init__.py": "bf944f86089d1305cef06e70140f59b63512bf737c4c218805b2fc2355209a0b",
+    "src\\credit_rl\\config.py": "461685b9692060761f6b32542d9b878485b557d1c3df63578b1d901412e76af9",
+    "src\\credit_rl\\envs\\__init__.py": "45efa67ee4b9c7f588b5e5ddc163483f9305a36e3634f23729f71805cb528f7f",
+    "src\\credit_rl\\envs\\constraints.py": "426a7bb605d959281f054d24ab0aa3ea1d3718023b4a4617ee51a6dd582bb2c9",
+    "src\\credit_rl\\envs\\credit_limit_env.py": "a0709b403e888d9e43aca57458824860a47df025b6a5e2af982b0cb64fb73e9b",
+    "src\\credit_rl\\envs\\observation.py": "86880ed96442bc209e1441f00d58183f1f265e5debbc1412561e7ffbe1791630",
+    "src\\credit_rl\\evaluation\\__init__.py": "7205264e4f88b21c78be7025dcfed1128dd3cc81fc2c03d80d4c7906f67af680",
+    "src\\credit_rl\\evaluation\\dgp_diagnostics.py": "65caa1f8a94c740cfa6b209382269c0e0bbdc6a0f318cc4c966956fe5b397df3",
+    "src\\credit_rl\\evaluation\\metrics.py": "c60154de4f81cf8d80dee3b046dfe9f4e300b61bfa2d85210dd14f01eb15236f",
+    "src\\credit_rl\\evaluation\\ope.py": "c3857f9386d92fcfc21cda54814c39dc8cbc8b07d42dd83a03c7d950b5834a7a",
+    "src\\credit_rl\\evaluation\\ope_reporting.py": "9814bdf70a49a3caca05360a83d63582c4f8e197a7d4064289efa029f063b2b8",
+    "src\\credit_rl\\evaluation\\policy_engine.py": "cf33d9c6812d0e26b0b8a52f628bb5ab1a96f83cb38e49408ab2f662d0054e4a",
+    "src\\credit_rl\\evaluation\\policy_reporting.py": "02b3f6716eb0494385adb480427b8277d8f76bd1be3433b33c0b60d424afdd25",
+    "src\\credit_rl\\evaluation\\policy_statistics.py": "35494e3cbb242faf92f3316cfe33cd07046df4311fbf64f5422cd7e62a1323dd",
+    "src\\credit_rl\\evaluation\\robustness_reporting.py": "8d2430490f8d815ba22d7219c018c98561abbeb07e9aade9db9ce157cc869695",
+    "src\\credit_rl\\evaluation\\robustness_statistics.py": "a519a550327e7e60261ca5d04bb75646c343d6dfbdbd671ce1d7f24a528df7bb",
+    "src\\credit_rl\\evaluation\\scenarios.py": "ee95187eacda4ed0a45cad26c0388d6b5eba767d4e1ec15ee88bdcec996ab81a",
+    "src\\credit_rl\\evaluation\\sensors.py": "16675a89742c968f85059f8bdffe84b8eec1ce5e056adddfa6b63e67b0949fa2",
+    "src\\credit_rl\\evaluation\\worlds.py": "80e115ac3348015f10857dabb302be106ee542c684faf8b47f5c4c1ccd6c44a9",
+    "src\\credit_rl\\experiments\\__init__.py": "f592ecf6d41b48ab738368d1dc67a49afe2359b61a124e4fee4549d90b5289e6",
+    "src\\credit_rl\\experiments\\common.py": "b1c4fdf37a4ce7fdb68e62d03205ca7ee226877adccd5bf481e02731d20c843d",
+    "src\\credit_rl\\experiments\\main_evaluation.py": "37df4ef2fc1d921b0644276c5232f4928697ee71ef48f7f1dde73deb91f5f1a5",
+    "src\\credit_rl\\experiments\\pd_training.py": "78d2e20a8aa00313bfcf0755e07426ecbe75846cd5ebbe2ec8dfcf51f09e9d3e",
+    "src\\credit_rl\\experiments\\report_assets.py": "019252bca69647da301079086ba835fba6cfde52340af351ab872d5a8177a77b",
+    "src\\credit_rl\\policies\\__init__.py": "72e1f2a76f6d8ae2057093db7b525e3333fe283d42038f83d4225d5550a4d3fc",
+    "src\\credit_rl\\policies\\baselines.py": "dec258b901190a5a132f219385e91d71a43e59e1afa68bfba72b962945b465f7",
+    "src\\credit_rl\\policies\\decision.py": "1f1b4776fe3395bf70ebd9fe83ec57223c093155a89fdc89426e676136db7ee3",
+    "src\\credit_rl\\policies\\oracle.py": "b5df23872d99e5ce0c141f0d7e27ef29d9ea3e9bda60066dd09f4e524558c44a",
+    "src\\credit_rl\\policies\\registry.py": "5aa58ad13c6aaca1b3b81550c6757ca5131c4b57d358a7fcf55f04ff51499fd6",
+    "src\\credit_rl\\policies\\training.py": "ff17c461c49bc66fd85f05906865bb2ffb2d1a6de3e038b837b4f77889a76c1c",
+    "src\\credit_rl\\portfolio\\__init__.py": "02f58ef05831af86dbc6860500342f36d5f9856a21e52c426feaf6e16c8d81a1",
+    "src\\credit_rl\\portfolio\\accounting.py": "4851aa3ece7b8b7f4535415a9a6af82b9b526ce86a3d4fbd4dbea4a3e3d017c4",
+    "src\\credit_rl\\portfolio\\environment.py": "c68eda23ce9ac15c223dfedbf6c5dcd6c3ca37a7fc8f4b65ae98b83a1151359c",
+    "src\\credit_rl\\portfolio\\policies.py": "1f64c797ee26cc1da9dc6c39af9101d13fe2a6f4ceec751bcadcbd42606ddbc8",
+    "src\\credit_rl\\portfolio\\reporting.py": "713f8443d1405be0bd0425f392874dd7b944eeabe689fd9ea8d624e98bf1c87b",
+    "src\\credit_rl\\reward.py": "425150c9ef863a8c47ffe58199f8d10f78c674ee58fa54931176d91542e0774a",
+    "src\\credit_rl\\risk\\__init__.py": "c61a5637a0f1cbecb6d1a8d6002458588103f330a1d080ce4350bbdf95565b81",
+    "src\\credit_rl\\risk\\calibration.py": "542c63e695d142014625a93bdec9b0b07db5d8d5a87f34fb0bdc0795b60e200d",
+    "src\\credit_rl\\risk\\dataset.py": "98fe21839e3d81dcf3803bca5112a46cd5be7ae179cae3c2ebb826a95019108c",
+    "src\\credit_rl\\risk\\evaluation.py": "2503fff2230fc62196ae2e4f06fd5b0ac33752dfd9715d0f405df17be8c2ab14",
+    "src\\credit_rl\\risk\\features.py": "b12def12ab91c6d0170b8c5bfc9ec51befb3357f6d0b0435c4314e7e8352a993",
+    "src\\credit_rl\\risk\\generation.py": "89ccb02293abbad2117410ae59e4f3885fa5942115341236b6791a45fa593929",
+    "src\\credit_rl\\risk\\longitudinal.py": "1852f4a40dc94d1866193a334c3151f669d5fd48ca309812cc9ec2a03cc33a23",
+    "src\\credit_rl\\risk\\pd_model.py": "4aae2323768ef3a483f1ae170b704c87cec351b5fe463c49020155704e84a557",
+    "src\\credit_rl\\risk\\reporting.py": "08d6c368b30969f1bfc31b39164b218e458a299065a5ad613cb02f8fdd3dbd55",
+    "src\\credit_rl\\risk\\settings.py": "9885cf8bb50d58045a94a30163e0825c348c0ce12744205b79e4d67cef90d17c",
+    "src\\credit_rl\\risk\\training.py": "ac4c2970dfba3be097897da3a0c41f1ea2d726dbb4177bae1647b660e7b83dfd",
+    "src\\credit_rl\\simulation\\__init__.py": "6427b175a4a0ee395f58fdd406717c9bbbd02205fff3dbca84b30ac9e008f1c5",
+    "src\\credit_rl\\simulation\\behavior.py": "67ba4d05266c6a3cd611e907ddeca8aa678c640b90e9c25aae50301b9e2b0da1",
+    "src\\credit_rl\\simulation\\customer.py": "2d4eaa189c041412f3c05500c6b0eec3da444549faef87409f814becf93a3335",
+    "src\\credit_rl\\simulation\\default.py": "7264fef0d4c26912311cce339ca71f96ea72983279f2a98673c3a44f45a614e6",
+    "src\\credit_rl\\simulation\\dgp.py": "88f43bdb2f29b77fc80e7238eb54d3e81c72c56c7e675a912afa8854702d3df5",
+    "src\\credit_rl\\simulation\\macro.py": "dd7ed1ba8cd6119ffac64ad3401253890ff60ac4a25aa090b34305ba6e431418",
+    "src\\credit_rl\\simulation\\shocks.py": "6890fd43ff79119293a65a8df14c279255f43e156028ac2902facfa49b897d96",
+    "src\\credit_rl\\simulation\\simulator.py": "adabde92daf7a061dec3f3381860ba903c583af797ec72a689f84895cc09fc6c",
+    "src\\credit_rl\\simulation\\synthetic_snapshot.py": "e132c010b284f30cd930596cefe3649a835a964009a1c756adc598961425e24e",
+    "src\\credit_rl\\utils\\__init__.py": "fe01aec0403f2edf52d05b9cc6aee5dee02a9122d22935d727a4608cfb0472f6",
+    "src\\credit_rl\\utils\\seeding.py": "ab9eeb80eaaa96782b9293410c82259835eb983f89f0427feb28a96667cecbc9",
+    "experiments\\__init__.py": "12ab370d3cbc0ae56cef4c9a999b65fef9c44680e60724802165aa3f003b45f1",
+    "experiments\\common.py": "6d62ea4d7bdd8f63efec0e18382c9ed6b881797a31fdd07679cfab28f7859443",
+    "experiments\\compare_policies.py": "3156110edafa0bf4f32aa3635954fd0caf1d1ad04e2332defa0f4d1ae2a9af9e",
+    "experiments\\dgp_sanity.py": "a5395f75567ea6013ab4bc88b6f7b6c750cfcd9adc1c139bdd0a46293d6d9c2e",
+    "experiments\\off_policy_evaluation.py": "4b46a6946a233241b8ab341387a172c1fadabf11d03cb18368e78b1e75b7cbdc",
+    "experiments\\pd_env_smoke.py": "c555dfa63a71a16c0caf3b924811517a05a2a0157d87d00e4eb5f36ca1fe72e9",
+    "experiments\\portfolio_constraints.py": "5c35f1f432b943c59ee8278bb51618b4212f0220843591333580c95d4a5e17e7",
+    "experiments\\portfolio_diagnostics.py": "5e97f264741bc92fc99ad24d4bdb5c41c0795fba91574515d0b73dfcd6d70811",
+    "experiments\\robustness.py": "c45a365dffee002141c5e0558f8855c0fae10f2529e97fd9ccc89d95c3563d5d",
+    "experiments\\study_common.py": "4719d9da4f1682c1c73a55ec8e899247f5c760033f2b3ff448f03aeffab0ab0d",
+    "experiments\\train_pd.py": "b8293ab8af03b7673315005dca8967b681086410d24f6af2fb260deffdace37e",
+    "experiments\\train_ppo.py": "6253c923683bbb70888310d749cca4b1a4cbe258ac0acaa3eb5226a8cacee344",
+    "experiments\\trajectory_sanity.py": "fd20e909a36c78f71e28169c36ba55ca2d5205068c8c6fd9526177aaa9cd066f",
+    "experiments\\verify_portfolio.py": "cab7a4c0c37958b8bcd42aadc3f20fbafa80e0322fcb2d20682301bc2926fa71"
+  },
+  "identity": "f6c757a2df58b6607ca4b395701ade623d21d2764ce25408b9bf3b3b22459b39",
+  "profile": "standard",
+  "experiment": "main_customer_evaluation",
+  "package_sha256": {
+    "__init__.py": "bf944f86089d1305cef06e70140f59b63512bf737c4c218805b2fc2355209a0b",
+    "config.py": "461685b9692060761f6b32542d9b878485b557d1c3df63578b1d901412e76af9",
+    "envs\\__init__.py": "45efa67ee4b9c7f588b5e5ddc163483f9305a36e3634f23729f71805cb528f7f",
+    "envs\\constraints.py": "426a7bb605d959281f054d24ab0aa3ea1d3718023b4a4617ee51a6dd582bb2c9",
+    "envs\\credit_limit_env.py": "a0709b403e888d9e43aca57458824860a47df025b6a5e2af982b0cb64fb73e9b",
+    "envs\\observation.py": "86880ed96442bc209e1441f00d58183f1f265e5debbc1412561e7ffbe1791630",
+    "evaluation\\__init__.py": "7205264e4f88b21c78be7025dcfed1128dd3cc81fc2c03d80d4c7906f67af680",
+    "evaluation\\dgp_diagnostics.py": "65caa1f8a94c740cfa6b209382269c0e0bbdc6a0f318cc4c966956fe5b397df3",
+    "evaluation\\metrics.py": "c60154de4f81cf8d80dee3b046dfe9f4e300b61bfa2d85210dd14f01eb15236f",
+    "evaluation\\ope.py": "c3857f9386d92fcfc21cda54814c39dc8cbc8b07d42dd83a03c7d950b5834a7a",
+    "evaluation\\ope_reporting.py": "9814bdf70a49a3caca05360a83d63582c4f8e197a7d4064289efa029f063b2b8",
+    "evaluation\\policy_engine.py": "cf33d9c6812d0e26b0b8a52f628bb5ab1a96f83cb38e49408ab2f662d0054e4a",
+    "evaluation\\policy_reporting.py": "02b3f6716eb0494385adb480427b8277d8f76bd1be3433b33c0b60d424afdd25",
+    "evaluation\\policy_statistics.py": "35494e3cbb242faf92f3316cfe33cd07046df4311fbf64f5422cd7e62a1323dd",
+    "evaluation\\robustness_reporting.py": "8d2430490f8d815ba22d7219c018c98561abbeb07e9aade9db9ce157cc869695",
+    "evaluation\\robustness_statistics.py": "a519a550327e7e60261ca5d04bb75646c343d6dfbdbd671ce1d7f24a528df7bb",
+    "evaluation\\scenarios.py": "ee95187eacda4ed0a45cad26c0388d6b5eba767d4e1ec15ee88bdcec996ab81a",
+    "evaluation\\sensors.py": "16675a89742c968f85059f8bdffe84b8eec1ce5e056adddfa6b63e67b0949fa2",
+    "evaluation\\worlds.py": "80e115ac3348015f10857dabb302be106ee542c684faf8b47f5c4c1ccd6c44a9",
+    "experiments\\__init__.py": "f592ecf6d41b48ab738368d1dc67a49afe2359b61a124e4fee4549d90b5289e6",
+    "experiments\\common.py": "b1c4fdf37a4ce7fdb68e62d03205ca7ee226877adccd5bf481e02731d20c843d",
+    "experiments\\main_evaluation.py": "37df4ef2fc1d921b0644276c5232f4928697ee71ef48f7f1dde73deb91f5f1a5",
+    "experiments\\pd_training.py": "78d2e20a8aa00313bfcf0755e07426ecbe75846cd5ebbe2ec8dfcf51f09e9d3e",
+    "experiments\\report_assets.py": "019252bca69647da301079086ba835fba6cfde52340af351ab872d5a8177a77b",
+    "policies\\__init__.py": "72e1f2a76f6d8ae2057093db7b525e3333fe283d42038f83d4225d5550a4d3fc",
+    "policies\\baselines.py": "dec258b901190a5a132f219385e91d71a43e59e1afa68bfba72b962945b465f7",
+    "policies\\decision.py": "1f1b4776fe3395bf70ebd9fe83ec57223c093155a89fdc89426e676136db7ee3",
+    "policies\\oracle.py": "b5df23872d99e5ce0c141f0d7e27ef29d9ea3e9bda60066dd09f4e524558c44a",
+    "policies\\registry.py": "5aa58ad13c6aaca1b3b81550c6757ca5131c4b57d358a7fcf55f04ff51499fd6",
+    "policies\\training.py": "ff17c461c49bc66fd85f05906865bb2ffb2d1a6de3e038b837b4f77889a76c1c",
+    "portfolio\\__init__.py": "02f58ef05831af86dbc6860500342f36d5f9856a21e52c426feaf6e16c8d81a1",
+    "portfolio\\accounting.py": "4851aa3ece7b8b7f4535415a9a6af82b9b526ce86a3d4fbd4dbea4a3e3d017c4",
+    "portfolio\\environment.py": "c68eda23ce9ac15c223dfedbf6c5dcd6c3ca37a7fc8f4b65ae98b83a1151359c",
+    "portfolio\\policies.py": "1f64c797ee26cc1da9dc6c39af9101d13fe2a6f4ceec751bcadcbd42606ddbc8",
+    "portfolio\\reporting.py": "713f8443d1405be0bd0425f392874dd7b944eeabe689fd9ea8d624e98bf1c87b",
+    "reward.py": "425150c9ef863a8c47ffe58199f8d10f78c674ee58fa54931176d91542e0774a",
+    "risk\\__init__.py": "c61a5637a0f1cbecb6d1a8d6002458588103f330a1d080ce4350bbdf95565b81",
+    "risk\\calibration.py": "542c63e695d142014625a93bdec9b0b07db5d8d5a87f34fb0bdc0795b60e200d",
+    "risk\\dataset.py": "98fe21839e3d81dcf3803bca5112a46cd5be7ae179cae3c2ebb826a95019108c",
+    "risk\\evaluation.py": "2503fff2230fc62196ae2e4f06fd5b0ac33752dfd9715d0f405df17be8c2ab14",
+    "risk\\features.py": "b12def12ab91c6d0170b8c5bfc9ec51befb3357f6d0b0435c4314e7e8352a993",
+    "risk\\generation.py": "89ccb02293abbad2117410ae59e4f3885fa5942115341236b6791a45fa593929",
+    "risk\\longitudinal.py": "1852f4a40dc94d1866193a334c3151f669d5fd48ca309812cc9ec2a03cc33a23",
+    "risk\\pd_model.py": "4aae2323768ef3a483f1ae170b704c87cec351b5fe463c49020155704e84a557",
+    "risk\\reporting.py": "08d6c368b30969f1bfc31b39164b218e458a299065a5ad613cb02f8fdd3dbd55",
+    "risk\\settings.py": "9885cf8bb50d58045a94a30163e0825c348c0ce12744205b79e4d67cef90d17c",
+    "risk\\training.py": "ac4c2970dfba3be097897da3a0c41f1ea2d726dbb4177bae1647b660e7b83dfd",
+    "simulation\\__init__.py": "6427b175a4a0ee395f58fdd406717c9bbbd02205fff3dbca84b30ac9e008f1c5",
+    "simulation\\behavior.py": "67ba4d05266c6a3cd611e907ddeca8aa678c640b90e9c25aae50301b9e2b0da1",
+    "simulation\\customer.py": "2d4eaa189c041412f3c05500c6b0eec3da444549faef87409f814becf93a3335",
+    "simulation\\default.py": "7264fef0d4c26912311cce339ca71f96ea72983279f2a98673c3a44f45a614e6",
+    "simulation\\dgp.py": "88f43bdb2f29b77fc80e7238eb54d3e81c72c56c7e675a912afa8854702d3df5",
+    "simulation\\macro.py": "dd7ed1ba8cd6119ffac64ad3401253890ff60ac4a25aa090b34305ba6e431418",
+    "simulation\\shocks.py": "6890fd43ff79119293a65a8df14c279255f43e156028ac2902facfa49b897d96",
+    "simulation\\simulator.py": "adabde92daf7a061dec3f3381860ba903c583af797ec72a689f84895cc09fc6c",
+    "simulation\\synthetic_snapshot.py": "e132c010b284f30cd930596cefe3649a835a964009a1c756adc598961425e24e",
+    "utils\\__init__.py": "fe01aec0403f2edf52d05b9cc6aee5dee02a9122d22935d727a4608cfb0472f6",
+    "utils\\seeding.py": "ab9eeb80eaaa96782b9293410c82259835eb983f89f0427feb28a96667cecbc9"
+  }
+}

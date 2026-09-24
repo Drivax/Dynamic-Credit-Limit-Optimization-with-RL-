@@ -6,7 +6,6 @@ import pandas as pd
 
 from credit_rl.simulation.customer import initialize_customer
 from credit_rl.simulation.dgp import CreditDGP
-from credit_rl.simulation.macro import MacroPath, MacroProcess
 from credit_rl.simulation.shocks import ShockPath
 from credit_rl.simulation.synthetic_snapshot import generate_synthetic_portfolio
 from .features import observable_row

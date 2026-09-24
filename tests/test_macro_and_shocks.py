@@ -6,7 +6,7 @@ import pytest
 from credit_rl import CreditLimitEnv, SimulationConfig
 from credit_rl.config import MacroConfig
 from credit_rl.simulation.macro import MacroPath, MacroProcess, MacroRegime, MacroState
-from credit_rl.simulation.shocks import MonthlyShocks, ShockPath
+from credit_rl.simulation.shocks import ShockPath
 
 
 @pytest.mark.parametrize("name", ["baseline", "mild_stress", "severe_stress", "recovery"])

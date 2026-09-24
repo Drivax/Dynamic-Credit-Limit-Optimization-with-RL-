@@ -16,7 +16,7 @@ from credit_rl import CreditLimitEnv, SimulationConfig
 from credit_rl.envs.observation import build_observation, OBSERVATION_NAMES
 from credit_rl.evaluation.scenarios import make_scenarios, assert_disjoint
 from credit_rl.evaluation.policy_engine import evaluate_policy, aggregate_episodes
-from credit_rl.evaluation.policy_statistics import paired_comparisons, interval
+from credit_rl.evaluation.policy_statistics import paired_comparisons
 from credit_rl.policies.decision import PDThreshold, MyopicEconomic, decode, transform_observation
 from credit_rl.policies.registry import baseline_specs, ppo_spec
 from credit_rl.policies.training import TrainingEnvironment, train_agent
@@ -99,6 +99,18 @@ def test_populations_prefix_and_train_guard(settings, risk):
         assert_disjoint(groups[0], groups[0])
     with pytest.raises(ValueError, match='RL_TRAIN'):
         TrainingEnvironment(groups[2], risk, cfg, settings)
+
+
+def test_training_finite_horizon_has_no_sb3_continuation(settings, risk):
+    cfg = SimulationConfig()
+    cfg = replace(cfg, environment=replace(cfg.environment, horizon=1),
+                  default=replace(cfg.default, intercept=-1000.))
+    scenarios = make_scenarios(cfg, settings, 'train')
+    env = TrainingEnvironment(scenarios, risk, cfg, settings)
+    env.reset(seed=1)
+    _, _, terminated, truncated, info = env.step(2)
+    assert terminated and not truncated and info['finite_horizon_reached']
+    assert not env.state.defaulted
 
 
 def test_crn_reproducibility_and_denominators(settings, risk):

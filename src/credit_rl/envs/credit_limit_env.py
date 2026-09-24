@@ -15,7 +15,7 @@ from credit_rl.risk.pd_model import ObservedLogisticPD, ObservedRiskFeatures, PD
 from credit_rl.risk.features import observable_row
 from credit_rl.simulation.customer import CustomerState, CustomerTraits, initialize_customer
 from credit_rl.simulation.dgp import CreditDGP
-from credit_rl.simulation.macro import MacroPath, MacroProcess, MacroState
+from credit_rl.simulation.macro import MacroPath, MacroProcess
 from credit_rl.simulation.shocks import ShockPath
 from credit_rl.utils.seeding import episode_generators
 from .observation import OBSERVATION_NAMES, build_observation

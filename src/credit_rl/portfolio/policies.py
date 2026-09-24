@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import milp, Bounds, LinearConstraint
 from credit_rl.policies.decision import MyopicEconomic, PDThreshold, decode
 from credit_rl.envs.constraints import effective_limit
-from .accounting import aggregate, admissible, ead, monthly_pd
+from .accounting import ead, monthly_pd
 
 
 def opportunity_tables(public, base, config):

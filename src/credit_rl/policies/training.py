@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 from time import perf_counter
 
-import gymnasium as gym
 import numpy as np
 import pandas as pd
 import torch
@@ -42,7 +41,11 @@ class TrainingEnvironment(CreditLimitEnv):
     def step(self, action):
         obs, reward, term, trunc, info = super().step(action)
         info["economic_reward_eur"] = reward
-        return transform_observation(obs, self.without_pd), reward*self.reward_scale, term, trunc, info
+        # This study has a finite economic horizon, not an interrupted continuing
+        # task. SB3 bootstraps TimeLimit.truncated; suppress that continuation only
+        # in the training adapter, while preserving the public environment API.
+        info["finite_horizon_reached"] = bool(trunc)
+        return transform_observation(obs, self.without_pd), reward*self.reward_scale, term or trunc, False, info
 
 
 class ValidationCheckpoint(BaseCallback):

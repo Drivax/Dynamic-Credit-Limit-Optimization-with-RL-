@@ -2,7 +2,6 @@
 import argparse
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import replace
-from functools import partial
 import json
 from pathlib import Path
 from time import perf_counter

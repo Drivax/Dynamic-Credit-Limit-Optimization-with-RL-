@@ -1,195 +1,223 @@
-# Risk-Constrained Sequential Credit Decisioning
+# Dynamic Credit-Limit Optimization under Partial Observability
 
-Dynamic credit-limit allocation as a **partially observed, risk-constrained sequential decision problem**. This research repository combines longitudinal credit simulation, an imperfect ML probability-of-default model, shared portfolio capacity, observable allocation baselines and standard PPO. Decisions affect future behavior, exposure, losses and the capacity available for subsequent allocations.
+This repository studies repeated credit-limit decisions in a synthetic longitudinal population. A limit change affects payment incentives, available purchasing capacity, future balances and default exposure. A frozen probability-of-default (PD) model summarizes observable customer histories; policies never receive hidden customer traits or future shocks.
 
-Mathematically, credit-limit allocation is a **sequential decision-making problem under uncertainty**. At allocation step $t$, the policy observes $O_t$, combining the current customer's credit, behavioral, predicted-risk and macroeconomic features with the portfolio's exposure and remaining risk capacity, and requests an action $A_t$. The full simulator state $X_t$ additionally contains latent customer characteristics and the allocation context. A stochastic **Data Generating Process (DGP)** governs customer behavior, repayment and default, inducing the controlled transition distribution $P(X_{t+1}\mid X_t,A_t)$; customer dynamics advance only after all active clients receive their monthly allocation. The full-state process admits an MDP representation $\mathcal{M}=(\mathcal{X},\mathcal{A},P,R,\gamma)$, while the decision-maker faces partial observability because $O_t$ does not reveal $X_t$. The implemented policy $\pi_\theta(A_t\mid O_t)$ seeks to maximize
+The canonical experiment compares Static, PDThreshold (the risk-based rule), MyopicEconomic and PPO, with constant 20% contraction as an additional control. It uses held-out customers, common random numbers, three declared PPO seeds and baseline/stress macro paths. The simulator and economic assumptions are not calibrated to a real bank. Portfolio allocation, robustness and off-policy evaluation remain supplementary studies with their own protocols; their results must not be mixed with the individual-customer experiment.
 
-$$
-J(\pi_\theta)=\mathbb{E}_{\pi_\theta}\left[\sum_{t=0}^{T-1}\gamma^tR_t\right],\qquad \gamma=1.
-$$
+## Model and decision chronology
 
-Here $T$ is the terminal allocation step at portfolio extinction or the 24-month horizon. Reward is zero within monthly allocation and then equals scaled portfolio revenue minus realized credit losses and funding; the penalized formulation additionally subtracts the EL-budget shortfall penalty, while hard admission constrains effective actions. For the observable history $H_t$, the finite-horizon Bellman recursion and advantage are
+One episode follows one customer for up to 24 monthly transitions. At month $t$, the policy receives the 21-dimensional observation $O_t$, including the current limit, balance, utilization, income, repayment, delinquency, behavioral score, macro factors and estimated 12-month PD. Hidden traits $Z_i$ persist throughout the episode. The policy chooses a multiplier in $\{0.8,0.9,1,1.1,1.2\}$. Limits are bounded to EUR 500–15,000; three consecutive delinquent months block increases.
 
-$$
-V_t^\pi(h)=\mathbb{E}_\pi\left[R_t+\gamma V_{t+1}^\pi(H_{t+1})\mid H_t=h\right],\qquad V_T^\pi=0,
-\qquad A_t^\pi(h,a)=Q_t^\pi(h,a)-V_t^\pi(h).
-$$
-
-**Proximal Policy Optimization (PPO)** uses a clipped policy objective and **Generalized Advantage Estimation (GAE)** to estimate improvements over the critic's expected return. The implemented actor and critic use the compact observation $O_t$, not the complete history or hidden state; this approximation does not make the observable process fully Markov or guarantee optimality. Evaluation compares learned policies with non-RL baselines under matched stochastic scenarios, with explicit attention to **DGP misspecification, partial observability, reward specification, model risk, simulator overfitting, distribution shift and loss tails**: strong performance in a synthetic world does not establish robustness in the underlying economic system.
-
-**Measured finding:** hard-admission PPO improves mean value over the Myopic surrogate, but does not establish an advantage over constant contraction or learned reuse of future risk capacity. Deterministic portfolio OPE has zero effective trajectory support.
-
-## Decision system
+The DGP applies the limit change, evolves income, generates payment against opening principal, caps purchases by remaining headroom, updates delinquency and score, and samples default. Current macro factors drive this transition; the next macro state is revealed only afterward. Default is absorbing. A surviving episode ends at the finite horizon.
 
 ```mermaid
-flowchart TD
-    Hidden[Hidden customer characteristics] --> DGP[Synthetic longitudinal DGP]
-    Macro[Shared macro scenario] --> DGP
-    DGP --> Public[Observable customer histories]
-    Public --> PD[Frozen 12-month PD model]
-    PD --> Risk[Predicted customer risk]
-    Risk --> Book[Portfolio state and observable risk budgets]
-    Public --> Policy[Static / RiskBased / Greedy / Myopic / PPO]
-    Book --> Policy
-    Policy --> Allocation[Credit-limit allocations and action admission]
-    Allocation --> Behavior[Future customer behavior]
-    Behavior --> DGP
-    Behavior --> Outcomes[Revenue / exposure / realized losses]
-    Outcomes --> Update[Updated portfolio risk capacity]
-    Update --> Book
-    DGP -. simulator-only .-> Diagnostic[Independent conditional-risk diagnostic]
+flowchart LR
+    Hidden[Persistent hidden traits] --> Dynamics[Income / payment / spending]
+    Macro[Current macro] --> Dynamics
+    Observation[Observable history and estimated PD] --> Action[Limit action]
+    Action --> Dynamics
+    Dynamics --> Balance[Balance / utilization / delinquency]
+    Balance --> Default[Hidden hazard and realized default]
+    Balance --> Next[Next observation]
+    Default --> Next
+    Next --> Observation
 ```
 
-One episode follows a closed portfolio for up to 24 months. Each month, active clients receive commands in a reproducible random order; accepted limits immediately affect shared capacity. All clients then advance together under common macro and indexed shocks. Defaults are absorbing and their losses remain recorded. No future customer transition is revealed during allocation.
+For opening balance $B_t$, payment $P_t$, purchases $C_{t+1}$ and admitted limit $L'_t$,
 
-The economic objective is `max_pi E[sum_t (interest + fees - credit losses - funding)]`. With current balance B, proposed limit L, visible PD p and safety factor s:
+$$B_{t+1}=B_t-P_t+C_{t+1},\qquad C_{t+1}\leq\max(0,L'_t-(B_t-P_t)),\qquad U_{t+1}=B_{t+1}/L'_t.$$
+
+Reducing a limit does not forgive existing debt, so utilization can exceed one. The hidden monthly hazard is a logistic function of closing utilization, debt-to-income, consecutive delinquency, payment ratio, persistent creditworthiness, current stress and adverse income change. It is independent of the PD estimator. The [technical paper](docs/technical_paper.md) gives the actual equations; [DGP specification](docs/dgp.md) provides parameter-level details.
+
+Reward in EUR is
+
+$$R_t=(1-D_{t+1})B_t\frac{0.18}{12}+0.012C_{t+1}-0.55D_{t+1}B_{t+1}
+-\frac{0.03}{12}B_{t+1}-1.5(0.08)\widehat p_t B_{t+1}-25\max(0,\widehat p_t-0.12).$$
+
+Reported **net economic value** excludes the last two soft capital/risk charges. Consequently PPO's discounted training reward and undiscounted net value are different estimands. Neither terminal receivables nor customer welfare are valued.
+
+## From the DGP to PPO
+
+The full state $X_t$ includes hidden traits and the history needed by the transition and PD features. It induces a controlled transition $P(X_{t+1}\mid X_t,A_t)$. The actor only receives $O_t=g(X_t)$; its compact observation is not guaranteed Markov. The underlying full-state MDP therefore yields a partially observed decision problem. For observable history $H_t=(O_0,A_0,\ldots,O_t)$ and terminal horizon $T$,
+
+$$J(\pi)=\mathbb E_\pi\left[\sum_{t=0}^{T-1}\gamma^tR_t\right],\qquad \gamma=0.98,$$
+
+$$V_t^\pi(h)=\mathbb E_\pi[R_t+\gamma V_{t+1}^\pi(H_{t+1})\mid H_t=h],\quad V_T^\pi=0,$$
+
+$$Q_t^\pi(h,a)=\mathbb E[R_t+\gamma V_{t+1}^\pi(H_{t+1})\mid H_t=h,A_t=a],\quad
+A_t^\pi(h,a)=Q_t^\pi(h,a)-V_t^\pi(h).$$
+
+Here value means remaining expected reward from a customer's evolving exposure, not their observed PD. Advantage compares an action with the current policy's expected continuation. The policy-gradient identity motivates the sampled actor update:
+
+$$\nabla_\theta J(\pi_\theta)=\mathbb E_{\pi_\theta}\left[\sum_t\gamma^t\nabla_\theta\log\pi_\theta(A_t\mid H_t)A_t^{\pi_\theta}(H_t,A_t)\right].$$
+
+The implemented actor and critic approximate these quantities using $O_t$, not the full history. Generalized advantage estimation uses
+
+$$\delta_t=R_t+\gamma V_\phi(O_{t+1})-V_\phi(O_t),\qquad
+\widehat A_t=\sum_{l\geq0}(\gamma\lambda)^l\delta_{t+l},\quad\lambda=0.95.$$
+
+The sum ends at rollout/episode boundaries. The PPO training adapter marks both default and the economic horizon as terminal, preventing SB3 from adding continuation value after month 24. The public Gymnasium environment still distinguishes default termination from horizon truncation.
+
+With likelihood ratio $r_t(\theta)=\pi_\theta(A_t\mid O_t)/\pi_{\theta_{old}}(A_t\mid O_t)$, PPO maximizes
+
+$$L^{clip}(\theta)=\mathbb E_t[\min(r_t\widehat A_t,\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)\widehat A_t)],\quad\epsilon=0.2.$$
+
+A squared value loss and entropy bonus accompany the actor objective. Separate actor/critic networks have two 64-unit tanh layers. Rewards are scaled by 0.001 for training; reported money remains EUR. These approximations provide no optimality or real-world safety guarantee.
+
+## Credit-risk model and policies
+
+The target is first default in $(t,t+12]$, conditional on being active at $t$. Snapshot eligibility requires a complete administrative horizon; unknown follow-up is censored. All current and historical features are allowlisted. Lags, rolling summaries and trends only use available history. PD cohorts are customer-disjoint and occupy non-overlapping calendar blocks with matured labels before the next block.
+
+Logistic regression and histogram gradient boosting are fitted on 2,500 training customers. Separate cohorts contain 800 validation, 800 calibration, 1,000 test and 1,000 later entrants. Sigmoid calibration is fitted only on calibration customers. Calibrated logistic regression is the predeclared policy input, regardless of which model scores best on the test set.
+
+| Code policy name | Decision |
+|---|---|
+| Static | Keep the limit unchanged |
+| PDThreshold | Increase 10% below PD 0.2; decrease 10% at PD 0.6 or above; otherwise hold |
+| MyopicEconomic | Maximize an observable one-step economic surrogate over admitted actions |
+| AlwaysDecrease20 | Request maximum contraction, subject to the limit floor |
+| PPO | Deterministic action from each seed's validation-selected checkpoint |
+
+MyopicEconomic converts 12-month PD to a flat monthly hazard, then adjusts it using assumed utilization/burden sensitivities. Its expectation is a surrogate, not the DGP's true conditional reward. It accesses neither latent traits nor simulator draws.
+
+## Experimental protocol
+
+Policy training uses 1,500 synthetic customers with fixed indexed Markov macro/shock paths; checkpoint selection uses 100 separate baseline customers. The final comparison uses the same 300 held-out customers for every policy, seed and macro scenario. Each PPO seed (101, 202, 303) receives 32,768 transitions; no seed is discarded. Hyperparameters and rule thresholds are fixed before test evaluation. Initialization is an eligible validation checkpoint, so improvement from learning is not assumed.
+
+Baseline is constant normal macro. Severe stress uses normal months 0–3, stress at severity 1.6 in months 4–19, then normal. Paired scenarios preserve initial customer draws, latent traits and indexed exogenous randomness. Endogenous outcomes and default times can differ.
+
+Confidence intervals use 300 crossed resamples of customers and PPO seeds. They are conditional on the frozen PD model and macro scenarios, and do not quantify structural-model or real-world uncertainty. Default rates divide by initial customers; limit and utilization average each customer's observed monthly mean before averaging customers. Monetary values are per initial customer.
+
+## Measured canonical results
+
+The following block is generated from `outputs/main/standard/results/`; it is shared with the paper. Risk-based and myopic names are the exact code names. The supplementary portfolio study has different policies, rewards and units.
+
+<!-- canonical-results:start -->
+
+### Baseline
+
+| policy | net_economic_value | revenue | credit_loss | default_rate | mean_limit | mean_utilization |
+| --- | --- | --- | --- | --- | --- | --- |
+| AlwaysDecrease20 | -779.428 | 385.293 | 1105.889 | 0.713 | 2794.781 | 1.098 |
+| MyopicEconomic | -1285.245 | 1066.159 | 2191.299 | 0.570 | 11174.149 | 0.473 |
+| PDThreshold | -880.473 | 862.116 | 1614.304 | 0.630 | 7189.632 | 0.708 |
+| PPO | -779.428 | 385.293 | 1105.889 | 0.713 | 2794.781 | 1.098 |
+| Static | -1379.340 | 1012.640 | 2237.257 | 0.640 | 7312.645 | 0.661 |
+
+### Stress
+
+| policy | net_economic_value | revenue | credit_loss | default_rate | mean_limit | mean_utilization |
+| --- | --- | --- | --- | --- | --- | --- |
+| AlwaysDecrease20 | -1280.840 | 301.699 | 1532.196 | 0.953 | 3423.447 | 1.074 |
+| MyopicEconomic | -2430.560 | 596.680 | 2926.816 | 0.873 | 10290.866 | 0.495 |
+| PDThreshold | -1953.059 | 477.893 | 2350.705 | 0.917 | 6452.382 | 0.736 |
+| PPO | -1280.840 | 301.699 | 1532.196 | 0.953 | 3423.447 | 1.074 |
+| Static | -2494.226 | 538.300 | 2940.479 | 0.913 | 7312.645 | 0.647 |
+
+### Paired PPO differences (95% bootstrap)
+
+| scenario | reference | metric | difference | lower | upper |
+| --- | --- | --- | --- | --- | --- |
+| baseline | Static | cumulative_reward | 3225.122 | 2821.154 | 3706.490 |
+| baseline | Static | net_economic_value | 599.912 | 393.436 | 796.347 |
+| baseline | Static | credit_loss | -1131.368 | -1301.271 | -955.382 |
+| baseline | Static | defaulted | 0.073 | 0.037 | 0.115 |
+| baseline | MyopicEconomic | cumulative_reward | 3156.257 | 2653.905 | 3670.037 |
+| baseline | MyopicEconomic | net_economic_value | 505.817 | 282.939 | 706.396 |
+| baseline | MyopicEconomic | credit_loss | -1085.410 | -1283.859 | -880.017 |
+| baseline | MyopicEconomic | defaulted | 0.143 | 0.105 | 0.193 |
+| severe_stress | Static | cumulative_reward | 2747.200 | 2505.704 | 3018.580 |
+| severe_stress | Static | net_economic_value | 1213.386 | 1106.940 | 1331.399 |
+| severe_stress | Static | credit_loss | -1408.284 | -1537.349 | -1288.953 |
+| severe_stress | Static | defaulted | 0.040 | 0.020 | 0.060 |
+| severe_stress | MyopicEconomic | cumulative_reward | 3012.293 | 2686.070 | 3330.624 |
+| severe_stress | MyopicEconomic | net_economic_value | 1149.720 | 994.173 | 1294.821 |
+| severe_stress | MyopicEconomic | credit_loss | -1394.620 | -1543.396 | -1224.009 |
+| severe_stress | MyopicEconomic | defaulted | 0.080 | 0.052 | 0.112 |
+
+### PD test performance
+
+| model | roc_auc | pr_auc | brier | log_loss |
+| --- | --- | --- | --- | --- |
+| constant | 0.500 | 0.458 | 0.249 | 0.691 |
+| logistic | 0.842 | 0.823 | 0.162 | 0.487 |
+| logistic_calibrated | 0.842 | 0.823 | 0.162 | 0.486 |
+| boosting | 0.846 | 0.831 | 0.161 | 0.485 |
+| boosting_calibrated | 0.846 | 0.831 | 0.160 | 0.483 |
+
+<!-- canonical-results:end -->
+
+![PD calibration](outputs/main/standard/figures/pd/calibration_deciles.png)
+![Risk and value](outputs/main/standard/figures/risk_value.png)
+![Observed PPO action map](outputs/main/standard/figures/ppo_policy_map.png)
+![Paired trajectory](outputs/main/standard/figures/paired_trajectory.png)
+
+PPO has higher net value than MyopicEconomic by **505.82 EUR/customer [282.94, 706.40]** under baseline and **1,149.72 [994.17, 1,294.82]** under stress. But every PPO seed reproduces the effective trajectories of constant 20% contraction to numerical precision on this evaluation panel (maximum checked difference 1.71e-13). Its default incidence is **14.33 percentage points higher** than Myopic under baseline and **8.00 points higher** under stress, despite lower monetary losses. These results support exposure contraction under the specified objective, not a demonstrated advantage from learned planning. All policies have negative mean net value.
+
+The empirical action map averages requested changes across visited states, all PPO seeds and both scenarios. Empty bins contain no observations. It describes behavior and is not causal evidence. The trajectory is the first held-out customer by identifier, selected without examining outcomes. There is no established evidence here that PPO sacrifices immediate value to recover more value later; constant contraction is retained specifically to challenge that interpretation.
+
+## Reproducing the results
+
+Python 3.12 is the tested and CI version; package metadata allows Python 3.11+. Use a virtual environment and run from the clone root. The experiment needs the `experiments` and `rl` extras; plain editable installation supports the core simulator.
+
+### Installation
+
+```shell
+python -m pip install -e ".[dev,experiments,rl]"
+```
+
+### Tests
+
+```shell
+python -m ruff check .
+python -m pytest --cov=credit_rl --cov-report=term-missing --cov-fail-under=70
+```
+
+### Smoke experiment
+
+```shell
+python -m credit_rl.experiments.main_evaluation --profile smoke
+```
+
+### Main experiment
+
+```shell
+python -m credit_rl.experiments.main_evaluation --profile standard
+```
+
+This generates PD data/models, fits every PPO seed, evaluates paired policies and writes tables/figures. Matching completed artifacts are reused; changed source/configuration requires a fresh `--output`. Run the same command again to replay frozen evaluation. A manifest records expanded configuration, seeds, package versions, source hashes, timestamp and Git commit when available. Model hashes are saved separately. Git is not required.
+
+### Regenerate figures and documentation tables
+
+```shell
+python -m credit_rl.experiments.main_evaluation --profile standard --stage figures
+python -m credit_rl.experiments.report_assets --update-docs
+```
+
+The first command regenerates policy and PD figures from saved histories and predictions. The second synchronizes measured table blocks in this README and the paper. Raw trajectories and models are generated locally; compact canonical results and figures are retained. All input populations are generated, so no private dataset or hidden checkpoint is required.
+
+CI runs lint, all unit/integration tests with a 70% total coverage threshold, and an independent smoke experiment on Ubuntu and Windows with Python 3.12. It never runs the standard experiment. The integration test fits and reloads tiny PPO models, executes two fresh pipelines and compares numeric outputs exactly on the same environment.
+
+## Repository structure
 
 ```text
-EAD_i = B_i + 0.5 * max(L_i - B_i, 0)
-q_i = 1 - (1 - min(s * p_i, 1))^(1/12)
-EL_i = q_i * 0.55 * EAD_i
-portfolio_EL = sum_i EL_i <= monthly risk budget
-remaining capacity = max(0, budget - portfolio_EL)
-shortfall = max(0, portfolio_EL - budget)
+configs/                 DGP, PD, policies and experiment profiles
+src/credit_rl/
+  simulation/            Customer dynamics, macro and indexed shocks
+  risk/                  Features, labels, estimation and calibration
+  envs/                  Gymnasium customer environment
+  policies/              Existing baselines and PPO training
+  evaluation/            Paired metrics, inference and supplementary studies
+  portfolio/             Coupled portfolio allocation
+  experiments/           Canonical orchestration and report generation
+experiments/             Supplementary entry points and isolated archive
+outputs/main/standard/   Canonical results, figures and provenance
+tests/                  Scientific invariants and integration
+docs/                   Methods, paper and audit
 ```
 
-EAD includes drawn debt and half the undrawn commitment; reducing a limit does not erase debt. The monthly PD conversion is a flat-hazard approximation, not a calibrated monthly or action-specific forecast. Budgets are synthetic risk stocks, recomputed each month, rather than cash balances permanently depleted by estimated loss.
+[Technical working paper](docs/technical_paper.md), [finalization audit](docs/finalization_audit.md), and [supplementary experiment guide](experiments/README.md). Portfolio measurements are documented separately in [portfolio results](docs/portfolio_results.md); robustness and OPE in [their report](docs/robustness_results.md). These broader studies are not rerun by the canonical customer command.
 
-The experiment varies monthly EL allowance across 90, 150 and 240 EUR per initial customer. A configurable current-stress rule multiplies it by 0.75. Separate limits cap EAD at 8,000 EUR per initial customer and high-risk EAD at 80% of total EAD (PD>0.6). Individual commands are −20%, −10%, unchanged, +10%, +20%; limits stay within 500–15,000 EUR and severe delinquency blocks increases.
+## Limitations
 
-**Hard admission means no new immediate breach and no worsening of an inherited breach.** It does not guarantee that the portfolio is always feasible: existing debt, worsening PDs and a shrinking macro budget can produce deficits. Remaining capacity and uncensored shortfalls are both recorded. No claim of general safe RL or regulatory compliance is made. [Exact equations and chronology](docs/portfolio_decisioning.md).
-
-## Policies and information
-
-| Policy | Allocation mechanism |
-|---|---|
-| Static / Decrease20 | No-change / constant maximum-contraction controls |
-| RiskBased / BufferedRiskBased | PD-threshold requests with hard admission; optional validation-selected reserve factor |
-| Greedy | Positive one-step economic gain per incremental expected loss |
-| Myopic | Multiple-choice integer optimization under EL, EAD and concentration ceilings |
-| PPO_unconstrained | Standard PPO with individual action guards |
-| PPO_penalty | Standard PPO with a monthly EL-shortfall penalty |
-| PPO_hard | Standard PPO with the common hard admission rule |
-
-The Myopic proposal is optimal when the solver certifies it; sequential execution can reject proposals before a later customer's capacity release. Its surrogate uses observable information and frozen nominal assumptions. PPO receives 21 customer features plus 13 portfolio features, including remaining budget and shortfall. Batch baselines can inspect the public book; PPO has a compact representation, not an information advantage. Every requested command, effective change and rejection reason is logged.
-
-The calibrated PD pipeline uses point-in-time history, mature 12-month labels, customer-disjoint temporal cohorts and separate calibration. The frozen model's PD-test AUC is 0.842 and Brier score 0.162. [PD methodology](docs/pd_model.md); [PD measurements](docs/pd_results.md).
-
-## Evaluation design
-
-Held-out portfolios share initial customers, latent traits, macro paths and indexed exogenous shocks across policies. The standard protocol evaluates three PPO seeds (101,202,303) for each formulation, using 24 paired portfolios per main case, N=12, three budgets and normal/stress macro. Each final model trains for 24,576 allocation decisions with gamma=1 and a finite terminal horizon. Lambda and the buffer are selected on eight validation portfolios, independently of final evaluation.
-
-Separate tests cover PD intercept/slope/noise errors, reserve factors, constant/dynamic budgets, portfolio sizes 8/24, decision order and three sampled DGP worlds. Monetary contributions and default incidence divide by initial population. Violation rates average observed portfolio-months before extinction. Confidence intervals resample whole paired portfolios and training seeds, never independent customer-months. Independent loss replications preserve individual seed distributions; unsupported tail quantiles are withheld.
-
-## Measured portfolio results
-
-The verified standard panel contains **4,680 portfolio episodes** across 21 cases;
-nine PPO checkpoints represent all three seeds and formulations. At the medium
-budget under normal macro:
-
-| Policy | Value EUR/client | Loss EUR/client | EL / budget | EL breach months |
-| --- | --- | --- | --- | --- |
-| Static | -1,251.78 | 2,095.15 | 0.87 | 38.19% |
-| Decrease20 | -696.56 | 1,014.55 | 0.30 | 10.76% |
-| RiskBased | -679.37 | 1,382.11 | 0.57 | 19.27% |
-| BufferedRiskBased | -679.37 | 1,382.11 | 0.57 | 19.27% |
-| Greedy | -857.72 | 1,659.88 | 0.86 | 36.46% |
-| Myopic | -822.81 | 1,661.01 | 0.86 | 33.33% |
-| PPO_unconstrained | -696.76 | 1,014.55 | 0.30 | 10.76% |
-| PPO_penalty | -696.76 | 1,014.55 | 0.30 | 10.76% |
-| PPO_hard | -613.40 | 1,085.53 | 0.39 | 13.83% |
-
-PPO_hard minus Myopic has paired value difference **+209.41 [+35.89, +396.60] EUR/client**
-(95% crossed portfolio/seed bootstrap). Against fixed −20%, the difference is
-**+83.16 [-20.04, +235.12]**. Two hard-PPO seeds use fixed contraction;
-the third mainly alternates holding and reducing. There is no demonstrated strategy
-of preserving capacity and deploying it later.
-Compared with Myopic, nominal hard PPO also has **7.06 percentage points more defaults [0.80, 13.19]**, despite lower realized losses.
-
-Under stress, PPO_hard value is **-1,022.9 EUR/client** versus
-**-1,816.8** for Myopic and **-849.9**
-for fixed −20%. Its predicted EL violation rate is **19.3%**;
-hard admission does not remove inherited or exogenous deficits.
-
-![Risk capacity and economic flows under stress](outputs/figures/portfolio/standard/budget_dynamics.png)
-
-![Measured risk/value trade-offs across budgets](outputs/figures/portfolio/standard/risk_value.png)
-
-Independent loss evaluation adds 200 portfolios per policy instance: P90 is reported,
-while P95/P99 are withheld for insufficient tail support. The complete [A–W report](docs/portfolio_results.md)
-contains all seeds, budget levels, diagnostic mismatches, stress, shifted worlds,
-paired intervals and limitations. [Machine-readable summary](outputs/results/portfolio/standard/summary.csv).
-
-## Simulator-only risk diagnostics
-
-The policy and admission layer use **predicted risk**. A separate diagnostic integrates the hidden DGP over 16 independent hypothetical shocks per active client to estimate next-month expected realized loss, with Monte Carlo uncertainty. It does not reveal future realized shocks and never feeds observation, action admission or reward. Comparing it to the same budget distinguishes both-safe, predicted-only-safe, simulator-only-safe and both-violated states.
-
-In the matched eight-portfolio PD-underestimation test, RiskBased reports **10.94 percentage points fewer predicted breach months**, while the simulator diagnostic reports **5.21 points more** and value falls **244.65 EUR/client**. Apparent feasibility can improve while actual simulated risk worsens.
-
-That difference includes PD horizon, EAD and behavior-model mismatch; it is not solely a calibration error. There is no portfolio oracle allocation or optimal-value upper bound. Synthetic diagnostic feasibility cannot certify realized losses or banking safety.
-
-## Off-policy evaluation
-
-The portfolio logger stores public transitions, the risk state, remaining budget, constraint status and known command propensities. IS/WIS multiply ratios over the **whole coupled portfolio**. Hard-policy targets share the behavior policy's hard transition kernel; soft/unconstrained kernels are excluded from this estimator. Positive command probability does not ensure usable trajectory support.
-
-The measured portfolio log contains **100 portfolios and 17,069 decisions**.
-All deterministic targets have **ESS 0**: no sampled whole trajectory has nonzero
-weight. Their WIS is undefined; the numerical IS zero is not a credible value estimate.
-The behavior self-check has ESS 100 and mean value −860.74 EUR/client.
-
-The independent-customer OPE study also remains available, with separate Monte Carlo references and support diagnostics. [OPE method and limitations](docs/off_policy_evaluation.md); [customer robustness/OPE results](docs/robustness_results.md).
-
-## Scientific safeguards and limits
-
-Hidden traits, true hazards, future macro and future defaults remain unavailable to deployable policies. PD features are point-in-time; validation and final portfolios are separated; comparisons use common random numbers and every declared PPO seed. The risk constraints use observable forecasts, while simulator-only risk is explicitly diagnostic. Source/config/model hashes, individual seed results, stress tests and distribution-shift experiments support reproducibility.
-
-The DGP, behavioral responses, macro regimes and budgets are synthetic. EAD and LGD are simplified; there is no bank data, Basel/IRB or IFRS 9 calibration, regulatory capital engine, deployment validation, terminal receivable valuation or customer-welfare objective. A closed book shrinks after defaults. Three training seeds and three portfolio DGP worlds provide limited robustness evidence. Policy-conditioned PD errors, compact PPO information, an approximate executed Myopic allocation and sparse trajectory support limit interpretation. [Full measured report and research priorities](docs/portfolio_results.md).
-
-The three sampled portfolio worlds all contain predicted and simulator-diagnostic breaches. Hard PPO has worse mean value than fixed −20% in each; these experiments do not demonstrate robustness in real credit portfolios.
-
-## Reproduce
-
-Python 3.11+; run from the repository root. The tested Windows interpreter is `.venv\Scripts\python.exe`, used in place of `python` when the system alias is unavailable.
-
-```shell
-python -m pip install -e ".[dev,experiments,rl]" --no-build-isolation
-python -m pytest -q
-python -m experiments.dgp_sanity --customers 100 --seed 42 --output outputs/portfolio_dgp_check
-python -m experiments.train_pd
-python -m experiments.pd_env_smoke
-python -m experiments.portfolio_constraints --profile smoke --stage all
-python -m experiments.portfolio_constraints --profile standard --stage train
-python -m experiments.portfolio_constraints --profile standard --stage evaluate
-python -m experiments.portfolio_constraints --profile standard --stage tail
-python -m experiments.portfolio_constraints --profile standard --stage ope
-python -m experiments.portfolio_constraints --profile standard --stage report
-python -m experiments.verify_portfolio --profile standard
-```
-
-**138 tests pass, with no failures or skips.** Standard paired evaluation took **12.94 minutes** with three worker processes (932 allocation decisions/s, including hidden-risk diagnostics and logging). Final PPO fits took **7.37 minutes** in aggregate; tail evaluation took **7.32 minutes** and OPE **0.99 minutes**, overlapping paired evaluation. Full is configured but not executed.
-
-Generate the PD artifact once before registering a portfolio run; retraining it changes the frozen experiment identity. `train` fits portfolio PPO; `evaluate` runs frozen paired policies; `tail` generates independent loss replications. `smoke`, `standard` and `full` budgets are declared in configuration; full is not a unit test or a completed result. Matching jobs resume; changed raw inputs require a separate preserved run. Compact results and figures are versionable; large models and raw logs are local generated artifacts.
-
-The independent-customer policy, robustness and OPE commands are:
-
-```shell
-python -m experiments.compare_policies --stage train
-python -m experiments.compare_policies --stage evaluate
-python -m experiments.robustness --profile standard --stage evaluate
-python -m experiments.robustness --profile standard --stage report
-python -m experiments.off_policy_evaluation --profile standard --stage evaluate
-python -m experiments.off_policy_evaluation --profile standard --stage report
-```
-
-They require their own selected customer-policy checkpoints. [Experiment guide](experiments/README.md) documents prerequisites and stages; [portfolio registry](outputs/experiments/portfolio/standard/manifest.json) records exact seeds, configurations, hashes and package versions.
-
-| Location | Responsibility |
-|---|---|
-| `src/credit_rl/simulation/` | Hidden longitudinal dynamics, macro paths and indexed shocks |
-| `src/credit_rl/risk/` | Point-in-time features, labels, PD estimation and calibration |
-| `src/credit_rl/envs/`, `policies/` | Customer environments, action guards and decision models |
-| `src/credit_rl/portfolio/` | Synchronized portfolio, risk accounting, allocation and reports |
-| `src/credit_rl/evaluation/` | Shared evaluation, shifted worlds, inference and OPE |
-| `experiments/`, `configs/`, `tests/` | Executable studies, declared settings and verification |
-| `outputs/{models,results,figures,experiments}/portfolio/` | Generated models, tables, plots and provenance |
-| `docs/` | Methods, measured results and limitations |
+The DGP is synthetic, with stylized behavior, non-calibrated structural coefficients, synthetic macro scenarios and simplified default/recovery mechanics. The PD target comes from that same synthetic system and can shift under a decision policy. Training uses a finite set of replayed customer paths. The reward includes soft proxies, ignores customer welfare and terminal receivables, and differs from net economic value. Myopic's approximate dynamics and PPO's compact observation limit comparisons. A small action menu, three training seeds and fixed macro interventions provide limited external validity. No real banking portfolio validation, regulatory calibration or deployment claim is made.

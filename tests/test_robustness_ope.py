@@ -6,7 +6,7 @@ import pytest
 import yaml
 
 from credit_rl import CreditLimitEnv, SimulationConfig
-from credit_rl.evaluation.worlds import sample_evaluation_world, build_worlds, make_cohort, in_world, perturb
+from credit_rl.evaluation.worlds import sample_evaluation_world, make_cohort, in_world, perturb
 from credit_rl.evaluation.sensors import ObservationSensor
 from credit_rl.evaluation.ope import trajectory_weights, estimates, MixturePolicy, SoftTarget
 from credit_rl.evaluation.policy_engine import evaluate_policy

@@ -1,9 +1,7 @@
 """Known-propensity logged episodes versus independent simulator Monte Carlo."""
 import argparse
-from dataclasses import replace
 from pathlib import Path
 from time import perf_counter
-import json
 import numpy as np
 import pandas as pd
 import torch

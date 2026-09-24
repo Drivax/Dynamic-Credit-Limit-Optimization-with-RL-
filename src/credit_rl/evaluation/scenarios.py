@@ -1,7 +1,5 @@
 """Immutable simulation inputs: held-out customers and reusable exogenous paths."""
 from dataclasses import dataclass
-import hashlib
-import json
 import numpy as np
 
 from credit_rl.simulation.customer import initialize_customer

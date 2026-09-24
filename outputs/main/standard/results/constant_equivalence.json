@@ -1,0 +1,17 @@
+[
+  {
+    "seed": 101,
+    "max_absolute_difference": 1.7053025658242404e-13,
+    "matched_rows": 6546
+  },
+  {
+    "seed": 202,
+    "max_absolute_difference": 1.7053025658242404e-13,
+    "matched_rows": 6546
+  },
+  {
+    "seed": 303,
+    "max_absolute_difference": 1.7053025658242404e-13,
+    "matched_rows": 6546
+  }
+]

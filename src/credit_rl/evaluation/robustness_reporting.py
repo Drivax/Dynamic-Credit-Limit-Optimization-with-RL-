@@ -1,5 +1,4 @@
 """Measured world distributions, mechanism diagnostics and reproducible figures."""
-from dataclasses import replace
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -94,7 +93,6 @@ def report(output, settings, benchmark, worlds):
     paired,wins,uncertainty,dominance=comparisons(episodes,settings)
     for name,frame in [('paired_comparisons',paired),('win_frequencies',wins),('uncertainty',uncertainty),('dominance',dominance)]: frame.to_csv(output/f'{name}.csv',index=False)
     random=world_metrics[(world_metrics.world_kind=='randomized')&(world_metrics.signal=='identity')]
-    public=random[random.policy.isin(SHOW)]
     meta={w.world_id:w for w in worlds}
     worst=[]
     for policy,g in random.groupby('policy'):

@@ -1,6 +1,10 @@
 # Reproducible experiments
 
-Run from the repository root after installing `.[dev,experiments]`.
+Run from the repository root after installing `.[dev,experiments,rl]`.
+
+The self-contained canonical entry point is `python -m credit_rl.experiments.main_evaluation --profile standard` (or `smoke`). It generates every required artifact under `outputs/main/<profile>`. Its fixed three-seed customer protocol is documented in the root README. The studies below are supplementary, with separate populations and frozen result registries. They do not consume the canonical checkpoints automatically.
+
+The customer PPO training adapter treats the finite economic horizon as terminal. Stored supplementary customer-policy results describe their recorded source hashes; regenerate their models in a fresh output directory to use the current adapter. Portfolio training already implements a finite terminal horizon.
 
 ## Longitudinal risk
 

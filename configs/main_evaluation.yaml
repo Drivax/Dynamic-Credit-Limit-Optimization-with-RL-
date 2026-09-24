@@ -1,0 +1,25 @@
+# Existing DGP, estimators and policies; no test-driven model selection.
+smoke:
+  pd_customers: 70
+  pd_boosting_iterations: 5
+  train_customers: 24
+  validation_customers: 8
+  test_customers: 12
+  ppo_seeds: [101]
+  total_timesteps: 128
+  n_steps: 64
+  batch_size: 64
+  validation_every: 128
+  bootstrap_repetitions: 20
+standard:
+  pd_customers: null
+  pd_boosting_iterations: 150
+  train_customers: 1500
+  validation_customers: 100
+  test_customers: 300
+  ppo_seeds: [101, 202, 303]
+  total_timesteps: 32768
+  n_steps: 512
+  batch_size: 128
+  validation_every: 8192
+  bootstrap_repetitions: 300
