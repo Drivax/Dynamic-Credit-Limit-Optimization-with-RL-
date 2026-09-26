@@ -35,16 +35,16 @@ One episode follows one customer for up to 24 monthly transitions. At month $t$,
 The DGP applies the limit change, evolves income, generates payment against opening principal, caps purchases by remaining headroom, updates delinquency and score, and samples default. Current macro factors drive this transition; the next macro state is revealed only afterward. Default is absorbing. A surviving episode ends at the finite horizon.
 
 ```mermaid
-flowchart LR
-    Hidden[Persistent hidden traits] --> Dynamics[Income / payment / spending]
-    Macro[Current macro] --> Dynamics
-    Observation[Observable history and estimated PD] --> Action[Limit action]
-    Action --> Dynamics
-    Dynamics --> Balance[Balance / utilization / delinquency]
-    Balance --> Default[Hidden hazard and realized default]
-    Balance --> Next[Next observation]
-    Default --> Next
-    Next --> Observation
+graph LR;
+    H["Persistent hidden traits"] --> D["Income, payment and spending"];
+    M["Current macro state"] --> D;
+    O["Observable history and estimated PD"] --> A["Limit action"];
+    A --> D;
+    D --> B["Balance, utilization and delinquency"];
+    B --> E["Hidden hazard and realized default"];
+    B --> N["Next observation"];
+    E --> N;
+    N --> O;
 ```
 
 For opening balance $B_t$, payment $P_t$, purchases $C_{t+1}$ and admitted limit $L'_t$,
@@ -84,7 +84,7 @@ The sum ends at rollout/episode boundaries. The PPO training adapter marks both 
 
 With likelihood ratio $r_t(\theta)=\pi_\theta(A_t\mid O_t)/\pi_{\theta_{old}}(A_t\mid O_t)$, PPO maximizes
 
-$$L^{clip}(\theta)=\mathbb E_t[\min(r_t\widehat A_t,\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)\widehat A_t)],\quad\epsilon=0.2.$$
+$$L^{clip}(\theta)=\mathbb E_t[\min(r_t\widehat A_t,\mathrm{clip}(r_t,1-\epsilon,1+\epsilon)\widehat A_t)],\quad\epsilon=0.2.$$
 
 A squared value loss and entropy bonus accompany the actor objective. Separate actor/critic networks have two 64-unit tanh layers. Rewards are scaled by 0.001 for training; reported money remains EUR. These approximations provide no optimality or real-world safety guarantee.
 
