@@ -1,8 +1,32 @@
-# Dynamic Credit-Limit Optimization under Partial Observability
+# Dynamic Credit Limit Optimization with Reinforcement Learning
 
-This repository studies repeated credit-limit decisions in a synthetic longitudinal population. A limit change affects payment incentives, available purchasing capacity, future balances and default exposure. A frozen probability-of-default (PD) model summarizes observable customer histories; policies never receive hidden customer traits or future shocks.
+This repository studies repeated credit-limit decisions in a fully synthetic longitudinal population. A limit change affects payment incentives, purchasing capacity, future balances and default exposure. A frozen probability-of-default (PD) model summarizes observable customer histories; policies never receive hidden customer traits or future shocks.
 
 The canonical experiment compares Static, PDThreshold (the risk-based rule), MyopicEconomic and PPO, with constant 20% contraction as an additional control. It uses held-out customers, common random numbers, three declared PPO seeds and baseline/stress macro paths. The simulator and economic assumptions are not calibrated to a real bank. Portfolio allocation, robustness and off-policy evaluation remain supplementary studies with their own protocols; their results must not be mixed with the individual-customer experiment.
+
+## At a glance
+
+| | Canonical experiment |
+|---|---|
+| **Decision** | Choose a monthly credit-limit multiplier from `{0.8, 0.9, 1.0, 1.1, 1.2}` |
+| **Setting** | 24-month, partially observed customer trajectories with absorbing default |
+| **Comparison** | Static, PDThreshold, MyopicEconomic, AlwaysDecrease20 and PPO |
+| **Evaluation** | 300 held-out customers, three PPO seeds and paired baseline/stress scenarios |
+| **Main finding** | PPO improves the specified monetary objective over Static and MyopicEconomic, but exactly reproduces the effective behavior of AlwaysDecrease20 on the evaluation panel |
+| **Scope** | Methodological evidence from a synthetic simulator; no deployment or real-world performance claim |
+
+Start with the [measured results](#measured-canonical-results), follow the [reproduction commands](#reproducing-the-results), or read the full [technical paper](docs/technical_paper.md).
+
+## Contents
+
+- [Model and decision chronology](#model-and-decision-chronology)
+- [From the DGP to PPO](#from-the-dgp-to-ppo)
+- [Credit-risk model and policies](#credit-risk-model-and-policies)
+- [Experimental protocol](#experimental-protocol)
+- [Measured canonical results](#measured-canonical-results)
+- [Reproducing the results](#reproducing-the-results)
+- [Repository structure](#repository-structure)
+- [Limitations](#limitations)
 
 ## Model and decision chronology
 
@@ -92,6 +116,8 @@ Confidence intervals use 300 crossed resamples of customers and PPO seeds. They 
 
 The following block is generated from `outputs/main/standard/results/`; it is shared with the paper. Risk-based and myopic names are the exact code names. The supplementary portfolio study has different policies, rewards and units.
 
+PPO has higher net value than MyopicEconomic by **EUR 505.82 per customer [282.94, 706.40]** under baseline conditions and **EUR 1,149.72 [994.17, 1,294.82]** under stress. Every PPO seed, however, reproduces the effective trajectories of constant 20% contraction to numerical precision on this evaluation panel (maximum checked difference: `1.71e-13`). PPO's default incidence is **14.33 percentage points higher** than MyopicEconomic under baseline conditions and **8.00 points higher** under stress, despite lower monetary losses. The experiment therefore supports exposure contraction under the specified objective; it does not demonstrate an advantage from learned planning. All policies have negative mean net economic value.
+
 <!-- canonical-results:start -->
 
 ### Baseline
@@ -147,12 +173,11 @@ The following block is generated from `outputs/main/standard/results/`; it is sh
 
 <!-- canonical-results:end -->
 
-![PD calibration](outputs/main/standard/figures/pd/calibration_deciles.png)
-![Risk and value](outputs/main/standard/figures/risk_value.png)
-![Observed PPO action map](outputs/main/standard/figures/ppo_policy_map.png)
-![Paired trajectory](outputs/main/standard/figures/paired_trajectory.png)
-
-PPO has higher net value than MyopicEconomic by **505.82 EUR/customer [282.94, 706.40]** under baseline and **1,149.72 [994.17, 1,294.82]** under stress. But every PPO seed reproduces the effective trajectories of constant 20% contraction to numerical precision on this evaluation panel (maximum checked difference 1.71e-13). Its default incidence is **14.33 percentage points higher** than Myopic under baseline and **8.00 points higher** under stress, despite lower monetary losses. These results support exposure contraction under the specified objective, not a demonstrated advantage from learned planning. All policies have negative mean net value.
+| PD calibration | Risk and economic value |
+|---|---|
+| ![Calibration of predicted default probabilities by decile](outputs/main/standard/figures/pd/calibration_deciles.png) | ![Default risk and net economic value by policy and scenario](outputs/main/standard/figures/risk_value.png) |
+| **Observed PPO action map** | **Paired example trajectory** |
+| ![Mean PPO action across visited risk and utilization states](outputs/main/standard/figures/ppo_policy_map.png) | ![Paired policy trajectories for one preselected held-out customer](outputs/main/standard/figures/paired_trajectory.png) |
 
 The empirical action map averages requested changes across visited states, all PPO seeds and both scenarios. Empty bins contain no observations. It describes behavior and is not causal evidence. The trajectory is the first held-out customer by identifier, selected without examining outcomes. There is no established evidence here that PPO sacrifices immediate value to recover more value later; constant contraction is retained specifically to challenge that interpretation.
 
@@ -210,13 +235,13 @@ src/credit_rl/
   evaluation/            Paired metrics, inference and supplementary studies
   portfolio/             Coupled portfolio allocation
   experiments/           Canonical orchestration and report generation
-experiments/             Supplementary entry points and isolated archive
+experiments/             Supplementary experiment entry points
 outputs/main/standard/   Canonical results, figures and provenance
 tests/                  Scientific invariants and integration
 docs/                   Methods, paper and audit
 ```
 
-[Technical working paper](docs/technical_paper.md), [finalization audit](docs/finalization_audit.md), and [supplementary experiment guide](experiments/README.md). Portfolio measurements are documented separately in [portfolio results](docs/portfolio_results.md); robustness and OPE in [their report](docs/robustness_results.md). These broader studies are not rerun by the canonical customer command.
+Further documentation: [technical working paper](docs/technical_paper.md), [finalization audit](docs/finalization_audit.md), [repository inventory](docs/repository_inventory.csv) and [supplementary experiment guide](experiments/README.md). Portfolio measurements are documented separately in [portfolio results](docs/portfolio_results.md); robustness and OPE appear in [their report](docs/robustness_results.md). These broader studies are not rerun by the canonical customer command.
 
 ## Limitations
 

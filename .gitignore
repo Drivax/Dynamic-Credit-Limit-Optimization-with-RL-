@@ -18,8 +18,6 @@ coverage.json
 .DS_Store
 Thumbs.db
 outputs/*
-!outputs/legacy/
-outputs/legacy/artifacts/
 # Small, reproducible PD report assets used by the GitHub README.
 !outputs/figures/
 outputs/figures/*
@@ -153,3 +151,4 @@ outputs/main/standard/results/pd/*
 !outputs/main/standard/figures/
 .venv-*/
 .clean-clone/
+.clean-validation/

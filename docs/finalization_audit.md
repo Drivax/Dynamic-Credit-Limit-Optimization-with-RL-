@@ -15,10 +15,10 @@ The initial Git working tree was clean. The inventory contained 292 tracked file
 | Canonical results/figures | Regenerate in outputs/main/standard; retain small tables, figures and manifests |
 | Models/raw histories | Reproducibly generated, ignored by Git |
 | Supplementary results | Preserve separate portfolio, robustness and OPE protocols and their recorded provenance |
-| Archive | Retain isolated experiments/legacy and outputs/legacy with explicit historical disclaimer |
+| Archive | Delete invalid row-based source, generated results and migration reports after audit |
 | Temporary files | Ignore tool caches, coverage output, validation environments and clean-source snapshot |
 
-The largest tracked initial file was an archived policy decision CSV (3.48 MB). It is not a canonical input. Archived source contains known invalid row-based methodology and incomplete sketches, explicitly documented in `experiments/legacy/ARCHIVE.md`; it remains isolated from imports, lint and reproduction. This material was not silently reclassified as scientific evidence. Large ignored local studies and checkpoints were not deleted merely for being generated, because their existing audit reports reference them.
+The largest tracked initial file was an archived policy decision CSV (3.48 MB). It was not a canonical input. The archived source contained independent rows per step, no longitudinal action feedback, nonabsorbing defaults, double-counted losses, test-driven tuning and incomplete sketches. After explicit authorization, the obsolete source, generated plots/CSVs and migration reports were deleted. Git history remains the recovery mechanism. Current supplementary portfolio, robustness and OPE studies were retained because their methods and provenance remain relevant.
 
 ## Findings and changes
 
@@ -32,6 +32,8 @@ No DGP coefficient, default mechanism, model class, policy family, action space 
 
 **Tests/CI:** the initial 138 tests passed, with 64.90% package coverage. Added tests run two independently fitted end-to-end smoke experiments, compare deterministic CSV outputs, replay frozen models, validate report synchronization and failure on nonfinite metrics, check manually computable accounting, and prevent horizon bootstrapping. The GitHub Actions workflow installs extras, lints, runs coverage with a 70% total threshold and executes a separate smoke command on Ubuntu/Windows Python 3.12. No source module is excluded from coverage to obtain that threshold. YAML syntax, commands and trigger/matrix fields were validated locally; hosted Actions has not been dispatched by this local task.
 
+Final post-cleanup validation reports 141 passed, zero failed/skipped, 393.71 seconds and 71.56% total coverage. The same 141 tests also passed from the clean publishable-file snapshot in 178.84 seconds with the same coverage, followed by a successful independent smoke experiment.
+
 **Reporting:** README and paper share a generated result block. DGP equations, reward components, target maturity, policy information, bootstrap units and hyperparameters were checked against source/configuration. Main figures were regenerated and visually inspected. Table values and file links are checked against canonical outputs. No literature citation, affiliation, venue or DOI was invented.
 
 ## Preserved scientific boundaries
@@ -44,4 +46,4 @@ The canonical result is negative for a strong planning interpretation: all PPO s
 
 Python 3.12.14 on Windows was used for measured results. A separate virtual environment was installed from scratch, then pointed at a clean source snapshot containing only publishable files, without ignored models or generated datasets. The full test suite and a fresh smoke experiment ran there. Numerical reproducibility is verified on the same software/platform, not asserted bit-for-bit across arbitrary library versions or CPUs.
 
-Supplementary reporting modules remain less covered than the scientific core. Archived prototype code remains intentionally non-executable historical context. The complete supplementary portfolio/robustness/OPE studies were preserved but not rerun during this canonical-customer finalization. Their existing reports describe frozen source/configuration identities and must not be confused with newly generated results. No full profile or real-bank validation is claimed.
+Supplementary reporting modules remain less covered than the scientific core. The complete supplementary portfolio/robustness/OPE studies were preserved but not rerun during this canonical-customer finalization. Their existing reports describe frozen source/configuration identities and must not be confused with newly generated results. No full profile or real-bank validation is claimed.

@@ -65,7 +65,7 @@ python -m experiments.train_ppo --timesteps 256 --output outputs/pd_ppo_check
 
 The default PD artifact is `outputs/models/pd/logistic_calibrated.joblib`; override with `--pd-model`. This command loads the longitudinal risk model and checks Gymnasium/SB3 compatibility, including saving/reloading PPO. It is a short integration check, not a policy performance claim. Risk thresholds and reward coefficients need economic validation for the supplied PD horizon.
 
-`trajectory_sanity.py` remains an independent snapshot-adapter diagnostic; its snapshot targets and probabilities are not the longitudinal PD experiment. `legacy/` is isolated from the active package and is not part of reproduction.
+`trajectory_sanity.py` remains an independent snapshot-adapter diagnostic; its snapshot targets and probabilities are not the longitudinal PD experiment.
 
 
 ## Risk-constrained portfolios

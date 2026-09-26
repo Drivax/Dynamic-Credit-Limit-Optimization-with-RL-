@@ -204,8 +204,8 @@ At headroom constraints the realized response differs.
 
 Existing debt can exceed the reduced limit and is not forgiven. New purchases are
 zero when post-payment debt exceeds the limit. Utilization is never clipped to one.
-Interest/fees are **not capitalized**; B is principal only. This preserves the Sprint 1
-accounting convention and avoids silently changing exposure and reward simultaneously.
+Interest/fees are **not capitalized**; B is principal only. This keeps exposure and
+reward accounting separate and prevents implicit compounding of modeled cash flows.
 
 ### Behavioral score
 
@@ -289,13 +289,12 @@ CRN means the same shocks, not identical realized behavior: distributions/thresh
 change endogenously with state and macro. Once one policy defaults, its future path
 is unused; surviving policies continue with the original indexed shocks.
 
-## Information boundary and scientific history
+## Information boundary
 
 Agent-facing observations/info and `get_history()` exclude hazard, hidden traits and
-future/shock values. The 21 observation dimensions retain the original 15 meanings
-(macro stress now bounded continuous), add observed income log change, two current
-macro growth factors and three regime indicators. `OBSERVATION_NAMES` is the schema.
-21-feature checkpoints are incompatible with 15-feature Sprint 1 checkpoints.
+future/shock values. The 21 observation dimensions include customer financial and
+behavioral quantities, observed income change, current macro factors and regime
+indicators. `OBSERVATION_NAMES` is the canonical ordered schema.
 
 `record_diagnostics=True` explicitly enables `get_diagnostics()` with closing hazard,
 realized default, requested/effective changes, pre-limit, spending/payment, observed
@@ -346,4 +345,4 @@ estimator is mutated. History recording can be disabled for training/benchmarkin
   statistical precision is not model-validity evidence. No policy winner is imposed.
 
 The version, complete resolved config, seed, horizon, macro scenario and source hashes
-are saved per experiment. Historical Sprint 1 results retain their original meaning.
+are saved per experiment.

@@ -76,13 +76,9 @@ def run(profile="smoke", output=None, config_dir="configs", stage="all"):
     manifest = output / "manifest.json"
     if manifest.exists() and json.loads(manifest.read_text())["identity"] != identity:
         raise ValueError("Inputs changed; use a fresh --output directory")
-    if stage == "figures":
-        from .report_assets import report
-        verify(output)
-        report(output)
-        return output
     source_hashes = {str(p.relative_to(Path(__file__).parents[1])): digest(p)
                      for p in sorted(Path(__file__).parents[1].rglob("*.py"))}
+
     def scientific_sources(hashes):
         # Rendering/orchestration edits do not invalidate fitted estimators;
         # expanded experiment parameters are already part of identity above.
@@ -93,6 +89,11 @@ def run(profile="smoke", output=None, config_dir="configs", stage="all"):
         raise ValueError("Source changed; use a fresh --output directory")
     write_manifest(manifest, config, identity_data, identity=identity, profile=profile,
                    experiment="main_customer_evaluation", package_sha256=source_hashes)
+    if stage == "figures":
+        from .report_assets import report
+        verify(output)
+        report(output)
+        return output
     pd_path = output / "models/pd/logistic_calibrated.joblib"
     with threadpool_limits(limits=1):
         if not pd_path.exists() or not (output / "results/pd/manifest.json").exists():

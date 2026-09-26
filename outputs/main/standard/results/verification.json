@@ -1,0 +1,28 @@
+{
+  "summary.csv": {
+    "exact_numeric_replay": true,
+    "rows": 10,
+    "sha256": "d6d599529ab04246325d07b21009a155248d9311e60f19df13595b2afa90ab0a"
+  },
+  "episode_metrics.csv": {
+    "exact_numeric_replay": true,
+    "rows": 4200,
+    "sha256": "407f4ae337d16b8c929cec17d5c708402824321a503d6bf535b8f68a0fd7b56a"
+  },
+  "paired_comparisons.csv": {
+    "exact_numeric_replay": true,
+    "rows": 64,
+    "sha256": "b8c6c8dc3a1ba80cb2ccc23e946ba48f0bb0ddcbbbbc8be78a5977eefc5a84af"
+  },
+  "README.md": {
+    "generated_table_matches": true,
+    "relative_links_exist": true
+  },
+  "docs/technical_paper.md": {
+    "generated_table_matches": true,
+    "relative_links_exist": true
+  },
+  "figures": {
+    "all_exist": true
+  }
+}
