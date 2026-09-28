@@ -1,0 +1,8 @@
+{
+  "action_values": true,
+  "action_dominance": true,
+  "action_gaps": true,
+  "reward_decomposition": true,
+  "planning_opportunity": true,
+  "action_constraints": true
+}

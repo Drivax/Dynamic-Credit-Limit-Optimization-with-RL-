@@ -1,0 +1,8 @@
+{
+  "action_values": "3932231bc0dbf226b468a47720140f59d81fdd46a5316b6c23a25910f0215d1b",
+  "action_dominance": "807e48c22703099203a142567149a2d71549ce4258dcb15b52b19754e37814d8",
+  "action_gaps": "50d2059f50ffa286a1c42a461cb5a0edfafa4259c55f366b5f48dbf6378e960f",
+  "reward_decomposition": "9bc40f2ba1c57ed99466ef17f4e31b9aa11bd15d9179f27767d5dea7af2a5ced",
+  "planning_opportunity": "402ab4f481855e2c7f85cfa25a15b4e6df77b1dd48005cd3930cbed5c875f4e2",
+  "action_constraints": "9004621a6346f25e7a3421049bfe82fc0a441d38bddebbf7a4e5bf0c8d9e8700"
+}

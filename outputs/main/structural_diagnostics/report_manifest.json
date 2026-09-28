@@ -1,0 +1,37 @@
+{
+  "generator_sha256": "a5110ba44da12e6d0f9836c4d4c10890f940aa23918651a93c39a578ec74c436",
+  "table_sha256": {
+    "action_constraints.csv": "9004621a6346f25e7a3421049bfe82fc0a441d38bddebbf7a4e5bf0c8d9e8700",
+    "action_dominance.csv": "807e48c22703099203a142567149a2d71549ce4258dcb15b52b19754e37814d8",
+    "action_gaps.csv": "50d2059f50ffa286a1c42a461cb5a0edfafa4259c55f366b5f48dbf6378e960f",
+    "action_maps.csv": "8a583f9ffa3b20a18fa59adc02aa270b012f33c7d97cf8eca550cc4a455e65db",
+    "action_persistence.csv": "3fe18f415b34f3470a665112f4ed02f737e8b0c3cd67161e7a10e328a243b7d4",
+    "action_values.csv": "3932231bc0dbf226b468a47720140f59d81fdd46a5316b6c23a25910f0215d1b",
+    "effective_action_gaps.csv": "8e16f73b0ac6eb5fc42c1be1d421dd3355b117ee48877dbfdb53916948263850",
+    "gap_summary.csv": "48d8ef196dca26adf44fbef118cbde32283b4322d97ab5de73e44b141075e583",
+    "limit_floor.csv": "834cc484573ad154d9e9c453be988d90a064956ccbf52f6c420692aa2269a1a9",
+    "mc_precision.csv": "865497b623f64188e1b6c791a655ba600d6f9e111bca2ffc11177049faf743de",
+    "persistent_state_effects.csv": "f46e46821f99fe2f0f521aa231d36ba3aa06636fa6006640116daba77031f6d0",
+    "planning_opportunity.csv": "402ab4f481855e2c7f85cfa25a15b4e6df77b1dd48005cd3930cbed5c875f4e2",
+    "planning_summary.csv": "647b55ed3974205ef02ec4450efdf415bc2e2fc5685be5dcceb20d19f85f7683",
+    "planning_validation.csv": "1d014a7bb1bceb438bb59df35904e7a368a7b4c2aff54d99a03451c24a86bf43",
+    "planning_validation_summary.csv": "ab178c5d9733f41975ce1516aeefbfc0ccd743e3efa7a7a1b91168a14d2ffab8",
+    "policy_collapse.csv": "a20e5f0fd5466e773ee1a7d3cbb681afde04e0a05709d67f3c5e19cb7e9ca6a8",
+    "policy_value_decomposition.csv": "47005db050bf747719afb7c0e904436a774fb1ed36e6a91526fdc7fc9a7c740e",
+    "ppo_disagreement_states.csv": "cadb580c76a8198a490c3503a5aeb1dc102b7d06d748c21368cf430faa693fa7",
+    "reward_decomposition.csv": "9bc40f2ba1c57ed99466ef17f4e31b9aa11bd15d9179f27767d5dea7af2a5ced",
+    "sensitivity.csv": "90f2517bbed9d7007bd3053eabbdeb40c9f963af853d91a793b267f85fec7402",
+    "sensitivity_states.csv": "c0e01d64f818e5ebb6743af4fcd201c34021e528598d015b1d8cdca9427d570a",
+    "sensitivity_summary.csv": "008627f91f423c0a8c3d11538c5de5cc23913d3ad3fd9a2b8f18645675506954",
+    "state_profile_dominance.csv": "7aac87a6316f5b26c944b711c09e51d2b8c3d6f625cdce097fb7a9e45159b0a4",
+    "state_support.csv": "24b92a049395f54069157cca0e47f7119fc9443540d9e4104669082c93005276",
+    "states.csv": "1a3c31c873620de9cb722894c7b8256b9fc5190661dd07209edd361c28c9df0d"
+  },
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "matplotlib": "3.11.2",
+    "scikit-learn": "1.9.1",
+    "stable-baselines3": "2.9.0"
+  }
+}

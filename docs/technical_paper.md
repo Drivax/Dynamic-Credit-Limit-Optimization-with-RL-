@@ -227,6 +227,38 @@ The displayed customer is the lexicographically first test ID, selected before i
 
 Stress jointly changes income growth, spending growth and credit stress. It affects income volatility and adverse-income shocks, repayment/missed-payment probabilities and default hazard. Table comparisons retain the same customers and indexed uniforms/normals, while changed thresholds induce different realized events. A higher default fraction can coexist with lower losses when exposure is reduced; monetary loss and incidence are distinct outcomes. Scenario comparisons are conditional interventions inside the specified simulator.
 
+## 10a. Structural diagnosis
+
+PPO initially appeared economically better than Static and MyopicEconomic. The
+additional AlwaysDecrease20 baseline showed that all three PPO seeds reproduce
+its effective behavior on the canonical panel. This challenges the interpretation
+that the observed improvement resulted from sophisticated learned planning.
+
+We therefore diagnose the existing reward, DGP, constraints, floor and finite
+horizon, without modifying any of them. Full-state Monte Carlo compares all five
+initial requests with indexed common random numbers, horizons 1/3/6/12/remaining,
+Static/MyopicEconomic/AlwaysDecrease20/frozen-PPO continuation, and five discount
+factors. The sampled states are actual visits under held-out baseline trajectories;
+inverse inclusion weights restore the pooled visitation measure. These are
+privileged Q_H(s,a; continuation) estimates, not Q*, belief-state values or a
+same-information bound for PPO. Split-draw evaluation separates action selection
+from estimation of planning opportunity. See the [structural diagnosis](structural_diagnosis.md)
+for the causal audit, support, MC precision, accounting and local OAT sensitivity.
+
+<!-- structural-summary:start -->
+
+On 72 sampled visited full states, maximum contraction is the estimated best admissible request in 37.6% of weighted states at one step and 60.1% over the remaining horizon with AlwaysDecrease20 continuation. The preferred request changes between these horizons in 43.6% of states. Split-draw planning opportunity is EUR 58.47 of discounted training reward per sampled decision (conditional MC interval [50.92, 66.02]). This is privileged simulator evidence of state-dependent continuation values, not Q* or an attainable PPO gain. The canonical PPO/AlwaysDecrease20 effective equivalence remains; PPO has not demonstrated exploitation of this opportunity.
+
+<!-- structural-summary:end -->
+
+The floor explains differences between requested and effective actions, while
+exposure loss, funding and the additional PD-based capital proxy explain the
+economic advantage of contraction over several baseline policies. Neither that
+advantage nor exact PPO equivalence proves that every visited state's optimum is
+contraction. The diagnostic cannot establish that privileged planning opportunity
+is recoverable from PPO's compact observation. It is not a redesign or correction
+of the model, and the negative PPO result remains part of the conclusion.
+
 ## 11. Limitations
 
 All customer behavior, latent distributions, macro transition probabilities and structural coefficients are synthetic and not fitted to bank data. The closed book shrinks after default. Simplified repayment, principal-only accounting, fixed LGD and omitted terminal receivables affect the incentive to contract. The five-action menu limits expressiveness. The reward's PD-dependent charges are not regulatory capital, and real borrower welfare is absent.

@@ -28,6 +28,27 @@ def test_end_to_end_fresh_runs_and_frozen_replay(tmp_path):
     doc.write_text("Intro\n<!-- canonical-results:start -->\nstale\n<!-- canonical-results:end -->\nEnd")
     update_docs(first, [doc])
     assert "stale" not in doc.read_text() and "PD test performance" in doc.read_text()
+    # Run the structural layer against actual frozen PD/PPO smoke artifacts.
+    # It must neither refit nor mutate the canonical experiment, and replay must
+    # regenerate the same scientific tables and figures from cached CRN draws.
+    from argparse import Namespace
+    from credit_rl.experiments.structural_diagnostics import run as structural_run
+    diagnostic = tmp_path / 'structural'
+    frozen = (first / 'results/model_hashes.json').read_bytes()
+    args = Namespace(output=diagnostic, canonical=first, profile='smoke',
+                     draws=8, per_stratum=1, seed=92801, resume=False)
+    structural_run(args)
+    names = ('action_values', 'action_gaps', 'action_dominance', 'planning_opportunity',
+             'reward_decomposition', 'action_constraints', 'sensitivity')
+    tables = {name: pd.read_csv(diagnostic / f'{name}.csv') for name in names}
+    assert np.allclose(tables['reward_decomposition'].reward_error, 0, atol=1e-8)
+    assert np.allclose(tables['reward_decomposition'].net_identity_error, 0, atol=1e-8)
+    assert (diagnostic / 'figures/optimal_action_map.png').stat().st_size > 1000
+    args.resume = True
+    structural_run(args)
+    for name, table in tables.items():
+        pd.testing.assert_frame_equal(table, pd.read_csv(diagnostic / f'{name}.csv'), check_exact=True)
+    assert frozen == (first / 'results/model_hashes.json').read_bytes()
     corrupted = before.copy()
     corrupted.loc[0, "net_economic_value"] = np.inf
     corrupted.to_csv(first / "results/summary.csv", index=False)

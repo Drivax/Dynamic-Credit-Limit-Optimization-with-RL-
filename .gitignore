@@ -152,3 +152,14 @@ outputs/main/standard/results/pd/*
 .venv-*/
 .clean-clone/
 .clean-validation/
+
+# Compact structural diagnosis; Monte Carlo draws and transition-level tables stay local.
+!outputs/main/structural_diagnostics/
+outputs/main/structural_diagnostics/*
+!outputs/main/structural_diagnostics/*.csv
+!outputs/main/structural_diagnostics/*.json
+!outputs/main/structural_diagnostics/*.md
+!outputs/main/structural_diagnostics/figures/
+outputs/main/structural_diagnostics/action_values.csv
+outputs/main/structural_diagnostics/reward_decomposition.csv
+outputs/main/structural_diagnostics/ppo_disagreement_states.csv

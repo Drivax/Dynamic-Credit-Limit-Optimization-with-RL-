@@ -24,6 +24,7 @@ Start with the [measured results](#measured-canonical-results), follow the [repr
 - [Credit-risk model and policies](#credit-risk-model-and-policies)
 - [Experimental protocol](#experimental-protocol)
 - [Measured canonical results](#measured-canonical-results)
+- [Structural diagnosis](#structural-diagnosis)
 - [Reproducing the results](#reproducing-the-results)
 - [Repository structure](#repository-structure)
 - [Limitations](#limitations)
@@ -180,6 +181,23 @@ PPO has higher net value than MyopicEconomic by **EUR 505.82 per customer [282.9
 | ![Mean PPO action across visited risk and utilization states](outputs/main/standard/figures/ppo_policy_map.png) | ![Paired policy trajectories for one preselected held-out customer](outputs/main/standard/figures/paired_trajectory.png) |
 
 The empirical action map averages requested changes across visited states, all PPO seeds and both scenarios. Empty bins contain no observations. It describes behavior and is not causal evidence. The trajectory is the first held-out customer by identifier, selected without examining outcomes. There is no established evidence here that PPO sacrifices immediate value to recover more value later; constant contraction is retained specifically to challenge that interpretation.
+
+## Structural diagnosis
+
+PPO's equivalence with constant contraction prompted a diagnosis of immediate
+economics, continuation values, action constraints and the limit floor. The DGP,
+reward and PPO training remain unchanged. The [structural report](docs/structural_diagnosis.md)
+separates observed policy collapse from claims about optimal actions and planning.
+
+<!-- structural-summary:start -->
+
+On 72 sampled visited full states, maximum contraction is the estimated best admissible request in 37.6% of weighted states at one step and 60.1% over the remaining horizon with AlwaysDecrease20 continuation. The preferred request changes between these horizons in 43.6% of states. Split-draw planning opportunity is EUR 58.47 of discounted training reward per sampled decision (conditional MC interval [50.92, 66.02]). This is privileged simulator evidence of state-dependent continuation values, not Q* or an attainable PPO gain. The canonical PPO/AlwaysDecrease20 effective equivalence remains; PPO has not demonstrated exploitation of this opportunity.
+
+<!-- structural-summary:end -->
+
+Reproduce locally with `python -m credit_rl.experiments.structural_diagnostics`
+after generating the canonical artifacts. Tables, figures and provenance are in
+`outputs/main/structural_diagnostics/`.
 
 ## Reproducing the results
 
