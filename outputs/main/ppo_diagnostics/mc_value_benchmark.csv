@@ -1,0 +1,9 @@
+benchmark,scenario,region,states,bias,rmse,r2,estimand
+SupervisedMCValue,baseline,all,100,29.520564388307516,704.4083702161795,0.9047035596376083,deterministic PPO101 continuation; critic trained under stochastic actor
+SupervisedMCValue,baseline,mc_best_not_contraction,40,-72.25345406684416,505.9125730249859,0.9039798127942191,deterministic PPO101 continuation; critic trained under stochastic actor
+SupervisedMCValue,severe_stress,all,100,182.85240653390946,616.49931093802,0.9024514443142619,deterministic PPO101 continuation; critic trained under stochastic actor
+SupervisedMCValue,severe_stress,mc_best_not_contraction,18,-45.78187823031167,525.6947185760249,0.9543420147638887,deterministic PPO101 continuation; critic trained under stochastic actor
+CanonicalCritic,baseline,all,100,217.0455921364872,1418.0092733698514,0.6138235331228259,deterministic PPO101 continuation; critic trained under stochastic actor
+CanonicalCritic,baseline,mc_best_not_contraction,40,-127.24605082317107,1008.069189635013,0.618765420924957,deterministic PPO101 continuation; critic trained under stochastic actor
+CanonicalCritic,severe_stress,all,100,620.9658706101574,1452.4292523868417,0.4585658722050311,deterministic PPO101 continuation; critic trained under stochastic actor
+CanonicalCritic,severe_stress,mc_best_not_contraction,18,246.70181146443304,1803.8041545227939,0.46243834628552594,deterministic PPO101 continuation; critic trained under stochastic actor

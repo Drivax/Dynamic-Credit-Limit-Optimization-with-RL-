@@ -376,3 +376,90 @@ hazard holding other inputs fixed; better z lowers it. Policy effects need not b
 monotonic: increased headroom can lower utilization and raise repayment while also
 raising purchases/exposure. Different customers can have different responses.
 
+<!-- information-gap:start -->
+## Information and planning gap
+
+PPO's canonical effective contraction behavior is preserved. Phase A established
+that maximum contraction is not universally optimal under privileged conditional
+planning. Phase B tests how much of this opportunity is recovered from the 21D
+observation, observable history and a separately typed privileged state estimator.
+Customer-disjoint fitting/validation/test and split-draw evaluation prevent target
+reuse. Every planner is evaluated by the canonical simulator and accounting engine.
+
+| scenario | policy | discounted_reward | net_economic_value | default_rate |
+| --- | --- | --- | --- | --- |
+| baseline | AlwaysDecrease20 | -2102.25 | -746.14 | 0.68 |
+| baseline | FullStatePlanner | -2078.85 | -578.51 | 0.61 |
+| baseline | HistoryPlanner | -2100.50 | -613.22 | 0.60 |
+| baseline | MyopicEconomic | -4705.91 | -1364.31 | 0.53 |
+| baseline | ObservationPlanner | -2058.12 | -663.04 | 0.60 |
+| baseline | PPO | -2102.25 | -746.14 | 0.68 |
+| severe_stress | AlwaysDecrease20 | -2545.69 | -1200.57 | 0.95 |
+| severe_stress | FullStatePlanner | -2608.84 | -1128.93 | 0.93 |
+| severe_stress | HistoryPlanner | -2621.15 | -1171.98 | 0.95 |
+| severe_stress | MyopicEconomic | -4846.57 | -2180.11 | 0.84 |
+| severe_stress | ObservationPlanner | -2576.22 | -1165.73 | 0.95 |
+| severe_stress | PPO | -2545.69 | -1200.57 | 0.95 |
+
+| scenario | gap | difference | lower | upper |
+| --- | --- | --- | --- | --- |
+| baseline | observable_planning | 2647.79 | 1917.54 | 3367.28 |
+| baseline | history | -42.37 | -83.96 | -4.07 |
+| baseline | privileged | 21.65 | -12.41 | 61.50 |
+| baseline | ppo_gap | 44.13 | 9.12 | 87.13 |
+| severe_stress | observable_planning | 2270.36 | 1793.71 | 2818.32 |
+| severe_stress | history | -44.94 | -86.87 | -7.09 |
+| severe_stress | privileged | 12.31 | -60.55 | 73.64 |
+| severe_stress | ppo_gap | -30.53 | -65.38 | -3.85 |
+
+The descriptive classification is **unresolved with current evidence**. Recommendation:
+A PPO optimization and representation experiment. Stratify by macro scenario: the supported gap reverses sign across scenarios. These gaps are not a causal decomposition: supervised approximation,
+validation-selected target horizons and fixed-continuation/repeated-greedy mismatch
+remain confounders. FullStatePlanner is not Q* or a guaranteed bound. Intervals
+condition on fitted models and MC targets. The [full report](information_planning_gap.md)
+documents latent predictability, ablations, actual GAE replay, stochastic critic
+calibration, conditional exploration and PPO counterfactual regret. Phase C is not
+implemented and Phase A artifacts remain unchanged.
+
+<!-- information-gap:end -->
+
+<!-- ppo-diagnostics:start -->
+## Phase C: PPO optimization and representation diagnosis
+
+The preceding Phase B section is retained as the historical result at that stage.
+Phase C now follows its finding that current public observations contain useful
+decision information. It preserves the canonical result, DGP and economic reward.
+The implementation reproduces the original selected and final PPO weights for
+seeds 101, 202 and 303, adds two canonical seeds, and evaluates 102 preregistered
+training runs on a new paired 100-customer cohort under baseline and severe stress.
+
+Greedy contraction exceeds 95% after 512–1,536 steps; strong stochastic contraction
+comes much later, if at all within the canonical budget. Early normalized
+advantages favor contraction, while the initial critic has substantial MC error.
+Improving critic accuracy alone does not restore a better state-dependent policy.
+A validation/mechanism-only rule selects λ=0 for a two-level confirmation with
+five fresh seeds per cell. This delays collapse by 3,481.6 steps (95% paired-seed
+CI [1,587.2, 5,171.2]), but selected-policy reward and net economic value are exactly
+unchanged on the paired test cohort in both scenarios.
+
+Longer training provides a different, exploratory result: 262,144 steps recover
+some state dependence in the unchanged actor architecture. Relative to canonical
+PPO, discounted reward improves by 75.79 EUR/customer in baseline
+(95% paired customer/seed CI [9.29, 160.81]), versus −12.39 EUR in severe stress
+([−33.98, 0.68]). The treatment-by-scenario interaction is −88.19 EUR
+([−183.26, −16.29]). Baseline net economic value increases by 132.65 EUR
+([48.97, 240.31]). These three-seed exploratory comparisons are not multiplicity-
+adjusted or fresh-seed confirmation of the budget effect.
+
+Supervised imitation learns only part of the planner boundary; a richer actor
+does not consistently improve fidelity. Extended-budget fitted teacher regret
+increases, and the independent fixed-continuation regret reduction is inconclusive.
+Policy-value improvement therefore does not establish complete boundary recovery.
+The decision gate is **ScenarioDependent + Unresolved**: economic consequences
+depend on scenario, while the separate causal roles of advantage estimation,
+critic error, exploration and actor optimization remain incompletely identified.
+Temporal ordering is not treated as causal identification, and no new phase is
+implemented. The [full quantitative report](ppo_optimization_diagnosis.md)
+contains all interventions, negative results, thirteen CSV-derived figures,
+selection rules and reproducibility commands.
+<!-- ppo-diagnostics:end -->

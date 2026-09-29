@@ -1,5 +1,6 @@
 """PPO on a fixed training population; validation-only checkpoint selection."""
 import json
+from copy import deepcopy
 from pathlib import Path
 from time import perf_counter
 
@@ -7,7 +8,7 @@ import numpy as np
 import pandas as pd
 import torch
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.callbacks import BaseCallback, CallbackList
 from stable_baselines3.common.logger import configure
 from stable_baselines3.common.monitor import Monitor
 
@@ -97,21 +98,24 @@ class ValidationCheckpoint(BaseCallback):
 
 
 def train_agent(config, pd_model, settings, train, validation, *, seed, destination, without_pd=False,
-                overrides=None, total_timesteps=None):
+                overrides=None, total_timesteps=None, diagnostic_callback=None, model_class=None):
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     torch.set_num_threads(1)
     torch.use_deterministic_algorithms(True)
     p = {**settings["ppo"], **(overrides or {})}
-    env = Monitor(TrainingEnvironment(train, pd_model, config, settings, without_pd), str(destination/"episodes"))
-    model = PPO("MlpPolicy", env, seed=seed, device="cpu", verbose=0,
-        policy_kwargs=dict(net_arch=dict(pi=p["network"], vf=p["network"])),
+    effective_settings = deepcopy(settings)
+    effective_settings['ppo'] = p
+    env = Monitor(TrainingEnvironment(train, pd_model, config, effective_settings, without_pd), str(destination/"episodes"))
+    model = (model_class or PPO)("MlpPolicy", env, seed=seed, device="cpu", verbose=0,
+        policy_kwargs=dict(net_arch=dict(pi=p.get('actor_network', p["network"]), vf=p.get('critic_network', p["network"]))),
         **{key: p[key] for key in ("learning_rate", "gamma", "gae_lambda", "clip_range", "n_steps", "batch_size",
                                   "n_epochs", "ent_coef", "vf_coef", "max_grad_norm")})
     model.set_logger(configure(str(destination), ["csv"]))
-    callback = ValidationCheckpoint(seed, validation, config, pd_model, settings, destination, without_pd)
+    callback = ValidationCheckpoint(seed, validation, config, pd_model, effective_settings, destination, without_pd)
     tick = perf_counter()
-    model.learn(total_timesteps=total_timesteps or p["total_timesteps"], callback=callback, log_interval=1)
+    callbacks = callback if diagnostic_callback is None else CallbackList([callback, diagnostic_callback])
+    model.learn(total_timesteps=total_timesteps or p["total_timesteps"], callback=callbacks, log_interval=1)
     seconds = perf_counter()-tick
     model.save(destination/"final")
     selected = PPO.load(destination/"selected", device="cpu")
@@ -124,7 +128,7 @@ def train_agent(config, pd_model, settings, train, validation, *, seed, destinat
         training_steps_per_second=model.num_timesteps/max(seconds-callback.evaluation_seconds, 1e-9),
         selected_timesteps=callback.best_steps, validation_score=callback.best_score,
         criterion="maximum validation mean discounted raw reward, earliest on tie",
-        hyperparameters=p, reward_scale=settings["ppo"]["reward_scale"],
+        hyperparameters=p, reward_scale=p["reward_scale"],
         observation_normalization="fixed public transforms, no fitted statistics",
         training_customer_ids=[s.customer_id for s in train], validation_customer_ids=[s.customer_id for s in validation])
     (destination/"metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")

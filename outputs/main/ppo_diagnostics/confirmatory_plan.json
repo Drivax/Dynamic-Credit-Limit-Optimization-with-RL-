@@ -1,0 +1,180 @@
+{
+  "factors": [
+    "lambda_0"
+  ],
+  "jobs": [
+    {
+      "experiment_id": "confirm_control",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{}",
+      "changes": {},
+      "seed": 606,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        0
+      ]
+    },
+    {
+      "experiment_id": "confirm_control",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{}",
+      "changes": {},
+      "seed": 707,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        0
+      ]
+    },
+    {
+      "experiment_id": "confirm_control",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{}",
+      "changes": {},
+      "seed": 808,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        0
+      ]
+    },
+    {
+      "experiment_id": "confirm_control",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{}",
+      "changes": {},
+      "seed": 909,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        0
+      ]
+    },
+    {
+      "experiment_id": "confirm_control",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{}",
+      "changes": {},
+      "seed": 1001,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        0
+      ]
+    },
+    {
+      "experiment_id": "confirm_lambda_0",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{\"gae_lambda\": 0.0}",
+      "changes": {
+        "gae_lambda": 0.0
+      },
+      "seed": 606,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        1
+      ]
+    },
+    {
+      "experiment_id": "confirm_lambda_0",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{\"gae_lambda\": 0.0}",
+      "changes": {
+        "gae_lambda": 0.0
+      },
+      "seed": 707,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        1
+      ]
+    },
+    {
+      "experiment_id": "confirm_lambda_0",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{\"gae_lambda\": 0.0}",
+      "changes": {
+        "gae_lambda": 0.0
+      },
+      "seed": 808,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        1
+      ]
+    },
+    {
+      "experiment_id": "confirm_lambda_0",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{\"gae_lambda\": 0.0}",
+      "changes": {
+        "gae_lambda": 0.0
+      },
+      "seed": 909,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        1
+      ]
+    },
+    {
+      "experiment_id": "confirm_lambda_0",
+      "family": "confirmation",
+      "hypothesis": "factorial mechanism confirmation",
+      "parameter": "factorial",
+      "canonical_value": "canonical",
+      "intervention_value": "{\"gae_lambda\": 0.0}",
+      "changes": {
+        "gae_lambda": 0.0
+      },
+      "seed": 1001,
+      "budget": 32768,
+      "status": "planned",
+      "reference_experiment": "confirm_control",
+      "factor_bits": [
+        1
+      ]
+    }
+  ],
+  "selection_data": "validation and collapse mechanisms only; test files never loaded",
+  "status": "planned",
+  "reason": "Predeclared eligibility rule applied; no test-based rescue selection"
+}

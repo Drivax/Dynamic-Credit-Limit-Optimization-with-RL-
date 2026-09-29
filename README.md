@@ -264,3 +264,33 @@ Further documentation: [technical working paper](docs/technical_paper.md), [fina
 ## Limitations
 
 The DGP is synthetic, with stylized behavior, non-calibrated structural coefficients, synthetic macro scenarios and simplified default/recovery mechanics. The PD target comes from that same synthetic system and can shift under a decision policy. Training uses a finite set of replayed customer paths. The reward includes soft proxies, ignores customer welfare and terminal receivables, and differs from net economic value. Myopic's approximate dynamics and PPO's compact observation limit comparisons. A small action menu, three training seeds and fixed macro interventions provide limited external validity. No real banking portfolio validation, regulatory calibration or deployment claim is made.
+
+<!-- information-gap:start -->
+## Information and planning gap
+
+Phase A found state-dependent planning opportunity with privileged information.
+Phase B compares planners using current observations, public history and full
+state on disjoint held-out customers, alongside frozen PPO. The empirical
+classification is **unresolved with current evidence**; approximate planners are not optimal-policy
+bounds. Current-observation planner minus PPO in discounted reward:
+baseline: +44.13 EUR, 95% CI [9.12, 87.13] (positive interval). severe_stress: -30.53 EUR, 95% CI [-65.38, -3.85] (negative interval).
+See [the quantitative report](docs/information_planning_gap.md) for paired
+gaps, critic/exploration diagnostics and limitations. No simulator or PPO tuning
+was performed.
+
+<!-- information-gap:end -->
+
+<!-- ppo-diagnostics:start -->
+## PPO learning diagnostics
+
+Phase C reproduces the original PPO weights and examines 102 preregistered runs,
+plus ten runs for fresh-seed confirmation. Greedy contraction appears after
+512–1,536 steps, before stochastic exploration disappears. Setting λ=0 delays
+collapse but does not improve the selected policy. Extending training to 262,144
+steps gives an exploratory baseline reward gain of **75.79 EUR/customer**
+(95% paired CI **[9.29, 160.81]**), without an established stress improvement.
+The gate is **ScenarioDependent + Unresolved** for finer mechanistic attribution;
+this is not a claim that PPO is fixed. See the
+[Phase C report](docs/ppo_optimization_diagnosis.md) and
+[reproduction protocol](docs/ppo_diagnostics_protocol.md).
+<!-- ppo-diagnostics:end -->

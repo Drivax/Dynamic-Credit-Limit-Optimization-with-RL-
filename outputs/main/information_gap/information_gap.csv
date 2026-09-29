@@ -1,0 +1,17 @@
+scenario,gap,policy,reference,metric,difference,lower,upper,uncertainty
+baseline,observable_planning,ObservationPlanner,MyopicEconomic,discounted_reward,2647.789222225543,1917.5413236085044,3367.276019141892,paired customers and PPO seeds; conditional fitted models
+baseline,observable_planning,ObservationPlanner,MyopicEconomic,net_economic_value,701.2724277070025,274.4265120301044,1139.7880562193322,paired customers and PPO seeds; conditional fitted models
+baseline,history,HistoryPlanner,ObservationPlanner,discounted_reward,-42.37443245647923,-83.95594227893399,-4.069444766680961,paired customers and PPO seeds; conditional fitted models
+baseline,history,HistoryPlanner,ObservationPlanner,net_economic_value,49.81876113833108,6.053187420248622,103.51447770125698,paired customers and PPO seeds; conditional fitted models
+baseline,privileged,FullStatePlanner,HistoryPlanner,discounted_reward,21.650542847043916,-12.408502192191952,61.49806491547774,paired customers and PPO seeds; conditional fitted models
+baseline,privileged,FullStatePlanner,HistoryPlanner,net_economic_value,34.711737971152864,-8.700642340942096,87.48505598697372,paired customers and PPO seeds; conditional fitted models
+baseline,ppo_gap,ObservationPlanner,PPO,discounted_reward,44.12637910864949,9.117460684775706,87.12702006504449,paired customers and PPO seeds; conditional fitted models
+baseline,ppo_gap,ObservationPlanner,PPO,net_economic_value,83.1037671900324,45.45063760642913,130.92551239661606,paired customers and PPO seeds; conditional fitted models
+severe_stress,observable_planning,ObservationPlanner,MyopicEconomic,discounted_reward,2270.3553643471696,1793.7091110358122,2818.3229989677966,paired customers and PPO seeds; conditional fitted models
+severe_stress,observable_planning,ObservationPlanner,MyopicEconomic,net_economic_value,1014.3770637450558,694.026000618509,1335.2400236680505,paired customers and PPO seeds; conditional fitted models
+severe_stress,history,HistoryPlanner,ObservationPlanner,discounted_reward,-44.93701561359689,-86.87098939294238,-7.090229018382791,paired customers and PPO seeds; conditional fitted models
+severe_stress,history,HistoryPlanner,ObservationPlanner,net_economic_value,-6.2522762745954195,-73.111101876682,49.60107223454529,paired customers and PPO seeds; conditional fitted models
+severe_stress,privileged,FullStatePlanner,HistoryPlanner,discounted_reward,12.30898791368225,-60.55125128414393,73.6400864365598,paired customers and PPO seeds; conditional fitted models
+severe_stress,privileged,FullStatePlanner,HistoryPlanner,net_economic_value,43.051349652167126,-14.214601707749122,116.4907540732439,paired customers and PPO seeds; conditional fitted models
+severe_stress,ppo_gap,ObservationPlanner,PPO,discounted_reward,-30.52952569185078,-65.38224466652566,-3.8468694506465444,paired customers and PPO seeds; conditional fitted models
+severe_stress,ppo_gap,ObservationPlanner,PPO,net_economic_value,34.846080551486914,11.088057430161026,68.16019072276563,paired customers and PPO seeds; conditional fitted models

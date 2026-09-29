@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "protected_files": 2833,
+  "runs": 102,
+  "snapshots": 2672,
+  "confirmation_runs": 10,
+  "identical_canonical_weights": true,
+  "paired_customers": true,
+  "regenerated_products": 60,
+  "exact_csv_figure_regeneration": true
+}

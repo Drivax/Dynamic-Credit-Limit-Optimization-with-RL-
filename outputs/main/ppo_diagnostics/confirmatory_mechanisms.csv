@@ -1,0 +1,4 @@
+experiment_id,metric,difference,lower,upper,seeds,estimand
+confirm_lambda_0,collapse,3481.6,1587.2,5171.2,5,paired fresh seeds; scenario-mean validation mechanism; collapse right-censored at budget
+confirm_lambda_0,regret,0.0,0.0,0.0,5,paired fresh seeds; scenario-mean validation mechanism; collapse right-censored at budget
+confirm_lambda_0,rank,0.0125,-0.0625,0.1125,5,paired fresh seeds; scenario-mean validation mechanism; collapse right-censored at budget

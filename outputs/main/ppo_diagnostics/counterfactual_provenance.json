@@ -1,0 +1,61 @@
+{
+  "specification": {
+    "seed": 584901,
+    "draws": 32,
+    "scenarios": [
+      "baseline",
+      "severe_stress"
+    ],
+    "continuation": "frozen deterministic canonical PPO101",
+    "value_predictor": {
+      "categorical_features": "from_dtype",
+      "early_stopping": false,
+      "interaction_cst": null,
+      "l2_regularization": 0.0,
+      "learning_rate": 0.1,
+      "loss": "squared_error",
+      "max_bins": 255,
+      "max_depth": null,
+      "max_features": 1.0,
+      "max_iter": 100,
+      "max_leaf_nodes": 7,
+      "min_samples_leaf": 12,
+      "monotonic_cst": null,
+      "n_iter_no_change": 10,
+      "quantile": null,
+      "random_state": 584901,
+      "scoring": "loss",
+      "tol": 1e-07,
+      "validation_fraction": 0.1,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "training_states": 640,
+    "test_states": 200
+  },
+  "profile": "standard",
+  "git_commit": "cd7d5f6afe5323e220965eec6de633c59b6ab353",
+  "timestamp": "2026-09-29T13:51:31.009442+00:00",
+  "pd_sha256": "9d41fa692ce72761fe358bebf4f89eb1bb2a6d9711cb5763bf45dc4129d39d64",
+  "reward_sha256": "425150c9ef863a8c47ffe58199f8d10f78c674ee58fa54931176d91542e0774a",
+  "protocol_sha256": "1a7c89ef6440bd0f1e6107f5a034ab9ca1077b2ab149f1556d80250df604c44b",
+  "checkpoint_sha256": "dba22f0c179e4d78a971fa32efd4cd2d3a12eaf2a59db3c89e63096461296c6d",
+  "source_hashes": {
+    "src\\credit_rl\\experiments\\ppo_analysis.py": "a0c75c438833617c5fe38750f9104da063054044c9d8071fed2f1d0518c72ab1",
+    "src\\credit_rl\\experiments\\ppo_confirmation.py": "1fba8c8fe3c4169807b40d397afd50337c955b818643159d6c28ea562e18822d",
+    "src\\credit_rl\\experiments\\ppo_counterfactual.py": "001f19a0fdffdefbd377c766c792d181c349846ad02eba81583bd9653909ebd9",
+    "src\\credit_rl\\experiments\\ppo_diagnostics.py": "8465b83600575ea2654c1206c313023dcbd4b0a259767868e6e287ab1648f7d8",
+    "src\\credit_rl\\experiments\\ppo_imitation.py": "73031b3c9d94cd0c8e7e329b775b90a5f7a4e8e7b9c7d6ffdae7a0d0904e27b8",
+    "src\\credit_rl\\experiments\\ppo_learning.py": "f1351c45b9b63ecd253fd20748856148e41ddf38712a5b086f6fc647a6c23f77",
+    "src\\credit_rl\\experiments\\ppo_measurements.py": "d5697baeed324d3dbc0f8f400e82032aa752fea30979574b4b485ccab4119ec8",
+    "src\\credit_rl\\experiments\\ppo_report.py": "b94b05bcef1d699651da35e57a04aa16e41a1e0cf3e3e9e5060cc236f108440c",
+    "src\\credit_rl\\experiments\\ppo_verify.py": "2be3ca209b6218c28462d11f54c57f5f54c7fc28520586ebc48420072d22e527"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "torch": "2.14.0+cpu",
+    "sb3": "2.9.0"
+  }
+}

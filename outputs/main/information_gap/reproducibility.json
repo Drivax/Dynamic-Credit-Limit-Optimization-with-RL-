@@ -1,0 +1,15 @@
+{
+  "exact_cached_replay": true,
+  "tables": [
+    "benchmark_values",
+    "information_gap",
+    "planner_regret",
+    "policy_agreement",
+    "latent_predictability",
+    "history_depth",
+    "feature_importance",
+    "counterfactual_regret",
+    "state_regret"
+  ],
+  "planner_refitting_and_fresh_draw_replay": "covered by smoke integration tests"
+}

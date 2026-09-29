@@ -1,0 +1,80 @@
+{
+  "protocol": {
+    "population_seed": 284901,
+    "train_customers": 160,
+    "validation_customers": 48,
+    "test_customers": 80,
+    "states_per_trajectory": 2,
+    "draws": 64,
+    "critic_draws": 32,
+    "horizons": [
+      6,
+      12,
+      24
+    ],
+    "tree_leaves": [
+      7,
+      15
+    ],
+    "boosting_iterations": 100,
+    "minimum_leaf": 12,
+    "bootstrap_repetitions": 500,
+    "permutation_repetitions": 5,
+    "diagnostic_seed": 284902,
+    "replay_ppo_seeds": [
+      101,
+      202,
+      303
+    ]
+  },
+  "canonical": "C:\\Users\\Alexandre\\Documents\\code\\Dynamic-Credit-Limit-Optimization-with-RL-\\outputs\\main\\standard",
+  "models": {
+    "outputs\\main\\standard\\models\\ppo_101\\selected.zip": "dba22f0c179e4d78a971fa32efd4cd2d3a12eaf2a59db3c89e63096461296c6d",
+    "outputs\\main\\standard\\models\\ppo_202\\selected.zip": "ad233a8d9c7fff2d52885974d301ebdeb8046907c67ba54e7e944ddf785fb795",
+    "outputs\\main\\standard\\models\\ppo_303\\selected.zip": "ab617cde06a2cb3e9557507ef814c5b1e8a8ace6364887f0a6c7582f5474ab63"
+  },
+  "pd": "9d41fa692ce72761fe358bebf4f89eb1bb2a6d9711cb5763bf45dc4129d39d64",
+  "sources": {
+    "configs\\constrained_policy.yaml": "2b45e22f45842b885b4437ae0bf5869b7fb38f91ffad5972301eb2390f2f273c",
+    "configs\\experiments.yaml": "1aca6d6642c668c105ece1bee5f66d64f92a08995f446a2f204ff5b99b0f5233",
+    "configs\\information_gap.yaml": "5744f69100d430ebeea7e893ee877568123123164c75b42498993935bc5c706e",
+    "configs\\macro_scenarios.yaml": "d1180977b0551468cf763e0978c1a170d5701f3ceabc0fab59c191ccaef07447",
+    "configs\\main_evaluation.yaml": "079062a9f6b0053aebf28626c9699fe37f620c0da361a3b2768596b15d5c3e50",
+    "configs\\ope.yaml": "a7fa78b424b3f2dff1f5249e9abd2210c954f1e45ffd35fe4748c68146b01229",
+    "configs\\pd_model.yaml": "3f250e619af301ad28ef47bc226d585338156d80f56c1498676eb2933c1e7d01",
+    "configs\\policy_evaluation.yaml": "2feac298f2f3c49581c10c96e6b2934c465670fde946d438f77a4e6e8d394641",
+    "configs\\portfolio.yaml": "5942d366ee45d81cc87304b58938ea5ee8c05ff23b7d0e8fedf22892848b6a48",
+    "configs\\robustness.yaml": "157b4a6ada27d93b2e86878c2ed1d5240f13f985694a3c46dde81f7e42c0a3f4",
+    "configs\\simulation.yaml": "dcba31749be9c15964aa04107094cd53afffe3080699ce783983c40bb2e60639",
+    "src\\credit_rl\\config.py": "461685b9692060761f6b32542d9b878485b557d1c3df63578b1d901412e76af9",
+    "src\\credit_rl\\envs\\__init__.py": "45efa67ee4b9c7f588b5e5ddc163483f9305a36e3634f23729f71805cb528f7f",
+    "src\\credit_rl\\envs\\constraints.py": "426a7bb605d959281f054d24ab0aa3ea1d3718023b4a4617ee51a6dd582bb2c9",
+    "src\\credit_rl\\envs\\credit_limit_env.py": "a0709b403e888d9e43aca57458824860a47df025b6a5e2af982b0cb64fb73e9b",
+    "src\\credit_rl\\envs\\observation.py": "86880ed96442bc209e1441f00d58183f1f265e5debbc1412561e7ffbe1791630",
+    "src\\credit_rl\\evaluation\\structural.py": "e834c4991b6ef047c444a9e96dac198b0375dc909eb337bf6a786784d521c4b7",
+    "src\\credit_rl\\experiments\\information_gap.py": "2a11d78a69a443f1dcdfa783a606f1638fdbc1e5b059e31ca6d227e7db740328",
+    "src\\credit_rl\\policies\\information.py": "dc1a25c745efc8573a5605f89fd354cfd069b559975133abec7a444457a7e210",
+    "src\\credit_rl\\reward.py": "425150c9ef863a8c47ffe58199f8d10f78c674ee58fa54931176d91542e0774a",
+    "src\\credit_rl\\risk\\__init__.py": "c61a5637a0f1cbecb6d1a8d6002458588103f330a1d080ce4350bbdf95565b81",
+    "src\\credit_rl\\risk\\calibration.py": "542c63e695d142014625a93bdec9b0b07db5d8d5a87f34fb0bdc0795b60e200d",
+    "src\\credit_rl\\risk\\dataset.py": "98fe21839e3d81dcf3803bca5112a46cd5be7ae179cae3c2ebb826a95019108c",
+    "src\\credit_rl\\risk\\evaluation.py": "2503fff2230fc62196ae2e4f06fd5b0ac33752dfd9715d0f405df17be8c2ab14",
+    "src\\credit_rl\\risk\\features.py": "b12def12ab91c6d0170b8c5bfc9ec51befb3357f6d0b0435c4314e7e8352a993",
+    "src\\credit_rl\\risk\\generation.py": "89ccb02293abbad2117410ae59e4f3885fa5942115341236b6791a45fa593929",
+    "src\\credit_rl\\risk\\longitudinal.py": "1852f4a40dc94d1866193a334c3151f669d5fd48ca309812cc9ec2a03cc33a23",
+    "src\\credit_rl\\risk\\pd_model.py": "4aae2323768ef3a483f1ae170b704c87cec351b5fe463c49020155704e84a557",
+    "src\\credit_rl\\risk\\reporting.py": "08d6c368b30969f1bfc31b39164b218e458a299065a5ad613cb02f8fdd3dbd55",
+    "src\\credit_rl\\risk\\settings.py": "9885cf8bb50d58045a94a30163e0825c348c0ce12744205b79e4d67cef90d17c",
+    "src\\credit_rl\\risk\\training.py": "ac4c2970dfba3be097897da3a0c41f1ea2d726dbb4177bae1647b660e7b83dfd",
+    "src\\credit_rl\\simulation\\__init__.py": "6427b175a4a0ee395f58fdd406717c9bbbd02205fff3dbca84b30ac9e008f1c5",
+    "src\\credit_rl\\simulation\\behavior.py": "67ba4d05266c6a3cd611e907ddeca8aa678c640b90e9c25aae50301b9e2b0da1",
+    "src\\credit_rl\\simulation\\customer.py": "2d4eaa189c041412f3c05500c6b0eec3da444549faef87409f814becf93a3335",
+    "src\\credit_rl\\simulation\\default.py": "7264fef0d4c26912311cce339ca71f96ea72983279f2a98673c3a44f45a614e6",
+    "src\\credit_rl\\simulation\\dgp.py": "88f43bdb2f29b77fc80e7238eb54d3e81c72c56c7e675a912afa8854702d3df5",
+    "src\\credit_rl\\simulation\\macro.py": "dd7ed1ba8cd6119ffac64ad3401253890ff60ac4a25aa090b34305ba6e431418",
+    "src\\credit_rl\\simulation\\shocks.py": "6890fd43ff79119293a65a8df14c279255f43e156028ac2902facfa49b897d96",
+    "src\\credit_rl\\simulation\\simulator.py": "adabde92daf7a061dec3f3381860ba903c583af797ec72a689f84895cc09fc6c",
+    "src\\credit_rl\\simulation\\synthetic_snapshot.py": "e132c010b284f30cd930596cefe3649a835a964009a1c756adc598961425e24e"
+  },
+  "canonical_profile": "standard"
+}

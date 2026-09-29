@@ -1,0 +1,11 @@
+{
+  "tests_passed": 174,
+  "coverage_percent": 79.78,
+  "pytest_exit_code": 0,
+  "ruff": "passed",
+  "pytest_log_sha256": "5bc1b017c6e0e58c424938c4d9baaebf4969152d9cb9f030c3da392f22560b93",
+  "commands": [
+    "python -m ruff check .",
+    "python -m pytest --cov=credit_rl --cov-report=term-missing --cov-fail-under=70"
+  ]
+}

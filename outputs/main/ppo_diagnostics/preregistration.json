@@ -1,0 +1,275 @@
+{
+  "profile": "standard",
+  "protocol": {
+    "version": 1,
+    "standard": {
+      "seeds": [
+        101,
+        202,
+        303
+      ],
+      "important_seeds": [
+        101,
+        202,
+        303,
+        404,
+        505
+      ],
+      "confirmation_seeds": [
+        606,
+        707,
+        808,
+        909,
+        1001
+      ],
+      "population_seed": 584901,
+      "test_customers": 100,
+      "diagnostic_validation_customers": 8,
+      "dense_every": 512,
+      "snapshot_every": 2048,
+      "mc_draws": 32,
+      "diagnostic_states_per_scenario": 8,
+      "bootstrap_repetitions": 1000,
+      "imitation_epochs": 300,
+      "imitation_check_every": 10,
+      "workers": 3
+    },
+    "smoke": {
+      "seeds": [
+        101
+      ],
+      "important_seeds": [
+        101
+      ],
+      "confirmation_seeds": [
+        606
+      ],
+      "population_seed": 684901,
+      "test_customers": 4,
+      "diagnostic_validation_customers": 2,
+      "dense_every": 64,
+      "snapshot_every": 64,
+      "mc_draws": 4,
+      "diagnostic_states_per_scenario": 1,
+      "bootstrap_repetitions": 20,
+      "imitation_epochs": 3,
+      "imitation_check_every": 1,
+      "workers": 1
+    },
+    "primary_endpoints": [
+      "discounted_reward_gamma_098",
+      "net_economic_value",
+      "contraction_share",
+      "entropy",
+      "collapse_timestep",
+      "observation_planner_regret"
+    ],
+    "collapse_thresholds": [
+      0.5,
+      0.75,
+      0.9,
+      0.95
+    ],
+    "experiments": [
+      {
+        "id": "canonical",
+        "family": "canonical",
+        "hypothesis": "H0",
+        "parameter": "none",
+        "values": [
+          null
+        ],
+        "important": true
+      },
+      {
+        "id": "lambda",
+        "family": "advantage",
+        "hypothesis": "H1",
+        "parameter": "gae_lambda",
+        "values": [
+          0.0,
+          0.5,
+          0.8,
+          1.0
+        ]
+      },
+      {
+        "id": "critic128",
+        "family": "critic",
+        "hypothesis": "H2",
+        "parameter": "critic_network",
+        "values": [
+          [
+            128,
+            128
+          ]
+        ],
+        "important": true
+      },
+      {
+        "id": "critic_updates",
+        "family": "critic",
+        "hypothesis": "H2",
+        "parameter": "critic_extra_epochs",
+        "values": [
+          5
+        ],
+        "important": true
+      },
+      {
+        "id": "entropy",
+        "family": "exploration",
+        "hypothesis": "H3",
+        "parameter": "ent_coef",
+        "values": [
+          0.0,
+          0.001,
+          0.005,
+          0.02
+        ]
+      },
+      {
+        "id": "entropy_linear",
+        "family": "entropy_schedule",
+        "hypothesis": "H3",
+        "parameter": "entropy_schedule",
+        "values": [
+          "linear_002_to_001"
+        ]
+      },
+      {
+        "id": "budget",
+        "family": "budget",
+        "hypothesis": "H4",
+        "parameter": "total_timesteps",
+        "values": [
+          65536,
+          131072,
+          262144
+        ]
+      },
+      {
+        "id": "actor128",
+        "family": "representation",
+        "hypothesis": "H5",
+        "parameter": "actor_network",
+        "values": [
+          [
+            128,
+            128
+          ]
+        ],
+        "important": true
+      },
+      {
+        "id": "actor128x3",
+        "family": "representation",
+        "hypothesis": "H5",
+        "parameter": "actor_network",
+        "values": [
+          [
+            128,
+            128,
+            128
+          ]
+        ],
+        "important": true
+      },
+      {
+        "id": "actor32",
+        "family": "representation",
+        "hypothesis": "H5",
+        "parameter": "actor_network",
+        "values": [
+          [
+            32,
+            32
+          ]
+        ],
+        "important": true
+      },
+      {
+        "id": "gamma",
+        "family": "discount",
+        "hypothesis": "H6",
+        "parameter": "gamma",
+        "values": [
+          0.95,
+          0.995,
+          1.0
+        ]
+      },
+      {
+        "id": "scale",
+        "family": "scale",
+        "hypothesis": "H7",
+        "parameter": "reward_scale",
+        "values": [
+          0.0001,
+          0.01
+        ]
+      },
+      {
+        "id": "clip",
+        "family": "clipping",
+        "hypothesis": "H8",
+        "parameter": "clip_range",
+        "values": [
+          0.1,
+          0.3
+        ]
+      },
+      {
+        "id": "lr",
+        "family": "learning_rate",
+        "hypothesis": "H9",
+        "parameter": "learning_rate",
+        "values": [
+          0.0001,
+          0.001
+        ]
+      },
+      {
+        "id": "rollout",
+        "family": "rollout",
+        "hypothesis": "H10",
+        "parameter": "n_steps",
+        "values": [
+          256,
+          1024,
+          2048
+        ]
+      }
+    ],
+    "confirmation": {
+      "max_factors": 2,
+      "candidate_families": [
+        "advantage",
+        "critic",
+        "exploration"
+      ],
+      "eligibility": "At least 2 of 3 paired exploratory seeds: delay deterministic 95% collapse by >=2048 steps OR reduce validation relative-Q regret by >=10 EUR OR improve validation MC advantage rank agreement by >=0.10. Never use test endpoints.",
+      "ranking": "Number of seeds supporting eligibility, then median collapse delay, then experiment ID. At most one treatment per family.",
+      "design": "Full 2^k factorial, k<=2, fresh confirmation seeds; freeze selected matrix before training. If no eligible factor, save explicit not-triggered result."
+    },
+    "imitation": {
+      "architectures": [
+        [
+          64,
+          64
+        ],
+        [
+          128,
+          128
+        ]
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "selection": "Minimum validation cross entropy, earliest tie; no test selection.",
+      "features": "Only exact 21D public observations; frozen Phase B F0 teacher."
+    }
+  },
+  "canonical": "C:\\Users\\Alexandre\\Documents\\code\\Dynamic-Credit-Limit-Optimization-with-RL-\\outputs\\main\\standard",
+  "phase_b": "C:\\Users\\Alexandre\\Documents\\code\\Dynamic-Credit-Limit-Optimization-with-RL-\\outputs\\main\\information_gap",
+  "pd_sha256": "9d41fa692ce72761fe358bebf4f89eb1bb2a6d9711cb5763bf45dc4129d39d64"
+}

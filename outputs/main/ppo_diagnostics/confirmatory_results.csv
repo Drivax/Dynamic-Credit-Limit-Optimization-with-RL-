@@ -1,0 +1,5 @@
+experiment_id,scenario,metric,difference,lower,upper,seeds,customers,analysis
+confirm_lambda_0,baseline,discounted_reward,0.0,0.0,0.0,5,100,fresh-seed factorial confirmation
+confirm_lambda_0,baseline,net_economic_value,0.0,0.0,0.0,5,100,fresh-seed factorial confirmation
+confirm_lambda_0,severe_stress,discounted_reward,0.0,0.0,0.0,5,100,fresh-seed factorial confirmation
+confirm_lambda_0,severe_stress,net_economic_value,0.0,0.0,0.0,5,100,fresh-seed factorial confirmation

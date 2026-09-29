@@ -1,0 +1,436 @@
+experiment_id,scenario,metric,difference,lower,upper,seeds,customers,customer_sd,analysis
+actor128,baseline,discounted_reward,4.046903054764455,-0.30055103780514764,17.42093039514928,5,100,31.115194931783538,exploratory paired seeds/customers
+actor128,severe_stress,discounted_reward,0.014366807530115693,0.0,0.05363059505632629,5,100,0.07601160835513147,exploratory paired seeds/customers
+actor128,stress_minus_baseline_interaction,discounted_reward,-4.032536247234339,-17.383163229900557,0.31303559293448946,5,100,31.11624766285693,exploratory treatment x scenario
+actor128,baseline,net_economic_value,4.213093110997694,0.0,17.051643566432755,5,100,28.439548271076777,exploratory paired seeds/customers
+actor128,severe_stress,net_economic_value,0.010568006661588697,0.0,0.04044112533945827,5,100,0.055915913671590795,exploratory paired seeds/customers
+actor128,stress_minus_baseline_interaction,net_economic_value,-4.2025251043361065,-17.035347155149672,0.0,5,100,28.440888405416576,exploratory treatment x scenario
+actor128,baseline,defaulted,-0.002,-0.012,0.0,5,100,0.019999999999999993,exploratory paired seeds/customers
+actor128,severe_stress,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor128,stress_minus_baseline_interaction,defaulted,0.002,0.0,0.012,5,100,0.019999999999999993,exploratory treatment x scenario
+actor128,baseline,credit_loss,-3.8968448195334977,-15.777090108233025,0.0,5,100,26.850855639190506,exploratory paired seeds/customers
+actor128,severe_stress,credit_loss,-0.010520187626921597,-0.04025813382208435,0.0,5,100,0.05566290048755586,exploratory paired seeds/customers
+actor128,stress_minus_baseline_interaction,credit_loss,3.886324631906576,0.0,15.745714219211076,5,100,26.85214432668161,exploratory treatment x scenario
+actor128,baseline,capital_charge,-0.6783075639065628,-5.203565152153932,1.9646002943798153,5,100,13.109341337750053,exploratory paired seeds/customers
+actor128,severe_stress,capital_charge,-0.004672851592149527,-0.020371106148290914,0.0,5,100,0.03109363832195098,exploratory paired seeds/customers
+actor128,stress_minus_baseline_interaction,capital_charge,0.6736347123144133,-1.9764811345028812,5.198898660411489,5,100,13.108916184374863,exploratory treatment x scenario
+actor128x3,baseline,discounted_reward,8.098200497448875,-1.0086147830481804,33.120461744868535,5,100,52.1473244901962,exploratory paired seeds/customers
+actor128x3,severe_stress,discounted_reward,-17.18295781831765,-45.276451458633616,0.09735092133269933,5,100,52.24064175678627,exploratory paired seeds/customers
+actor128x3,stress_minus_baseline_interaction,discounted_reward,-25.281158315766522,-69.56461700833752,0.0,5,100,86.6025150316637,exploratory treatment x scenario
+actor128x3,baseline,net_economic_value,11.055619469715076,-0.006433141932367107,41.35997551360666,5,100,48.979905734133176,exploratory paired seeds/customers
+actor128x3,severe_stress,net_economic_value,9.097830560043231,-2.4872315688670805,31.383664605859305,5,100,59.06779892529841,exploratory paired seeds/customers
+actor128x3,stress_minus_baseline_interaction,net_economic_value,-1.9577889096718417,-25.566375745126017,17.108172559425167,5,100,68.50531732445074,exploratory treatment x scenario
+actor128x3,baseline,defaulted,-0.006,-0.024,0.0,5,100,0.03428932159955306,exploratory paired seeds/customers
+actor128x3,severe_stress,defaulted,-0.006,-0.024,0.0,5,100,0.03428932159955306,exploratory paired seeds/customers
+actor128x3,stress_minus_baseline_interaction,defaulted,0.0,-0.024,0.024,5,100,0.0492365963917331,exploratory treatment x scenario
+actor128x3,baseline,credit_loss,-7.1401312295196275,-29.8846674913163,1.2520200000000004,5,100,41.59076362879543,exploratory paired seeds/customers
+actor128x3,severe_stress,credit_loss,1.2314670857109078,-7.092204637423725,12.35420855195762,5,100,37.288175871463096,exploratory paired seeds/customers
+actor128x3,stress_minus_baseline_interaction,credit_loss,8.371598315230532,-5.4609408381394,33.68367423229839,5,100,54.016421448968174,exploratory treatment x scenario
+actor128x3,baseline,capital_charge,1.3027807132270708,-4.461275034723369,11.47590991624375,5,100,25.890646418570736,exploratory paired seeds/customers
+actor128x3,severe_stress,capital_charge,29.928802933196575,0.021159630321781264,77.65378471601224,5,100,91.30095390752216,exploratory paired seeds/customers
+actor128x3,stress_minus_baseline_interaction,capital_charge,28.626022219969506,-0.5021100225512001,75.07509288248286,5,100,99.64184982975767,exploratory treatment x scenario
+actor32,baseline,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,severe_stress,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+actor32,baseline,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,severe_stress,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+actor32,baseline,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,severe_stress,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+actor32,baseline,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,severe_stress,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+actor32,baseline,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,severe_stress,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+actor32,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+budget_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+budget_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+budget_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+budget_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+budget_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+budget_1,baseline,discounted_reward,-0.6429445146934729,-3.5216916882456304,0.4713789486087948,3,100,6.516835537686152,exploratory paired seeds/customers
+budget_1,severe_stress,discounted_reward,0.0879478698502434,0.0,0.345680034290158,3,100,0.48801272533991363,exploratory paired seeds/customers
+budget_1,stress_minus_baseline_interaction,discounted_reward,0.7308923845437163,-0.28404414124938726,3.6883447522454857,3,100,6.408592843274152,exploratory treatment x scenario
+budget_1,baseline,net_economic_value,0.4072807833054994,-2.695394175776241,3.5470121179427805,3,100,10.884945259599405,exploratory paired seeds/customers
+budget_1,severe_stress,net_economic_value,0.18415494363851262,0.0,0.630345771959593,3,100,0.8269760442610491,exploratory paired seeds/customers
+budget_1,stress_minus_baseline_interaction,net_economic_value,-0.22312583966698676,-3.0363637216739248,3.119540581491458,3,100,10.72459456006738,exploratory treatment x scenario
+budget_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+budget_1,baseline,credit_loss,1.329057850532508,0.0,6.809916102985255,3,100,10.668172310917209,exploratory paired seeds/customers
+budget_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+budget_1,stress_minus_baseline_interaction,credit_loss,-1.329057850532508,-6.809916102985256,0.0,3,100,10.668172310917209,exploratory treatment x scenario
+budget_1,baseline,capital_charge,1.5397664964038407,0.0,5.053783132207623,3,100,5.258325505257928,exploratory paired seeds/customers
+budget_1,severe_stress,capital_charge,0.05620650122718075,0.0,0.23223661422233963,3,100,0.34178024006975694,exploratory paired seeds/customers
+budget_1,stress_minus_baseline_interaction,capital_charge,-1.48355999517666,-4.962351837888771,0.0,3,100,5.250195937437958,exploratory treatment x scenario
+budget_2,baseline,discounted_reward,75.79216212962828,9.285750959458658,160.81404817812668,3,100,358.06797623764515,exploratory paired seeds/customers
+budget_2,severe_stress,discounted_reward,-12.394769301097956,-33.978009412967964,0.6800206023350458,3,100,45.623312180548574,exploratory paired seeds/customers
+budget_2,stress_minus_baseline_interaction,discounted_reward,-88.18693143072625,-183.25902760017348,-16.2877729915164,3,100,366.3515347783098,exploratory treatment x scenario
+budget_2,baseline,net_economic_value,132.64614154228576,48.96907444025234,240.3130013583571,3,100,363.60745211026574,exploratory paired seeds/customers
+budget_2,severe_stress,net_economic_value,1.9806855341940346,-7.118085446531213,12.59813273989485,3,100,37.399639390839525,exploratory paired seeds/customers
+budget_2,stress_minus_baseline_interaction,net_economic_value,-130.66545600809175,-238.39492921417053,-47.29201961252486,3,100,371.1927033113281,exploratory treatment x scenario
+budget_2,baseline,defaulted,-0.07666666666666666,-0.13666666666666666,-0.02666666666666667,3,100,0.24090644387932297,exploratory paired seeds/customers
+budget_2,severe_stress,defaulted,-0.0033333333333333335,-0.016749999999999994,0.0,3,100,0.03333333333333333,exploratory paired seeds/customers
+budget_2,stress_minus_baseline_interaction,defaulted,0.07333333333333333,0.023333333333333334,0.13,3,100,0.24426072067219412,exploratory treatment x scenario
+budget_2,baseline,credit_loss,-94.48635217729434,-183.15196801405688,-31.696272734699235,3,100,312.6831037409541,exploratory paired seeds/customers
+budget_2,severe_stress,credit_loss,3.0010296032468613,-4.714655576014979,14.900437217576195,3,100,36.45259516295904,exploratory paired seeds/customers
+budget_2,stress_minus_baseline_interaction,credit_loss,97.48738178054118,31.748976247879266,187.91216336159377,3,100,318.73569162888276,exploratory treatment x scenario
+budget_2,baseline,capital_charge,44.598938598676966,-2.2296474702446734,109.54276278319406,3,100,211.9466671748292,exploratory paired seeds/customers
+budget_2,severe_stress,capital_charge,16.736042236801776,2.2384565423465106,40.817007892091624,3,100,46.15477815746618,exploratory paired seeds/customers
+budget_2,stress_minus_baseline_interaction,capital_charge,-27.862896361875197,-90.54173741822186,17.763263611929567,3,100,220.5668728022446,exploratory treatment x scenario
+clip_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_1,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_1,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_1,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+clip_1,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+clip_1,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+critic128,baseline,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,severe_stress,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic128,baseline,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,severe_stress,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic128,baseline,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,severe_stress,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic128,baseline,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,severe_stress,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic128,baseline,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,severe_stress,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic128,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic_updates,baseline,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,severe_stress,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic_updates,baseline,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,severe_stress,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic_updates,baseline,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,severe_stress,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic_updates,baseline,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,severe_stress,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+critic_updates,baseline,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,severe_stress,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory paired seeds/customers
+critic_updates,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,5,100,0.0,exploratory treatment x scenario
+entropy_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_1,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_1,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_1,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_1,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_1,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_2,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_2,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_2,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_2,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_2,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_2,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_3,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_3,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_3,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_3,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_3,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_3,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_linear,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_linear,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_linear,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_linear,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+entropy_linear,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+entropy_linear,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_1,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_1,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_1,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_1,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_1,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_2,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_2,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_2,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_2,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+gamma_2,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+gamma_2,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_1,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_1,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_1,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_1,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_1,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_2,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_2,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_2,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_2,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_2,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_2,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_3,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_3,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_3,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_3,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lambda_3,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lambda_3,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lr_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lr_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lr_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lr_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lr_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+lr_1,baseline,discounted_reward,29.722105653164267,-10.865518900275724,73.06932596063285,3,100,194.56541006027143,exploratory paired seeds/customers
+lr_1,severe_stress,discounted_reward,-10.993728254578532,-38.512441003001626,0.8193069678093924,3,100,61.31059775133119,exploratory paired seeds/customers
+lr_1,stress_minus_baseline_interaction,discounted_reward,-40.71583390774279,-90.34282438071013,-2.0167413485367063,3,100,222.74206467257417,exploratory treatment x scenario
+lr_1,baseline,net_economic_value,61.15452200423606,14.888282403688004,131.73819635800461,3,100,222.43096078908508,exploratory paired seeds/customers
+lr_1,severe_stress,net_economic_value,2.303103773566105,-8.002737521292772,10.80410076059185,3,100,30.23546648931348,exploratory paired seeds/customers
+lr_1,stress_minus_baseline_interaction,net_economic_value,-58.85141823066995,-131.22195446089947,-9.958167160166854,3,100,232.08314390349554,exploratory treatment x scenario
+lr_1,baseline,defaulted,-0.016666666666666666,-0.043333333333333335,0.0,3,100,0.11962342709421224,exploratory paired seeds/customers
+lr_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+lr_1,stress_minus_baseline_interaction,defaulted,0.016666666666666666,0.0,0.043333333333333335,3,100,0.11962342709421224,exploratory treatment x scenario
+lr_1,baseline,credit_loss,-49.64050207443149,-102.1142868174792,-12.278393851810806,3,100,190.61773307964958,exploratory paired seeds/customers
+lr_1,severe_stress,credit_loss,1.1299924708878353,-5.348847205678161,13.050707291965477,3,100,30.695787667976674,exploratory paired seeds/customers
+lr_1,stress_minus_baseline_interaction,credit_loss,50.77049454531932,10.416720251113519,110.82611731362321,3,100,202.41189896092612,exploratory treatment x scenario
+lr_1,baseline,capital_charge,29.591538202239917,-14.704785156931436,108.62500669811843,3,100,144.71076703272158,exploratory paired seeds/customers
+lr_1,severe_stress,capital_charge,15.078219844508755,-0.010860773371919348,38.742027392571096,3,100,58.702169051327694,exploratory paired seeds/customers
+lr_1,stress_minus_baseline_interaction,capital_charge,-14.513318357731157,-85.35811807763041,26.731108547252653,3,100,162.6962999071454,exploratory treatment x scenario
+rollout_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_1,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_1,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_1,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_1,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_1,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_2,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_2,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_2,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_2,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+rollout_2,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+rollout_2,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_0,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_0,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_0,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_0,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_0,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_0,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_1,baseline,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,severe_stress,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,stress_minus_baseline_interaction,discounted_reward,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_1,baseline,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,severe_stress,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,stress_minus_baseline_interaction,net_economic_value,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_1,baseline,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,severe_stress,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,stress_minus_baseline_interaction,defaulted,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_1,baseline,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,severe_stress,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,stress_minus_baseline_interaction,credit_loss,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario
+scale_1,baseline,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,severe_stress,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory paired seeds/customers
+scale_1,stress_minus_baseline_interaction,capital_charge,0.0,0.0,0.0,3,100,0.0,exploratory treatment x scenario

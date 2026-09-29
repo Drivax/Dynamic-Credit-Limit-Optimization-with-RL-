@@ -1,0 +1,54 @@
+{
+  "ruff": "passed",
+  "full_pytest": {
+    "passed": 163,
+    "coverage_percent": 78.16
+  },
+  "updated_phase_b_tests": {
+    "passed": 13
+  },
+  "canonical_smoke": "passed: outputs/main/information_canonical_smoke",
+  "phase_b_smoke": "passed: outputs/main/information_gap_smoke",
+  "standard_table_replay": {
+    "exact_cached_replay": true,
+    "tables": [
+      "benchmark_values",
+      "information_gap",
+      "planner_regret",
+      "policy_agreement",
+      "latent_predictability",
+      "history_depth",
+      "feature_importance",
+      "counterfactual_regret",
+      "state_regret"
+    ],
+    "planner_refitting_and_fresh_draw_replay": "covered by smoke integration tests"
+  },
+  "ppo_diagnostic_replay": {
+    "exact_cached_replay": true,
+    "tables": [
+      "ppo_training_diagnostics",
+      "ppo_advantages",
+      "ppo_normalized_advantages",
+      "exploration",
+      "critic_diagnostics",
+      "critic_states",
+      "advantage_alignment",
+      "checkpoint_diagnostics"
+    ]
+  },
+  "protected_files_verified": 1329,
+  "canonical_selected_and_final_weights_identical": [
+    101,
+    202,
+    303
+  ],
+  "figures": 11,
+  "versions": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.1",
+    "stable_baselines3": "2.9.0"
+  }
+}

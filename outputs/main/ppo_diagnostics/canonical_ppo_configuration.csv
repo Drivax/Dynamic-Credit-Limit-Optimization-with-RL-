@@ -1,0 +1,31 @@
+parameter,value
+seeds,"[101, 202, 303]"
+total_timesteps,32768
+pilot_timesteps,4096
+validation_every,8192
+gamma,0.98
+learning_rate,0.0003
+gae_lambda,0.95
+clip_range,0.2
+n_steps,512
+batch_size,128
+n_epochs,5
+ent_coef,0.01
+vf_coef,0.5
+max_grad_norm,0.5
+network,"[64, 64]"
+reward_scale,0.001
+candidates,"[{""learning_rate"": 0.0003, ""ent_coef"": 0.01}, {""learning_rate"": 0.0001, ""ent_coef"": 0.02}]"
+activation,"""Tanh"""
+optimizer,"""Adam"""
+optimizer_defaults,"""{'lr': 0.0003, 'betas': (0.9, 0.999), 'eps': 1e-05, 'weight_decay': 0, 'amsgrad': False, 'maximize': False, 'foreach': None, 'capturable': False, 'differentiable': False, 'fused': None, 'decoupled_weight_decay': False}"""
+initialization,"""orthogonal hidden gain sqrt(2), policy head .01, value head 1; zero bias"""
+architecture,"""{'pi': [64, 64], 'vf': [64, 64]}"""
+learnable_shared_features,false
+action_mask,"""none in PPO; environment applies floor/cap/delinquency guard"""
+evaluation,"""deterministic argmax; unchanged 21D observation"""
+finite_horizon,"""TrainingEnvironment converts term or trunc to terminal; no TimeLimit bootstrap"""
+bootstrap,"""V(next observation) at rollout edge unless episode terminal"""
+advantage_normalization,"""per optimization minibatch, sample std plus 1e-8"""
+selection,"""maximum full baseline validation discounted reward; earliest tie; rollout-boundary selection before pending update plus after final update"""
+buffer,"""single environment, fixed n_steps, GAE computed backward before optimization"""

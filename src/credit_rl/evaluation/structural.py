@@ -101,6 +101,8 @@ def rollout(snapshot, config, pd_model, policy, paths, horizon):
                                  for j in active])
         if k == 0:
             chosen = [j % actions for j in active]
+        elif hasattr(policy, 'act_indexed'):
+            chosen = policy.act_indexed(observations, active, k, actions)
         elif hasattr(policy, 'model'):
             chosen = policy.model.predict(observations, deterministic=True)[0]
         else:

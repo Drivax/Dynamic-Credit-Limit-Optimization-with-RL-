@@ -1,0 +1,13 @@
+{
+  "exact_cached_replay": true,
+  "tables": [
+    "ppo_training_diagnostics",
+    "ppo_advantages",
+    "ppo_normalized_advantages",
+    "exploration",
+    "critic_diagnostics",
+    "critic_states",
+    "advantage_alignment",
+    "checkpoint_diagnostics"
+  ]
+}

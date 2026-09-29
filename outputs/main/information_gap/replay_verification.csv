@@ -1,0 +1,4 @@
+seed,protocol_version,training_macro,selected_weights_identical,final_weights_identical
+101,2,markov,True,True
+202,2,markov,True,True
+303,2,markov,True,True

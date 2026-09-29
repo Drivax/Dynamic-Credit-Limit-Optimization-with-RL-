@@ -1,0 +1,33 @@
+# Phase B, predeclared before examining its untouched test population.
+standard:
+  population_seed: 284901
+  train_customers: 160
+  validation_customers: 48
+  test_customers: 80
+  states_per_trajectory: 2
+  draws: 64
+  critic_draws: 32
+  horizons: [6, 12, 24]
+  tree_leaves: [7, 15]
+  boosting_iterations: 100
+  minimum_leaf: 12
+  bootstrap_repetitions: 500
+  permutation_repetitions: 5
+  diagnostic_seed: 284902
+  replay_ppo_seeds: [101, 202, 303]
+smoke:
+  population_seed: 384901
+  train_customers: 8
+  validation_customers: 4
+  test_customers: 4
+  states_per_trajectory: 1
+  draws: 8
+  critic_draws: 8
+  horizons: [6, 24]
+  tree_leaves: [3]
+  boosting_iterations: 8
+  minimum_leaf: 2
+  bootstrap_repetitions: 20
+  permutation_repetitions: 2
+  diagnostic_seed: 384902
+  replay_ppo_seeds: [101]
