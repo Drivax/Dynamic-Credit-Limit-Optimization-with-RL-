@@ -294,3 +294,25 @@ this is not a claim that PPO is fixed. See the
 [Phase C report](docs/ppo_optimization_diagnosis.md) and
 [reproduction protocol](docs/ppo_diagnostics_protocol.md).
 <!-- ppo-diagnostics:end -->
+
+
+<!-- policy-initialization:start -->
+## Phase D — Actor initialization and preservation
+
+Imitation initialization retains state-dependent decisions under PPO and improves baseline reward relative to random initialization at both budgets. Teacher regret nevertheless increases during training, and stress reward gains are not established. The results support a short-budget discovery limitation in baseline, without establishing exact teacher-boundary preservation or a universal mechanism.
+
+Decision gate: **InitializationSensitive, ScenarioDependent, DiscoveryLimited, Unresolved**. DiscoveryLimited, when present, is restricted to short-budget baseline behavior; not a uniquely identified universal cause.
+
+| budget | metric | scenario | mean | low | high |
+| --- | --- | --- | --- | --- | --- |
+| 32768.0000 | discounted_reward | baseline | 99.3344 | 41.9437 | 165.5620 |
+| 32768.0000 | discounted_reward | severe_stress | -35.9209 | -66.7828 | -5.5938 |
+| 32768.0000 | net_economic_value | baseline | 214.6763 | 143.2867 | 300.8763 |
+| 32768.0000 | net_economic_value | severe_stress | 72.4043 | 44.8037 | 105.6874 |
+| 262144.0000 | discounted_reward | baseline | 75.5848 | 18.2889 | 153.4753 |
+| 262144.0000 | discounted_reward | severe_stress | -19.8631 | -50.2052 | 7.5360 |
+| 262144.0000 | net_economic_value | baseline | 155.0456 | 74.1619 | 255.4068 |
+| 262144.0000 | net_economic_value | severe_stress | 29.9000 | -3.1661 | 67.3494 |
+
+Full protocol, limitations and temporal diagnostics: [Phase D report](docs/policy_initialization_preservation.md).
+<!-- policy-initialization:end -->

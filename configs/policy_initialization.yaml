@@ -1,0 +1,81 @@
+# Phase D: fixed before generation of any Phase D data or outcomes.
+version: 1
+hypotheses:
+  H1: Imitation initialization preserves state dependence longer than random initialization.
+  H2: Despite good initialization, PPO moves toward contraction and teacher regret increases.
+  H3: ImitationInit reaches a better validation policy earlier.
+  H4: With enough training, random and imitation initialization converge toward similar policies.
+  H5: Initialization effects differ between baseline and severe stress.
+standard:
+  seeds: [101, 202, 303, 404, 505]
+  population_seed: 795103
+  train_customers: 600
+  validation_customers: 150
+  test_customers: 150
+  imitation_epochs: 600
+  imitation_check_every: 10
+  budgets: [32768, 262144]
+  snapshots: [0, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
+  bootstrap_repetitions: 2000
+  mc_draws: 32
+  mc_states_per_scenario: 12
+smoke:
+  seeds: [101]
+  population_seed: 895103
+  train_customers: 12
+  validation_customers: 6
+  test_customers: 6
+  imitation_epochs: 3
+  imitation_check_every: 1
+  budgets: [128, 256]
+  snapshots: [0, 64, 128, 256]
+  bootstrap_repetitions: 30
+  mc_draws: 4
+  mc_states_per_scenario: 2
+imitation:
+  architectures: [[64, 64], [128, 128]]
+  learning_rate: 0.001
+  batch_size: 256
+  loss: unweighted cross entropy on all natural visits
+  selection: minimum validation cross entropy; earliest tie
+  teacher: frozen Phase B F0 ObservationPlanner; no refit
+  features: exact 21 public observations, no additional inputs or preprocessing
+  sources: equal customer allocation to canonical PPO, frozen F0, MyopicEconomic
+  sampling: all pre-action visits; no action balancing; paired macro versions of each customer
+qualification:
+  split: validation only
+  effective_agreement_difference_lower_ci: 0.0
+  regret_difference_upper_ci: 0.0
+  minimum_diversity: 0.05
+  minimum_effective_actions: 2
+  minimum_action_share: 0.01
+  required_seeds: 4
+  rule: >-
+    In EACH scenario, pooled paired seed/customer bootstrap 95% CI for effective
+    agreement difference versus frozen canonical selected PPO is strictly above zero
+    and teacher-regret difference strictly below zero. At least four of five seeds
+    have greedy diversity >=0.05 and at least two effective actions each occupying
+    >=1% of natural visits in EACH scenario. Choose 64x64 if qualified; otherwise
+    train 128x128 with identical protocol. If both fail, stop the scientific PPO
+    comparison as Unresolved; do not label weak imitation a preservation test.
+training:
+  treatment: actor weights only
+  objective: unchanged canonical PPO; no teacher loss or targets
+  critic: identical canonical random critic within paired seed
+  population: unchanged canonical Markov training and baseline validation selection
+  fallback_control: same 128x128 actor architecture and canonical 64x64 critic
+  budgets: independent runs with identical seed and initial weights; no tuning
+  selection: canonical ValidationCheckpoint, including its pre-update boundary and final post-update evaluation
+evaluation:
+  modes: [deterministic, stochastic]
+  scenarios: [baseline, severe_stress]
+  stochastic_crn: fixed customer/month uniforms shared across arms and checkpoints
+  primary: validation-selected; final and post-update temporal snapshots reported separately
+  counterfactual: fixed validation panel; independent selection/evaluation draw banks; frozen canonical deterministic continuation; H=12
+  intervals: paired seed/customer bootstrap; matched macro customer resampling
+  confidence_buckets: validation teacher effective-action gap terciles frozen before PPO
+  collapse_thresholds: [0.5, 0.75, 0.9, 0.95]
+  temporal_inference: descriptive correlated trajectories, not independent hypothesis tests
+optional_experiments:
+  bc_anchor: not run; retain a pure initialization comparison
+  critic_warmstart: not run; retain a pure initialization comparison
