@@ -1,0 +1,368 @@
+{
+  "identity": {
+    "profile": "standard",
+    "protocol": {
+      "version": 1,
+      "seeds": [
+        101,
+        202,
+        303,
+        404,
+        505
+      ],
+      "beta_candidate": 0.05,
+      "schedules": [
+        "BC0",
+        "constant",
+        "decay"
+      ],
+      "selection": "maximum mean canonical baseline validation selected-checkpoint reward across five seeds; constant wins exact tie",
+      "beta_selection": "compare the single 0.05 candidate under constant and decay on validation; retain the better regularized treatment even if BC0 wins, and report that failure",
+      "training": "canonical PPO, frozen 64x64 Tanh BC actor and paired random critic; canonical Markov train population",
+      "bc_data": "frozen D train observations and F0 hard labels only; uniform natural visits, independent local RNG, batch 128",
+      "decay": "beta0 * max(0, 1 - num_timesteps / total_timesteps), at each PPO update",
+      "checkpoint": "unchanged canonical baseline validation selector",
+      "long_run": "selected regularized schedule only; no further selection or tuning",
+      "optional_q_pretraining": "omitted to keep the final contrast identifiable",
+      "constrained": "existing portfolio benchmark retained separately because portfolio-level allocation is not a single-customer policy",
+      "standard": {
+        "budgets": [
+          32768,
+          262144
+        ],
+        "customers": 150,
+        "population_seed": 1064103,
+        "bootstrap_repetitions": 2000,
+        "mc_states_per_scenario": 20,
+        "mc_draws": 32,
+        "ope_customers": 300,
+        "ope_replicates": 5
+      },
+      "smoke": {
+        "budgets": [
+          128,
+          256
+        ],
+        "customers": 4,
+        "population_seed": 2064103,
+        "bootstrap_repetitions": 20,
+        "mc_states_per_scenario": 2,
+        "mc_draws": 2,
+        "ope_customers": 8,
+        "ope_replicates": 1
+      },
+      "worlds": {
+        "nominal": {},
+        "severe_stress": {
+          "macro": "severe_stress"
+        },
+        "population_shift": {
+          "trait_donor": "bottom creditworthiness quartile",
+          "replace_fraction": 0.25
+        },
+        "behavioral_shift": {
+          "dynamics.spend_limit_elasticity": 0.2,
+          "dynamics.payment_persistence": 0.6,
+          "dynamics.payment_income_cap": 0.45
+        },
+        "risk_shift": {
+          "default.utilization": 1.45,
+          "default.debt_to_income": 0.55
+        }
+      },
+      "ope": {
+        "targets": [
+          "AlwaysDecrease20",
+          "BCRegularizedPPO"
+        ],
+        "target_action_probability": {
+          "high": 0.95,
+          "medium": 0.7,
+          "low": 0.3
+        },
+        "estimators": [
+          "IS",
+          "WIS"
+        ],
+        "estimand": "undiscounted net economic value",
+        "truth": "independent final nominal test cohort; finite Monte Carlo error reported"
+      },
+      "hypotheses": {
+        "H1": "BCInit preserves more state dependence than canonical PPO.",
+        "H2": "Regularization reduces teacher boundary erosion relative to BCInit.",
+        "H3": "Better preservation need not improve economic value.",
+        "H4": "Effects differ or weaken under severe stress.",
+        "H5": "ID advantage can coexist with greater OOD degradation.",
+        "H6": "ID-only gains do not establish robust superiority."
+      },
+      "confirmatory": {
+        "C1": "BCInitPPO - CanonicalPPO",
+        "C2": "BCRegularizedPPO - BCInitPPO",
+        "C3": "BCRegularizedPPO - AlwaysDecrease20",
+        "C4": "BCRegularizedPPO - MyopicEconomic",
+        "C5": "BCRegularizedPPO shifted world - nominal"
+      },
+      "endpoints": [
+        "net_economic_value",
+        "discounted_reward",
+        "credit_loss",
+        "defaulted",
+        "diversity",
+        "teacher_regret",
+        "worst_world_value"
+      ],
+      "inference": "paired seed/customer bootstrap, 95 percent marginal intervals conditional on the simulator; other contrasts exploratory",
+      "counterfactual": "fresh test states, uniform natural visits; independent 32 selection and 32 evaluation draws; shared frozen canonical seed101 continuation; H12; first-action deviation only"
+    },
+    "config": {
+      "environment": {
+        "horizon": 24,
+        "action_multipliers": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "min_limit": 500.0,
+        "max_limit": 15000.0,
+        "max_monthly_increase": 0.2,
+        "max_monthly_decrease": 0.2
+      },
+      "dynamics": {
+        "latent_credit_noise": 0.6,
+        "score_reference": 650.0,
+        "score_scale": 100.0,
+        "spending_log_sigma": 0.25,
+        "payment_logit_mean": -0.4,
+        "payment_logit_sigma": 0.5,
+        "initial_payment_ratio": 0.4,
+        "latent_factor_loadings": [
+          0.7,
+          -0.25,
+          0.65,
+          0.65
+        ],
+        "stability_logit_mean": 0.8,
+        "stability_logit_sigma": 0.6,
+        "income_reversion": 0.08,
+        "income_sigma": 0.025,
+        "income_unstable_volatility": 2.0,
+        "income_stress_volatility": 0.5,
+        "income_macro_vulnerability": 1.0,
+        "income_adverse_probability": 0.01,
+        "income_stress_adverse_probability": 0.06,
+        "income_adverse_log_drop": 0.15,
+        "income_max_log_drop": 0.35,
+        "income_max_log_gain": 0.2,
+        "income_min": 300.0,
+        "income_max": 30000.0,
+        "spend_income_fraction": 0.35,
+        "spend_persistence": 0.35,
+        "spend_limit_elasticity": 0.15,
+        "spend_elasticity_loading": 1.0,
+        "spend_max_elasticity": 0.6,
+        "spend_shock_sigma": 0.25,
+        "shock_clip": 6.0,
+        "payment_persistence": 0.5,
+        "payment_credit": 0.35,
+        "payment_utilization": 0.65,
+        "payment_burden": 0.3,
+        "payment_delinquency": 0.65,
+        "payment_stress": 0.6,
+        "payment_shock_sigma": 0.4,
+        "payment_income_cap": 0.5,
+        "minimum_payment_ratio": 0.05,
+        "missed_intercept": -3.0,
+        "missed_utilization": 0.8,
+        "missed_burden": 0.3,
+        "missed_delinquency": 0.6,
+        "missed_credit": 0.7,
+        "missed_stress": 0.7,
+        "missed_payment_fraction": 0.02,
+        "score_reversion": 0.1,
+        "score_delinquency_drop": 18.0,
+        "score_payment_gain": 4.0,
+        "score_noise": 3.0,
+        "score_min": 300.0,
+        "score_max": 950.0
+      },
+      "default": {
+        "intercept": -6.0,
+        "utilization": 1.2,
+        "debt_to_income": 0.45,
+        "months_delinquent": 0.65,
+        "low_payment": 0.6,
+        "creditworthiness": 0.8,
+        "stress": 0.9,
+        "adverse_income": 1.5
+      },
+      "pd": {
+        "intercept": -5.0,
+        "utilization": 1.0,
+        "debt_to_income": 0.35,
+        "months_delinquent": 0.5,
+        "score": -0.004,
+        "score_reference": 650.0,
+        "stress": 0.5,
+        "normal_unemployment": 0.07,
+        "stress_unemployment": 0.1,
+        "normal_inflation": 0.024,
+        "stress_inflation": 0.04,
+        "normal_policy_rate": 0.022,
+        "stress_policy_rate": 0.04,
+        "spend_burden_weight": 0.35
+      },
+      "reward": {
+        "annual_percentage_rate": 0.18,
+        "fee_rate": 0.012,
+        "loss_given_default": 0.55,
+        "annual_funding_rate": 0.03,
+        "rwa_factor": 0.08,
+        "capital_weight": 1.5,
+        "max_pd_threshold": 0.12,
+        "constraint_weight": 25.0
+      },
+      "macro": {
+        "transition_matrix": [
+          [
+            0.88,
+            0.11,
+            0.01
+          ],
+          [
+            0.035,
+            0.93,
+            0.035
+          ],
+          [
+            0.01,
+            0.14,
+            0.85
+          ]
+        ],
+        "income_growth": [
+          0.003,
+          0.001,
+          -0.01
+        ],
+        "spending_growth": [
+          0.02,
+          0.0,
+          -0.12
+        ],
+        "credit_stress": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scenarios": {
+          "baseline": [
+            [
+              1.0,
+              1,
+              1.0
+            ]
+          ],
+          "mild_stress": [
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              2,
+              0.65
+            ],
+            [
+              0.5,
+              1,
+              1.0
+            ]
+          ],
+          "severe_stress": [
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ],
+            [
+              0.6666666666666666,
+              2,
+              1.6
+            ],
+            [
+              0.16666666666666666,
+              1,
+              1.0
+            ]
+          ],
+          "recovery": [
+            [
+              0.25,
+              2,
+              1.3
+            ],
+            [
+              0.25,
+              2,
+              0.6
+            ],
+            [
+              0.25,
+              1,
+              1.0
+            ],
+            [
+              0.25,
+              0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    "ppo": {
+      "seeds": [
+        101,
+        202,
+        303
+      ],
+      "total_timesteps": 32768,
+      "pilot_timesteps": 4096,
+      "validation_every": 8192,
+      "gamma": 0.98,
+      "learning_rate": 0.0003,
+      "gae_lambda": 0.95,
+      "clip_range": 0.2,
+      "n_steps": 512,
+      "batch_size": 128,
+      "n_epochs": 5,
+      "ent_coef": 0.01,
+      "vf_coef": 0.5,
+      "max_grad_norm": 0.5,
+      "network": [
+        64,
+        64
+      ],
+      "reward_scale": 0.001,
+      "candidates": [
+        {
+          "learning_rate": 0.0003,
+          "ent_coef": 0.01
+        },
+        {
+          "learning_rate": 0.0001,
+          "ent_coef": 0.02
+        }
+      ]
+    },
+    "teacher": "88df62af7e8b3ac9014076548aee107065498a105602c8f714714eddefbe378a",
+    "pd": "9d41fa692ce72761fe358bebf4f89eb1bb2a6d9711cb5763bf45dc4129d39d64"
+  },
+  "frozen_at": "2026-10-04T15:45:02.630261+00:00",
+  "git_commit": "c5b99d48b5ae9f512441310d192621f7bf30783e",
+  "protocol_sha256": "56297779ac194690e5790ec7fc5bdf70ab04fd2e237cd0106a90aae4012c8561",
+  "protocol_document_sha256": "cb8fcbf8562429fdf9495ee6326111e5327043c3ed162e008a66719ee1034cbc"
+}

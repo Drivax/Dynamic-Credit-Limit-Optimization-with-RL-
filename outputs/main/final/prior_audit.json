@@ -1,0 +1,151 @@
+{
+  "verification": {
+    "status": "passed",
+    "protected_files": 10763,
+    "paired_runs": 20,
+    "checkpoints": 190,
+    "csv_figure_regeneration_identical": true,
+    "historical_document_prefixes_identical": true,
+    "runs": [
+      {
+        "arm": "RandomInit",
+        "seed": 101,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 101,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 202,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 202,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 303,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 303,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 404,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 404,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 505,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 505,
+        "budget": 32768,
+        "snapshots": 8
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 101,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 101,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 202,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 202,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 303,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 303,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 404,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 404,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "RandomInit",
+        "seed": 505,
+        "budget": 262144,
+        "snapshots": 11
+      },
+      {
+        "arm": "ImitationInit",
+        "seed": 505,
+        "budget": 262144,
+        "snapshots": 11
+      }
+    ],
+    "source_hashes": {
+      "src\\credit_rl\\experiments\\initialization_analysis.py": "e48294fb58b6642064609495ba54ecbf1d8930873cf72a8f1edf01b35310655c",
+      "src\\credit_rl\\experiments\\initialization_boundary_probe.py": "76da2a180ed6fb491c956b251d4c35dbdd4dde9084a551a73732bf473ff98e87",
+      "src\\credit_rl\\experiments\\initialization_finalize.py": "fa789a160bb747a3f28829538b270f0a9d76c6189baf58e2b4d0b79928320c5f",
+      "src\\credit_rl\\experiments\\initialization_learning.py": "4be80091209b432588ce1dc22942f64586d2a1663a76dd173a776ca5374e89e2",
+      "src\\credit_rl\\experiments\\initialization_metrics.py": "ced124294dcba7f231be7c93f7637655012fce9760337969b66e1bd47d8e498c",
+      "src\\credit_rl\\experiments\\initialization_minibatches.py": "92d284c223288c589cec99ff1763ffd1d2540db0d6c9b36ad424217e8fb93b90",
+      "src\\credit_rl\\experiments\\initialization_report.py": "9abcd79412796302a74643e84cf0b33efc51fc04ba36e43fdd55383e31c76ff1",
+      "src\\credit_rl\\experiments\\initialization_verify.py": "75396df92392df23b99116ffdee6c575eeab2b24f765cf24db1740023f82ad51",
+      "src\\credit_rl\\experiments\\policy_initialization.py": "1b5dcc1548cb3043cd4144e97455487a083bf581fed675dcb878da74effce5e7"
+    }
+  },
+  "validation": {
+    "tests_passed": 182,
+    "coverage_percent": 75.13,
+    "pytest_log_sha256": "eaf374592db7ed579d5fb92f65ed38aa9c0b2b85c3a81a5a0ca91b381b707948",
+    "ruff": "passed",
+    "smoke": "passed",
+    "minibatch_replays": "five pairs, exact selected and final tensors"
+  }
+}

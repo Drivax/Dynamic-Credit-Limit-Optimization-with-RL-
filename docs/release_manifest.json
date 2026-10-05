@@ -1,0 +1,101 @@
+{
+  "version": "1.0.0",
+  "status": "NOT READY TO TAG",
+  "prepared_at_utc": "2026-10-05T13:06:16.387828+00:00",
+  "local_only": true,
+  "git_head": "c5b99d48b5ae9f512441310d192621f7bf30783e",
+  "working_tree_clean": false,
+  "commit_created": false,
+  "tag_created": false,
+  "remote_changes": false,
+  "release_published": false,
+  "checks": {
+    "protected_historical_files": 12665,
+    "all_original_scientific_csvs_unchanged": true,
+    "classification_unchanged": true,
+    "scientific_source_and_configs_unchanged": true,
+    "ten_figures_regenerate_identically": true,
+    "readme_figures": 4,
+    "measured_blocks_consistent": true,
+    "smoke_software_fixture": {
+      "scientific_evidence": false,
+      "purpose": "Portable smoke integration; tiny newly fitted public teacher, not the frozen scientific teacher"
+    }
+  },
+  "validation": {
+    "ruff": "passed",
+    "full_tests_passed": 190,
+    "final_regression_tests_passed": 8,
+    "coverage_percent": 77.44769390821871,
+    "coverage_method": "Full suite plus final renderer regression; old renderer line data purged before appending.",
+    "smoke": "passed from source snapshot without historical models",
+    "wheel": "passed with both license notices",
+    "markdown_links": "passed",
+    "hosted_ci_executed": false,
+    "linux_standard_executed": false
+  },
+  "tracked_bytes": 47016625,
+  "inventory_bytes_excluding_self_and_manifest": 53015003,
+  "largest_tracked": [
+    {
+      "path": "outputs/main/ppo_diagnostics/training_updates.csv",
+      "bytes": 5524386
+    },
+    {
+      "path": "outputs/main/ppo_diagnostics/action_distribution.csv",
+      "bytes": 4586415
+    },
+    {
+      "path": "outputs/main/structural_diagnostics/action_dominance.csv",
+      "bytes": 2786066
+    },
+    {
+      "path": "outputs/main/ppo_diagnostics/figures/regret_maps.png",
+      "bytes": 1534708
+    },
+    {
+      "path": "outputs/main/ppo_diagnostics/figures/decision_maps.png",
+      "bytes": 1477175
+    },
+    {
+      "path": "outputs/main/structural_diagnostics/action_gaps.csv",
+      "bytes": 1143615
+    },
+    {
+      "path": "outputs/main/structural_diagnostics/gap_summary.csv",
+      "bytes": 1137980
+    },
+    {
+      "path": "outputs/main/ppo_diagnostics/imitation_states.csv",
+      "bytes": 908503
+    }
+  ],
+  "history_cleanup_recommended": true,
+  "history_cleanup_reason": "Old .venv binaries remain in Git history; no rewrite performed.",
+  "sha256": {
+    "README.md": "d92d60c7f9c3f66653b4d8fdb66f0a265da91487a6852ca25db4e999f5c23c92",
+    "docs\\technical_paper.md": "1c61204b2236a18f1faaddbbd081babf20077334339e65cd09540a2b9ec9c0e7",
+    "pyproject.toml": "1c6d3ed3c73f7c7b85dfd280eb3fef741c34cd687e322826bd369bcb57629acb",
+    "LICENSE": "6a0d36d6b39416b5a052576df4cada87b58af359e17043d31d149e1ac3d8e5e6",
+    "CITATION.cff": "7951f698833751ed22cadd353b9f28da102b8a15a5ac00e5b8ed5c31d910c25a",
+    "CHANGELOG.md": "9043da4864303688ff3d0c761246d33dcaf6bb1cbd13426cd3dcc43444c2ba9b",
+    ".gitignore": "f7a5106b96822b8e5abd96038aa2e8effde0996e1707260b57e5bd5fa7e8e00f",
+    ".github\\workflows\\ci.yml": "a9c075e72ae0b295e8ca250d2f3033422a6409550367d3544df746f4849f2884",
+    "src\\credit_rl\\experiments\\final_report.py": "6434d3c209514911d2fa79f4437d527a98b88706fc75c444c768b2578ad1f49e",
+    "tests\\test_final_evaluation.py": "6452652d66400641603ce124a0fb42797624432d517106788877a83b1a86538e",
+    "outputs\\main\\final_manifest.json": "4f3bd33cfef55f7db2719a04859b227f46232860aaf9c513ee3946eeb667a9b9",
+    "outputs\\main\\final\\documentation_audit.json": "6f5be877d1cc77eacee3780f138efa3178aba774a96d94dcba8a05b063d39ca9",
+    "docs\\release_assets.md": "02888a4ce498e93a94bd8ff32fef22d3da9be9409eca6b6d08660438c222632b",
+    "docs\\release_audit.md": "e299885197e0a4c3bc905d7b1b9ceafd5ab0b42bbd92c97a83903e6ddd7be8e3",
+    "docs\\release_checklist.md": "f2e14f8ddf618a501cfaad786d2c677da730d39fcdecf42987aef19789d746af",
+    "docs\\release_notes_v1.0.0.md": "8b06648579020ba77202254bbea9f7022a352bac756392e74d4413cde2504217",
+    "docs\\release_inventory.csv": "b5ec5dc12f232fd4e6f8fd953b7579c0d0b46bb856c6cb9cc755eead3505c8c0"
+  },
+  "local_validation_log_sha256": {
+    "outputs\\release\\pytest.log": "28d9cd4d79a4fbbfed792c33663b0a895d3f036b9e5d8d693e83bd0ad3664e0c",
+    "outputs\\release\\regression.log": "3e0ae303aff1df9e7c63e6d967b48d9de0d7ffd9e5b4877e118c680a4b8fb49c",
+    "outputs\\release\\smoke.log": "beb7256f869cb0f5137a7f8d20b129144e5d481cb67a93f06d62fd0d60ea530f",
+    "outputs\\release\\smoke_report.log": "23e7f4919a65a4416080f40c7bfbc9024ae03c2e6556a1d8f41032402157178f",
+    "outputs\\release\\wheel.log": "631585fdfe385b08bf6a1f34a28de4446b27838f57980bc006e9c46d27651c29"
+  }
+}

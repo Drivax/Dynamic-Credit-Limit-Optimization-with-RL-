@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "Dynamic Credit Limit Optimization with Reinforcement Learning"
+authors:
+  - name: "Alexl"
+version: 1.0.0
+repository-code: "https://github.com/Drivax/Dynamic-Credit-Limit-Optimization-with-RL-"
+license: MIT
+# Add date-released when v1.0.0 is actually published.

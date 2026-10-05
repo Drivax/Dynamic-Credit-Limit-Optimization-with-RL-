@@ -1,0 +1,11 @@
+{
+  "profile": "standard",
+  "published": true,
+  "source": "frozen measured_results.md derived from final CSVs",
+  "paper_full_block_identical": true,
+  "readme_primary_subset_identical": true,
+  "scientific_tables_unchanged": true,
+  "measured_sha256": "9148027837be7378f1cfac884c7d2222e1799b87f58570424d3aafd79a83e10a",
+  "table_sha256": "ccdb81ffb9f946098eb288057bd019f4fabce4326b513e27235e8606b2a29925",
+  "comparisons_sha256": "c72c6bc987c8a9cc8f47dbcae26871649c3c8d1dffbc0eddfc9ab6068c906d7f"
+}

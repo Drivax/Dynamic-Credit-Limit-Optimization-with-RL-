@@ -1,0 +1,56 @@
+{
+  "profile": "standard",
+  "comparisons": [
+    {
+      "seed": 101,
+      "checkpoint": "selected",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 101,
+      "checkpoint": "final",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 202,
+      "checkpoint": "selected",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 202,
+      "checkpoint": "final",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 303,
+      "checkpoint": "selected",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 303,
+      "checkpoint": "final",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 404,
+      "checkpoint": "selected",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 404,
+      "checkpoint": "final",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 505,
+      "checkpoint": "selected",
+      "exact_policy_tensors": true
+    },
+    {
+      "seed": 505,
+      "checkpoint": "final",
+      "exact_policy_tensors": true
+    }
+  ],
+  "status": "passed"
+}

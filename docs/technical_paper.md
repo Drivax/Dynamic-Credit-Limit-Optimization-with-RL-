@@ -1,275 +1,195 @@
-# Dynamic Credit-Limit Optimization under Partially Observed Credit Risk: A Synthetic Sequential Decision Framework
-
-Technical working paper. This document describes a reproducible simulation study; it is not a peer-reviewed publication.
+# Learning versus simple rules in synthetic dynamic credit-limit decisions
 
 ## Abstract
 
-Repeated credit-limit decisions change purchasing capacity, repayment behavior and future exposure, creating a sequential trade-off between revenue and credit loss. We study this problem in a synthetic monthly simulator with persistent unobserved customer traits, correlated behavioral heterogeneity, exogenous macro regimes and absorbing default. A calibrated logistic model estimates 12-month default risk from point-in-time observable histories, using customer-disjoint chronological training, calibration and test cohorts. Static, risk-threshold, one-step myopic and PPO policies are compared on the same held-out customers and indexed random shocks. Constant maximum contraction provides an additional control for interpreting learned behavior. The canonical experiment trains three PPO seeds, evaluates baseline and severe-stress scenarios, and quantifies paired differences using customer and training-seed bootstrap resampling. The calibrated PD model achieves test ROC AUC 0.842 and Brier score 0.162. PPO improves baseline net value over MyopicEconomic by 505.82 EUR per customer (95% paired interval 282.94–706.40), while increasing default incidence by 14.33 percentage points. All three seeds reproduce constant maximum-contraction effective trajectories to numerical precision on the evaluation panel, so these gains do not establish learned planning. The experiment distinguishes discounted, penalized training reward from undiscounted net economic value and does not infer a continuation-value mechanism merely from superior returns. All behavioral coefficients, macro scenarios and economic parameters are synthetic; the study provides a controlled evaluation framework rather than evidence of real-bank effectiveness or regulatory suitability.
+We study repeated credit-limit decisions in a fully synthetic partially observed consumer-credit environment. A canonical PPO agent initially appears economically competitive but rapidly approaches behavior equivalent to constant maximum contraction. Structural diagnostics find state-dependent and multi-step opportunities, and observable-state planners recover useful decision information. Controlled optimization experiments do not identify a single universal explanation for PPO's behavior, whereas actor initialization substantially changes learning trajectories. We compare public-state imitation initialization with a small behavior-cloning regularizer during on-policy learning. At the primary budget, initialized policies improve net economic value relative to contraction across the declared worlds, while reward improvement under severe stress is not established. The regularizer does not establish additional net economic value beyond initialization alone in both macro scenarios. Preservation and economic improvement are distinct, and the justification for learned policy complexity remains conditional on the objective and synthetic model.
 
 ## 1. Introduction
 
-A higher credit limit creates additional purchasing capacity but also permits larger exposure at default. It can reduce current utilization and change repayment incentives, so reducing limits need not monotonically reduce default probability. Repeated actions affect subsequent balances, behavior and future action opportunities. A one-step prediction problem therefore does not capture the entire decision process.
+A credit limit changes future exposure and the customer's modeled ability to spend and repay. Optimizing a sequence of limits is therefore more than predicting default. Nevertheless, a sophisticated policy should earn its complexity against strong simple controls. This study asks whether observable decision information can initialize or regularize PPO so that useful decisions survive training and generalize across adverse conditions. A negative answer is a valid outcome.
 
-This study stabilizes an explicit synthetic experiment rather than proposing a new reinforcement-learning algorithm. The scientific question is whether standard PPO improves the declared objective over observable baselines under matched simulated conditions, and whether any improvement demonstrates a sequential mechanism. All results refer to the specified DGP. Separate portfolio allocation and off-policy studies in the repository address different estimands and are not pooled with this experiment.
+The study proceeds from structural opportunity to information availability, optimization dynamics, initialization and final generalization. Historical protocols and negative results are preserved. The final experiment adds one auxiliary objective, not a new algorithm family, reward design or simulator.
 
 ## 2. Problem formulation
 
-Customer $i$ has persistent hidden traits $Z_i=(z_i,h_i,p_i,k_i)$: creditworthiness, spending propensity, repayment propensity and income stability. At decision month $t$, the observable customer state contains balance $B_{it}$, limit $L_{it}$, monthly income $Y_{it}$, last purchases $C_{it}$, actual payment ratio $q_{it}$, consecutive delinquent months $d_{it}$, behavioral score, tenure and recent delinquency history. Macro state $M_t$ supplies current income growth, spending growth and credit stress.
+The full simulator state contains current customer balances, limit, payment, income, delinquency, score, recent history, macro state and persistent hidden traits. Its transition is Markov conditional on indexed shocks. The actor receives a bounded 21-dimensional public projection and chooses one of five requested limit multipliers: 0.8, 0.9, 1, 1.1 or 1.2. Admission bounds limits to EUR 500–15,000 and blocks increases after severe delinquency. Existing debt is never forgiven by contraction. Default is absorbing and surviving episodes end after 24 transitions.
 
-The complete simulator state $X_t$ also includes traits, initial income/score anchors and recent observable history required by the PD model. A bounded 21-dimensional projection $O_t$ is supplied to the policy. The hidden state, true hazard, future outcomes, future macro states and future shocks are not policy inputs. Simulator diagnostic exports are separate research artifacts.
+For public history $H_t$ and horizon $T$, the conceptual objective is
 
-An action is an index selecting multiplier $a_t\in\{0.8,0.9,1,1.1,1.2\}$. Individual guards admit a limit $L'_t$ between 500 and 15,000 EUR and block increases after three consecutive delinquent months. The stochastic transition is $X_{t+1}\sim P(\cdot\mid X_t,a_t)$, implemented as a deterministic function of the current state, action and supplied indexed shocks. An episode follows the same customer until default or 24 transitions. Default is absorbing; no normal evolution or repeat loss is permitted afterward.
+$$J(\pi)=\mathbb{E}_\pi\sum_{t=0}^{T-1}\gamma^tR_t,\qquad \gamma=0.98.$$
+
+$$Q_t^\pi(h,a)=\mathbb{E}[R_t+\gamma V_{t+1}^\pi(H_{t+1})\mid H_t=h,A_t=a],\qquad V_T^\pi=0.$$
+
+The implemented feedforward actor and critic approximate these quantities from the current observation. Value is expected remaining reward, not estimated PD.
 
 ## 3. Synthetic data-generating process
 
-Trait draws occur once per customer. A common normal factor plus residuals produces correlated creditworthiness, spending, payment and income-stability traits. Their numerical loading and transformation parameters are declared in `configs/simulation.yaml`. Trait persistence is tested explicitly. Initial snapshots are synthetic; their snapshot labels and simulated true PD are discarded before longitudinal decision making.
+Persistent correlated traits govern creditworthiness, spending propensity, payment propensity and income stability. Initial snapshots are synthetic; future labels and the true generating hazard are excluded from policy inputs. Current macro factors and the admitted limit influence income, repayment and purchases. Purchases are capped by remaining headroom after payment. The central identity is $B_{t+1}=B_t-P_t+C_{t+1}$. Utilization may exceed one after contraction. Delinquency and score update before a closing default event is sampled from the hidden hazard. The next macro state is exposed afterward.
 
-```mermaid
-flowchart TD
-    Traits[Persistent hidden traits] --> Income[Income]
-    Traits --> Payment[Payment]
-    Traits --> Spending[Spending]
-    Traits --> Hazard[Default hazard]
-    Macro[Current macro] --> Income
-    Macro --> Payment
-    Macro --> Spending
-    Macro --> Hazard
-    Limit[Credit-limit action] --> Payment
-    Limit --> Spending
-    Income --> Payment
-    Income --> Spending
-    Payment --> Balance[Balance / utilization]
-    Spending --> Balance
-    Payment --> Delinquency[Consecutive delinquency]
-    Balance --> Hazard
-    Delinquency --> Hazard
-    Hazard --> Default[Absorbing default]
-```
+Indexed customer/month shock channels remain aligned across policies despite action-dependent defaults or transitions. This implements common random numbers without coupling the policy to future information. Exact equations are preserved in Appendix A and parameters in `configs/simulation.yaml`.
 
-This graph specifies simulator dependencies, not a causal structure identified from banking data. The exact implemented equations, including clipping and coefficient names, appear in Appendix A. The central balance identity is $B'=B-P+C'$, with purchases capped by $\max(0,L'-(B-P))$. Outstanding debt is not forgiven when limits contract. Interest and fees are cash-flow proxies and are not capitalized into principal.
+![Decision process](../outputs/main/final/figures/01_decision_process.png)
 
-The transition uses current macro $M_t$ to evolve behavior and sample closing default. Only then is $M_{t+1}$ exposed. A stable customer/channel hash and NumPy SeedSequence identify seven shock channels: income normal/uniform, spending normal, payment normal, missed-payment uniform, score normal and default uniform. Each month's shock is indexed independently of action-dependent control flow. Policy differences therefore do not shift later exogenous draws.
+## 4. Partial observability
 
-## 4. Credit-risk model
+The actor sees elapsed time, current limit, balance, utilization, payment, delinquency, income, score, estimated PD, spending, recent late payments, tenure, income change and current macro features. Hidden traits and future shocks remain inside the simulator. The observation is not guaranteed to be a sufficient Markov state. Privileged diagnostic rollouts condition on a complete visited state; those objects are never passed to the final learner. Simulator-derived offline labels are still a form of model-based supervision and do not imply that such labels are freely available in real lending data.
 
-For active customer $i$ at month $t$, the target is
+## 5. PD estimation
 
-$$Y_{i,t,H}=\mathbf1\{\text{first default occurs in }(t,t+H]\},\quad H=12.$$
+The risk target is first default within the next 12 months among active, administratively observable rows. Eligibility requires a complete target window; post-default rows are excluded. Customer and calendar partitions separate fitting, validation, calibration and evaluation. Historical features use past information only, and online/offline feature construction is tested for agreement.
 
-A row is eligible only if its full target window lies within administrative follow-up. Among eligible rows, an observed event in the window is positive; complete event-free follow-up is negative; otherwise the row is excluded as censored. This avoids retaining near-end positive labels while discarding comparable unknown negatives. Post-default observations are excluded.
+The frozen canonical estimator is median-imputed, standardized logistic regression with separate sigmoid calibration. Boosting remains an earlier diagnostic comparator, not a final policy-selection instrument. Calibration of a 12-month estimated PD is distinct from matching the simulator's one-month latent hazard. The model is learned from the same synthetic family and provides no independent real-bank validation.
 
-The 25-feature allowlist includes current limit, balance, utilization, income, payment ratio, delinquency, behavioral score, tenure, last purchases, recent late payments, income change and current macro factors. Historical summaries include lagged utilization, three-month mean utilization/payment, six-month extrema, income volatility and balance/income/limit changes. Rolling summaries exclude the current row; current information has separate features. Online inference uses the same feature calculation as offline construction. Tests poison future rows and verify unchanged earlier features.
+## 6. Economic objective
 
-Five disjoint cohorts occupy successive 25-month calendar blocks: training 2,500 customers, validation 800, calibration 800, test 1,000 and later entrants 1,000. Previous labels mature before the next observation block. The shared Markov calendar uses seed 412; dataset, DGP, behavior-policy, estimator and bootstrap seeds are 410, 411, 413, 414 and 415. Training behavior chooses the five actions with probabilities (0.1,0.2,0.4,0.2,0.1).
+The reward combines interest and fee income minus realized credit loss, funding cost, a modeled capital charge and a soft PD penalty. In the canonical parameters,
 
-The logistic pipeline median-imputes features, adds missing indicators, standardizes and fits logistic regression with C=1 and max_iter=2000. Histogram gradient boosting uses 150 iterations, 15 leaves and L2 regularization 1, without early stopping. Imputation/scaling are fitted on training data only. A separate sigmoid calibration fits the log odds of each base model using calibration customers. The calibrated logistic model is predeclared for all decision policies; final test metrics do not select the estimator.
+$$R_t=(1-D_{t+1})B_t\frac{0.18}{12}+0.012C_{t+1}-0.55D_{t+1}B_{t+1}-\frac{0.03}{12}B_{t+1}-1.5(0.08)\widehat p_t B_{t+1}-25\max(0,\widehat p_t-0.12).$$
 
-ROC AUC, average-precision PR AUC, Brier score and log loss are measured on mature snapshot targets. Customer-cluster bootstrap intervals preserve each customer's related labels. Calibration plots compare predicted 12-month PD with observed 12-month outcomes, not with the simulator's one-month conditional hazard. The actual model comparison is generated in Section 8.
+Reported NEV excludes the final capital and risk terms and is undiscounted. Discounted reward and NEV can therefore disagree. Neither terminal principal liquidation nor an adequate customer-welfare objective is modeled. Both default and the finite economic horizon terminate PPO bootstrapping.
 
-## 5. Sequential decision framework
+## 7. Baseline policies
 
-The full-state system admits an MDP representation. The observable process is partially observed because traits influence future behavior and hazard without being supplied to the policy. Let $H_t$ denote the full observable history. The finite-horizon objective is
+Static holds the requested limit. PDThreshold applies predeclared thresholds. MyopicEconomic optimizes an approximate immediate economic value. AlwaysDecrease20 applies maximum admissible contraction, using the existing legal-action helper to return hold when contraction is inadmissible. ObservationPlanner predicts action values from the public observation using the frozen F0 estimator and chooses a legal action with a fixed tie rule. Admission may map distinct requested commands to the same effective limit; requested and effective agreement are distinguished. Consequently the contraction rule can have positive requested-action diversity at the limit floor while producing the same effective outcomes as an actor that always requests contraction. Diversity alone is not evidence of a learned economic decision boundary.
 
-$$J(\pi)=\mathbb E_\pi\sum_{t=0}^{T-1}\gamma^tR_t,\quad \gamma=0.98.$$
+The working constrained-policy infrastructure is a secondary portfolio-allocation study. The final [secondary benchmark table](../outputs/main/final/constrained_secondary.csv) carries forward Static, RiskBased, Decrease20, PPO_hard and PPO_penalty under the existing normal-medium and stress-medium budget cases. It reports value, default and constraint-violation rates. Original feasibility, paired comparisons and OPE remain under `outputs/results/portfolio/standard/`. Portfolio interactions and its separate cohorts make direct pooling with the individual-customer table inappropriate.
 
-The conceptual history-based Bellman quantities are
+## 8. PPO
 
-$$V_t^\pi(h)=\mathbb E[R_t+\gamma V_{t+1}^\pi(H_{t+1})\mid H_t=h],\quad V_T=0,$$
+Canonical PPO uses separate 64-by-64 Tanh actor and critic networks, gamma 0.98, GAE lambda 0.95, rollout length 512, minibatches of 128 and five optimization epochs. Learning rate, clipping, entropy/value weights, reward scaling and maximum gradient norm remain canonical. A fixed Markov training population is distinct from baseline validation and final test customers.
 
-$$Q_t^\pi(h,a)=\mathbb E[R_t+\gamma V_{t+1}^\pi(H_{t+1})\mid h,a],\quad A_t^\pi=Q_t^\pi-V_t^\pi.$$
+The clipped actor surrogate uses minibatch-normalized GAE; the critic fits rollout returns. Checkpoint selection maximizes baseline validation discounted raw reward, with earliest ties retained. Validation at a rollout boundary precedes that pending update, while the final callback also evaluates the completed final update. Selected checkpoints and post-update temporal checkpoints are therefore different estimands.
 
-The actor and critic use the compact $O_t$ rather than full $H_t$. This approximation does not establish that $O_t$ is Markov. Reward is opening-balance interest in nondefault months plus purchase fees, less realized loss, funding and soft capital/risk charges:
+## 9. Structural diagnosis
 
-$$R_t=(1-D')B_t(0.18/12)+0.012C'-0.55D'B'-(0.03/12)B'-1.5(0.08)\widehat p_t B'-25(\widehat p_t-0.12)_+.$$
+Canonical contraction is not universally optimal under the tested fixed continuations. Independent action rollouts find visited states in which hold or increases yield better estimated continuation value. The preferred action varies with state and horizon. These are estimates conditional on the synthetic model and continuation policy, not a proof of globally optimal control.
 
-Net economic value omits the last two charges and is aggregated without discounting. Loss is counted exactly once at default. Revenue includes purchase fees even in a default month; no opening-balance interest is recognized then. The objective is a deliberately simplified economic proxy, with no terminal asset valuation.
+![Structural action map](../outputs/main/final/figures/02_structural_action_map.png)
 
-## 6. Policies
+## 10. Information and planning gap
 
-Static always requests $a_t=1$. The risk-based implementation is named **PDThreshold**: request 1.1 if $\widehat p_t<0.2$, 0.9 if $\widehat p_t\geq0.6$, and 1 otherwise. **AlwaysDecrease20** requests 0.8 subject to individual guards and the minimum limit. These exact names appear in code and generated tables.
+The frozen observable-state planner recovers substantial useful decision information. Earlier history-augmented and privileged-information benchmarks did not establish a robust additional advantage with the fitted models and budgets used. That limits the claim: insufficient information alone does not explain canonical PPO's failure, but the experiments do not prove that memory or latent information can never help.
 
-### MyopicEconomic
+## 11. PPO optimization dynamics
 
-The myopic action maximizes an observable surrogate $\widetilde{\mathbb E}[R_t\mid O_t,a]$. Set monthly hazard $q=1-(1-\widehat p_t)^{1/12}$. For a candidate admitted limit, approximate payment by $P=\min(Bq_{payment},0.5Y)$ and purchases by
+Greedy contraction develops before stochastic exploration disappears. Controlled variations in entropy, critic capacity and updates, GAE, discount and network size did not yield one universal causal explanation. Longer training partially recovers state dependence, particularly in nominal conditions. Diagnostics of normalized advantages also do not support uniformly negative average pressure on all teacher-preferred noncontraction actions.
 
-$$\widetilde C=\min((L'-(B-P))_+,C(L'/L)^{0.15}(1+g_{spend})).$$
+![Canonical collapse](../outputs/main/final/figures/03_canonical_collapse.png)
 
-Set $\widetilde B=B-P+\widetilde C$ and adjust hazard by
+## 12. Policy initialization
 
-$$\widetilde q=\sigma\left(\operatorname{logit}(q)+(\widetilde B/L'-U)+0.3(\widetilde B-B)/Y\right).$$
+The frozen public F0 teacher supplies hard labels on natural training visits. Imitation fits the canonical actor; only actor weights transfer into PPO, leaving a matched random critic. This treatment, renamed BCInitPPO in the final suite, is unchanged from the historical experiment. The learner receives no teacher signal after initialization.
 
-Zero closing balance gives zero hazard. The surrogate applies the reward formula using $\widetilde q$, $\widetilde B$, $\widetilde C$ and current PD. It chooses the maximizing admitted action, preferring the smallest adjustment on ties. These risk sensitivities are fixed assumptions, not causal estimates. The baseline is useful because it explicitly optimizes immediate modeled economics without access to traits, future shocks or DGP calls.
+Initialization substantially changes behavior relative to random initialization. It preserves multiple effective actions at the primary budget but does not completely preserve the teacher boundary. Increase regions are especially vulnerable. A decrease in teacher agreement can coexist with better nominal economic reward, so agreement alone is not evidence of policy quality.
 
-### PPO
+![Initialization trajectories](../outputs/main/final/figures/04_initialization.png)
 
-PPO's actor objective is
+## 13. Offline-to-online policy learning
 
-$$\mathbb E_t\min\left(r_t\widehat A_t,\operatorname{clip}(r_t,1-\epsilon,1+\epsilon)\widehat A_t\right),\qquad
-r_t=\frac{\pi_\theta(A_t\mid O_t)}{\pi_{old}(A_t\mid O_t)}.$$
+The only new treatment adds
 
-GAE uses $\widehat A_t=\sum_l(\gamma\lambda)^l\delta_{t+l}$ with $\delta_t=R_t+\gamma V_\phi(O_{t+1})-V_\phi(O_t)$. Default and the economic horizon have zero continuation in the training adapter. Public Gymnasium evaluation still returns termination at default and truncation at the horizon. Advantage estimates are normalized by the underlying PPO implementation.
+$$L(\theta,\phi)=L_{\mathrm{PPO}}(\theta,\phi)+\beta_t\,\mathbb{E}_{(O,a_T)\sim D_{\mathrm{train}}}[-\log\pi_\theta(a_T\mid O)].$$
 
-| Hyperparameter | Standard value |
-|---|---:|
-| Training transitions per seed | 32,768 |
-| Seeds | 101, 202, 303 |
-| Actor / critic hidden layers | 64, 64 / 64, 64; tanh |
-| Gamma / GAE lambda | 0.98 / 0.95 |
-| Learning rate | 0.0003 |
-| Clipping epsilon | 0.2 |
-| Rollout / batch size | 512 / 128 |
-| Epochs | 5 |
-| Entropy / value coefficient | 0.01 / 0.5 |
-| Maximum gradient norm | 0.5 |
-| Reward scaling | EUR times 0.001 |
-| Validation interval | 8,192 transitions, initialization and final update |
+The learner receives only 21 public features and hard labels from the same frozen teacher. Auxiliary batches sample natural training visits uniformly with an independent RNG. No latent variables, future outcomes, test observations or teacher Q targets enter optimization. The combined gradient is clipped once. BC0 delegates to the canonical update and is checked against the historical BCInit checkpoints.
 
-Hyperparameters are fixed from configuration; the canonical protocol performs no pilot search. Checkpoint selection maximizes validation mean discounted reward, retaining the earliest exact tie. Initialization is eligible. Every declared seed contributes to evaluation; there is no best-seed selection. CPU, one Torch thread and deterministic algorithms support repeatability within a recorded software environment.
+Only beta zero and a single candidate beta of 0.05 under constant or linear decay are admitted. Five short runs per regularized schedule determine selection on baseline validation. The better schedule is retained even if unregularized BCInit is better, preserving an interpretable negative treatment. The selected schedule is then trained at the extended budget without reselection. Decay is relative to the run's declared total budget, so short and long regularized runs do not have identical coefficient trajectories.
 
-## 7. Experimental design
+The primary endpoint uses validation-selected deterministic policies. Teacher preservation additionally compares initialization and final post-update snapshots on the fixed historical validation panel. That diagnostic panel is not final economic evidence. All schedules and seeds are retained.
 
-PD cohorts and policy cohorts use distinct identity namespaces and random seeds. Policy training contains 1,500 customers, validation 100, and evaluation 300. Policy population seed is 73000; partition codes 11/22/33 identify training/validation/test draws. Per-customer initialization uses SeedSequence(master, partition, index, 1); Markov training paths use a separate final component 2. Shock roots use master plus partition code and stable customer/channel hashes.
+![Policy behavior](../outputs/main/final/figures/05_behavior.png)
 
-The same held-out initial states, traits and shock paths are supplied to all policies and seeds. Baseline uses constant normal macro. Severe stress uses normal decisions 0–3, stress at severity 1.6 for 4–19, then normal for 20–23. The macro path is paired and fixed, so bootstrap intervals do not describe uncertainty over possible macro histories.
+## 14. Robustness and distribution shift
 
-Each bootstrap replicate samples customers with replacement jointly across seeds, then samples PPO seeds with replacement. Paired policy differences are formed at the customer level before aggregation. There are 300 resamples, seed 73100. The resampling unit is never independent customer-months. Three seeds provide limited estimation of training variability; intervals should not be interpreted as universal policy rankings.
+A new cohort of 150 customers shares identities and shock paths across policies and five declared worlds. Nominal and the original severe-stress path are separate. Population shift reassigns the traits of a fixed random quarter of customers from the bottom-creditworthiness quartile, preserving initial observed snapshots and empirical trait support. Behavioral shift moderately changes existing spending elasticity, repayment persistence and payment-income caps. Risk shift moderately increases existing utilization and debt-to-income hazard sensitivities. Exact values were frozen before outcomes.
 
-Default incidence uses initial customers. Credit losses, revenue and net value are per initial customer, including early-default episodes. Average limit and utilization first average observed months within a customer, then customers/seeds; these metrics are survival-dependent. Action fractions use observed transitions. Training reward includes capital/risk proxies while reported net value excludes them.
+Policies retain their nominal assumptions and are not recalibrated. Report world mean, dispersion, minimum and paired degradation from nominal. Minimum performance over five designed worlds is not distributionally robust optimization or a forecast. Tail loss uses the mean of the largest five percent of episode credit losses, with the finite-sample ceiling convention.
 
-| Experiment | Config | Seeds | Command | Output |
-|---|---|---|---|---|
-| Smoke | main_evaluation.yaml: smoke | PPO 101; PD 410–415 | `python -m credit_rl.experiments.main_evaluation --profile smoke` | outputs/main/smoke |
-| Canonical | main_evaluation.yaml: standard | PPO 101/202/303; population 73000; bootstrap 73100 | `python -m credit_rl.experiments.main_evaluation --profile standard` | outputs/main/standard |
-| Figures | Saved canonical results | No resimulation | `python -m credit_rl.experiments.main_evaluation --profile standard --stage figures` | outputs/main/standard/figures |
+Initial public PD, utilization and income buckets define customer-level descriptive cohorts in `customer_heterogeneity.csv`; each row reports full-episode value and risk. Separate visit-level PD, utilization, income and horizon buckets describe occupancy in `heterogeneity.csv`. Visit occupancy can itself change with policy. Neither analysis is ITE/CATE or a causal subgroup effect.
 
-Expanded configurations, package/source hashes and timestamps are recorded in the manifest. PD and selected PPO file hashes are recorded in `results/model_hashes.json`. Local models and raw histories are regenerated; no unversioned input is required.
+![Economic risk](../outputs/main/final/figures/06_economic_risk.png)
+![Baseline and stress](../outputs/main/final/figures/07_incremental_value.png)
+![World robustness](../outputs/main/final/figures/08_world_robustness.png)
 
-## 8. Results
+## 15. Counterfactual preservation and improvement
 
-Tables below are generated from the same CSV files as the README. All monetary quantities are EUR per initial customer, default rates are fractions, and `lower`/`upper` are 95% bootstrap bounds. PD metrics use eligible snapshots; policy metrics use whole episodes. A numerically better net value does not imply better performance under every reward definition.
+Fresh held-out natural visits under a fixed mixture of canonical PPO, public planner and myopic policies form the final counterfactual panel. One draw bank selects the preferred legal first action; a disjoint bank estimates differences. All actions share shocks and the same frozen canonical continuation over at most 12 months. No policy receives these diagnostic latent snapshots during fitting.
 
-<!-- canonical-results:start -->
+The resulting signed regret can be negative because selection and evaluation use independent finite Monte Carlo banks. We report mean, median and upper quantiles, regional regret, and beneficial/harmful deviations from the public teacher. The teacher is approximate, the continuation is fixed, and the experiment measures a first-action deviation, not lifetime optimal-policy regret. Small state panels and finite draw counts limit precision.
 
-### Baseline
+![Teacher preservation](../outputs/main/final/figures/09_preservation.png)
 
-| policy | net_economic_value | revenue | credit_loss | default_rate | mean_limit | mean_utilization |
-| --- | --- | --- | --- | --- | --- | --- |
-| AlwaysDecrease20 | -779.428 | 385.293 | 1105.889 | 0.713 | 2794.781 | 1.098 |
-| MyopicEconomic | -1285.245 | 1066.159 | 2191.299 | 0.570 | 11174.149 | 0.473 |
-| PDThreshold | -880.473 | 862.116 | 1614.304 | 0.630 | 7189.632 | 0.708 |
-| PPO | -779.428 | 385.293 | 1105.889 | 0.713 | 2794.781 | 1.098 |
-| Static | -1379.340 | 1012.640 | 2237.257 | 0.640 | 7312.645 | 0.661 |
+## 16. Off-policy evaluation
 
-### Stress
+The final OPE reuses the existing episodic IS/WIS estimators. Logging behavior chooses each deterministic target's command with probability 0.95, 0.70 or 0.30 and spreads the remainder over the other commands. Propensities refer to requested actions, even when admission makes commands equivalent. This construction isolates overlap effects while keeping full one-step support.
 
-| policy | net_economic_value | revenue | credit_loss | default_rate | mean_limit | mean_utilization |
-| --- | --- | --- | --- | --- | --- | --- |
-| AlwaysDecrease20 | -1280.840 | 301.699 | 1532.196 | 0.953 | 3423.447 | 1.074 |
-| MyopicEconomic | -2430.560 | 596.680 | 2926.816 | 0.873 | 10290.866 | 0.495 |
-| PDThreshold | -1953.059 | 477.893 | 2350.705 | 0.917 | 6452.382 | 0.736 |
-| PPO | -1280.840 | 301.699 | 1532.196 | 0.953 | 3423.447 | 1.074 |
-| Static | -2494.226 | 538.300 | 2940.479 | 0.913 | 7312.645 | 0.647 |
+Five logging replicates per learned seed are compared with independent simulator NEV. The target estimand is undiscounted NEV, not PPO's discounted reward. Bias and RMSE use that finite Monte Carlo reference; interval coverage therefore is reference coverage, not exact coverage of an analytically known population value. Report ESS, zero weights, valid bootstrap counts and undefined WIS explicitly. Low trajectory overlap can defeat useful estimation despite positive one-step support. No new causal framework, DR model or PDIS implementation is introduced.
 
-### Paired PPO differences (95% bootstrap)
+![OPE and simulator reference](../outputs/main/final/figures/10_ope.png)
 
-| scenario | reference | metric | difference | lower | upper |
-| --- | --- | --- | --- | --- | --- |
-| baseline | Static | cumulative_reward | 3225.122 | 2821.154 | 3706.490 |
-| baseline | Static | net_economic_value | 599.912 | 393.436 | 796.347 |
-| baseline | Static | credit_loss | -1131.368 | -1301.271 | -955.382 |
-| baseline | Static | defaulted | 0.073 | 0.037 | 0.115 |
-| baseline | MyopicEconomic | cumulative_reward | 3156.257 | 2653.905 | 3670.037 |
-| baseline | MyopicEconomic | net_economic_value | 505.817 | 282.939 | 706.396 |
-| baseline | MyopicEconomic | credit_loss | -1085.410 | -1283.859 | -880.017 |
-| baseline | MyopicEconomic | defaulted | 0.143 | 0.105 | 0.193 |
-| severe_stress | Static | cumulative_reward | 2747.200 | 2505.704 | 3018.580 |
-| severe_stress | Static | net_economic_value | 1213.386 | 1106.940 | 1331.399 |
-| severe_stress | Static | credit_loss | -1408.284 | -1537.349 | -1288.953 |
-| severe_stress | Static | defaulted | 0.040 | 0.020 | 0.060 |
-| severe_stress | MyopicEconomic | cumulative_reward | 3012.293 | 2686.070 | 3330.624 |
-| severe_stress | MyopicEconomic | net_economic_value | 1149.720 | 994.173 | 1294.821 |
-| severe_stress | MyopicEconomic | credit_loss | -1394.620 | -1543.396 | -1224.009 |
-| severe_stress | MyopicEconomic | defaulted | 0.080 | 0.052 | 0.112 |
+## 17. Final results and statistical design
 
-### PD test performance
+H1 tests retained state dependence, H2 reduced boundary erosion, H3 the distinction between preservation and economic value, H4 scenario dependence, H5 ID versus OOD degradation and H6 the absence of a superiority claim for ID-only gains. Confirmatory comparisons are BCInit versus canonical PPO; BCRegularized versus BCInit, contraction and myopic; and BCRegularized world degradation. Other contrasts are exploratory.
 
-| model | roc_auc | pr_auc | brier | log_loss |
-| --- | --- | --- | --- | --- |
-| constant | 0.500 | 0.458 | 0.249 | 0.691 |
-| logistic | 0.842 | 0.823 | 0.162 | 0.487 |
-| logistic_calibrated | 0.842 | 0.823 | 0.162 | 0.486 |
-| boosting | 0.846 | 0.831 | 0.161 | 0.485 |
-| boosting_calibrated | 0.846 | 0.831 | 0.160 | 0.483 |
+Economic intervals resample matched training seeds and customers. Behavioral intervals recompute visit statistics after the same paired cluster resampling. Worst-world intervals recompute the minimum world mean within each replicate; they do not select one worst world and ignore its uncertainty. Intervals are marginal, not simultaneous familywise guarantees. Deterministic baselines repeat seed identifiers for matching but acquire no artificial training variance. All five seeds are retained. Results are conditional on the fixed synthetic model and evaluation design.
 
-<!-- canonical-results:end -->
+<!-- final-measured:start -->
+Primary budget: **32,768 steps**. Values are synthetic EUR per customer; diversity is one minus the largest requested-action share. Default and diversity below refer to nominal.
 
-![PD calibration](../outputs/main/standard/figures/pd/calibration_deciles.png)
+| Policy | Baseline NEV | Stress NEV | Baseline reward | Stress reward | Default | Diversity | Worst-world NEV |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Static | -1211.2 | -2227.9 | -4269.0 | -4590.4 | 66.7% | 0.000 | -2227.9 |
+| PDThreshold | -783.5 | -1800.5 | -3224.7 | -3755.3 | 64.0% | 0.507 | -1800.5 |
+| MyopicEconomic | -1157.7 | -2146.2 | -4526.2 | -4756.3 | 56.0% | 0.498 | -2146.2 |
+| AlwaysDecrease20 | -787.6 | -1245.7 | -2107.0 | -2545.0 | 75.3% | 0.313 | -1245.7 |
+| CanonicalPPO | -787.6 | -1245.7 | -2107.0 | -2545.0 | 75.3% | 0.000 | -1245.7 |
+| ObservationPlanner | -618.2 | -1201.1 | -2036.3 | -2556.0 | 67.3% | 0.435 | -1201.1 |
+| BCInitPPO | -586.9 | -1182.3 | -2024.1 | -2567.8 | 65.3% | 0.467 | -1182.3 |
+| BCRegularizedPPO | -586.8 | -1184.6 | -2010.4 | -2562.4 | 64.9% | 0.407 | -1184.6 |
 
-### PPO versus MyopicEconomic
+Incremental NEV of BCRegularizedPPO over AlwaysDecrease20 (paired 95% intervals):
 
-PPO has higher net value than MyopicEconomic by **505.82 EUR/customer [282.94, 706.40]** under baseline and **1,149.72 [994.17, 1,294.82]** under stress. But every PPO seed reproduces the effective trajectories of constant 20% contraction to numerical precision on this evaluation panel (maximum checked difference 1.71e-13). Its default incidence is **14.33 percentage points higher** than Myopic under baseline and **8.00 points higher** under stress, despite lower monetary losses. These results support exposure contraction under the specified objective, not a demonstrated advantage from learned planning. All policies have negative mean net value.
+| Budget | World | Difference | 95% interval | Seeds | Customers |
+|---:|---|---:|---:|---:|---:|
+| 32,768 | nominal | 200.8 | [120.7, 293.0] | 5 | 150 |
+| 32,768 | severe_stress | 61.1 | [32.8, 96.7] | 5 | 150 |
+| 32,768 | worst_world | 61.1 | [32.3, 97.4] | 5 | 150 |
+| 262,144 | nominal | 238.9 | [152.6, 338.7] | 5 | 150 |
+| 262,144 | severe_stress | 59.6 | [31.1, 94.5] | 5 | 150 |
+| 262,144 | worst_world | 59.6 | [31.9, 91.8] | 5 | 150 |
 
-The generated paired differences give economic effect size, realized-loss difference, default-rate difference and penalized reward difference under both scenarios. Both signs and uncertainty must be considered. The constant-contraction control is essential: an economic advantage over an imperfect one-step surrogate alone cannot identify learned planning. No clear evidence of sacrificing immediate reward to obtain later gains is established by these aggregate results.
+Validation selected **decay**, β₀=0.05. Mean validation reward: -1894.02; BC0: -1890.94. The latter comparison is descriptive and did not trigger additional tuning.
 
-## 9. Policy analysis
+Intervals are marginal, conditional on the synthetic simulator, and do not establish real-bank population effects. Full intervals, stress interactions, both budgets and all five worlds are retained in the supporting CSVs.
 
-![PPO empirical policy map](../outputs/main/standard/figures/ppo_policy_map.png)
+Final classification: **SequentialValue: conditional; Learnability: initialization-sensitive; Robustness: scenario-dependent; ComplexityValue: conditionally justified.**
 
-The map bins actual opening utilization and actor-visible PD, then averages requested limit changes across all seeds and scenarios. Empty bins are unobserved. Other state variables vary within bins, so this is neither a controlled policy slice nor a causal response estimate. Policy-seed tables retain training variability even when the average map conceals it.
+Regularization versus initialization alone (primary budget; paired 95% intervals):
 
-![Representative paired trajectories](../outputs/main/standard/figures/paired_trajectory.png)
+| Scenario | NEV difference | Reward difference |
+|---|---:|---:|
+| nominal | 0.2 [-33.4, 42.5] | 13.7 [-10.2, 42.5] |
+| severe_stress | -2.3 [-18.0, 13.0] | 5.4 [-6.4, 21.1] |
 
-The displayed customer is the lexicographically first test ID, selected before inspecting economic results. Every PPO seed is shown against the same customer's baselines. Lines terminate when the respective customer defaults or reaches the horizon. Cumulative penalized reward is labeled separately from net economic value. These examples illustrate behavior and do not prove a general continuation-value mechanism.
+Learned sequential control adds net economic value over contraction across the declared worlds, but does not establish a reward improvement in every world. Its complexity is justified conditionally on the economic objective and synthetic setting, not by universal policy superiority. The additional BC regularizer does not establish an incremental NEV gain over initialization alone in both macro scenarios.
+<!-- final-measured:end -->
 
-## 10. Stress testing
+Complete tables, per-customer episodes, behavior counts, validation alternatives, counterfactual banks and OPE logs remain under `outputs/main/final/`. Main numbers above are regenerated from CSVs rather than entered manually.
 
-![Baseline and severe stress](../outputs/main/standard/figures/baseline_stress.png)
+## 18. Discussion
 
-Stress jointly changes income growth, spending growth and credit stress. It affects income volatility and adverse-income shocks, repayment/missed-payment probabilities and default hazard. Table comparisons retain the same customers and indexed uniforms/normals, while changed thresholds induce different realized events. A higher default fraction can coexist with lower losses when exposure is reduced; monetary loss and incidence are distinct outcomes. Scenario comparisons are conditional interventions inside the specified simulator.
+The evidence should distinguish decision opportunity, information availability, optimization sensitivity and economic usefulness. Structural opportunity does not imply that an optimizer discovers it. Successful imitation does not establish that the teacher is optimal. Better teacher preservation does not imply improved NEV or reward. A nominal gain does not establish robustness.
 
-## 10a. Structural diagnosis
+The central comparison is incremental value over AlwaysDecrease20, including stress and the worst declared world. Policy sophistication earns its complexity only when that gain is credible for the stated objective and conditions. The generated final classification reports the observed outcome without suppressing unfavorable schedules, seeds or worlds.
 
-PPO initially appeared economically better than Static and MyopicEconomic. The
-additional AlwaysDecrease20 baseline showed that all three PPO seeds reproduce
-its effective behavior on the canonical panel. This challenges the interpretation
-that the observed improvement resulted from sophisticated learned planning.
+## 19. Limitations
 
-We therefore diagnose the existing reward, DGP, constraints, floor and finite
-horizon, without modifying any of them. Full-state Monte Carlo compares all five
-initial requests with indexed common random numbers, horizons 1/3/6/12/remaining,
-Static/MyopicEconomic/AlwaysDecrease20/frozen-PPO continuation, and five discount
-factors. The sampled states are actual visits under held-out baseline trajectories;
-inverse inclusion weights restore the pooled visitation measure. These are
-privileged Q_H(s,a; continuation) estimates, not Q*, belief-state values or a
-same-information bound for PPO. Split-draw evaluation separates action selection
-from estimation of planning opportunity. See the [structural diagnosis](structural_diagnosis.md)
-for the causal audit, support, MC precision, accounting and local OAT sensitivity.
+This is a fully synthetic environment without real-bank calibration. Behavioral response is stylized; default and recovery are simplified; the PD model comes from the same synthetic family. There are few macro scenarios and only five training seeds. The public teacher is approximate and its offline labels require simulator information. The reward is a modeling choice, while NEV excludes some reward components. Customer welfare is not adequately modeled for production. No regulatory validity or deployment readiness is claimed. Distribution shifts are designed experiments, not forecasts. Counterfactual and OPE references have Monte Carlo error, and exploratory diagnostic findings do not uniquely identify optimization mechanisms.
 
-<!-- structural-summary:start -->
+## 20. Reproducibility and conclusion
 
-On 72 sampled visited full states, maximum contraction is the estimated best admissible request in 37.6% of weighted states at one step and 60.1% over the remaining horizon with AlwaysDecrease20 continuation. The preferred request changes between these horizons in 43.6% of states. Split-draw planning opportunity is EUR 58.47 of discounted training reward per sampled decision (conditional MC interval [50.92, 66.02]). This is privileged simulator evidence of state-dependent continuation values, not Q* or an attainable PPO gain. The canonical PPO/AlwaysDecrease20 effective equivalence remains; PPO has not demonstrated exploitation of this opportunity.
+Run `python -m credit_rl.experiments.final_evaluation --profile standard` with the frozen historical model artifacts, then `python -m credit_rl.experiments.final_report`. The smoke profile provides a portable integration check with tiny isolated fixtures when historical artifacts are absent; it is never scientific evidence. Historical outputs are hash-protected. The final manifest records the Git commit together with local source hashes because uncommitted local work is not described by HEAD alone.
 
-<!-- structural-summary:end -->
-
-The floor explains differences between requested and effective actions, while
-exposure loss, funding and the additional PD-based capital proxy explain the
-economic advantage of contraction over several baseline policies. Neither that
-advantage nor exact PPO equivalence proves that every visited state's optimum is
-contraction. The diagnostic cannot establish that privileged planning opportunity
-is recoverable from PPO's compact observation. It is not a redesign or correction
-of the model, and the negative PPO result remains part of the conclusion.
-
-## 11. Limitations
-
-All customer behavior, latent distributions, macro transition probabilities and structural coefficients are synthetic and not fitted to bank data. The closed book shrinks after default. Simplified repayment, principal-only accounting, fixed LGD and omitted terminal receivables affect the incentive to contract. The five-action menu limits expressiveness. The reward's PD-dependent charges are not regulatory capital, and real borrower welfare is absent.
-
-The PD model is trained on synthetic behavior-policy trajectories. Deployment under another policy can change feature and outcome distributions, while its 12-month forecast is not action-specific. A flat-hazard conversion does not recover calibrated monthly risk. Myopic uses approximate dynamics and PPO has only a compact observation, so neither represents an optimal-information bound. Repeated fixed training paths may encourage simulator overfitting.
-
-Bootstrap intervals condition on the PD fit, selected macro paths, fixed DGP and finite training seeds. They do not capture parameter uncertainty, model misspecification, cross-bank transport or real-world macro uncertainty. No multiple-comparison correction is used, and the study makes no significance-based ranking across all metrics. Supplementary portfolio/OPE studies have separate inference units and cannot validate this customer experiment by substitution.
-
-## 12. Conclusion
-
-The repository provides a controlled, reproducible way to evaluate sequential credit-limit decisions while separating hidden simulator risk from observable predictions. PPO improves net economic value over the myopic surrogate in both specified scenarios, but its effective trajectories match the fixed maximum-contraction control and its default incidence is higher. This is evidence of exposure reduction under the declared synthetic objective, not a demonstrated sequential-planning advantage. They do not establish that RL solves credit-limit optimization, that a learned sequential mechanism explains any advantage, or that these policies transfer to real portfolios. Such claims require stronger mechanism tests and independent empirical validation.
+The measured final classification above is the empirical answer to when sophisticated sequential policy learning earns its complexity over a simple credit-limit rule. That answer is conditional on this reproducible synthetic experiment; no additional scientific phase is proposed.
 
 ## Appendix A. Exact implemented monthly equations
 
@@ -376,112 +296,10 @@ hazard holding other inputs fixed; better z lowers it. Policy effects need not b
 monotonic: increased headroom can lower utilization and raise repayment while also
 raising purchases/exposure. Different customers can have different responses.
 
-<!-- information-gap:start -->
-## Information and planning gap
+## Final empirical answer
 
-PPO's canonical effective contraction behavior is preserved. Phase A established
-that maximum contraction is not universally optimal under privileged conditional
-planning. Phase B tests how much of this opportunity is recovered from the 21D
-observation, observable history and a separately typed privileged state estimator.
-Customer-disjoint fitting/validation/test and split-draw evaluation prevent target
-reuse. Every planner is evaluated by the canonical simulator and accounting engine.
+When does sophisticated sequential policy learning earn its complexity over a simple credit-limit rule?
 
-| scenario | policy | discounted_reward | net_economic_value | default_rate |
-| --- | --- | --- | --- | --- |
-| baseline | AlwaysDecrease20 | -2102.25 | -746.14 | 0.68 |
-| baseline | FullStatePlanner | -2078.85 | -578.51 | 0.61 |
-| baseline | HistoryPlanner | -2100.50 | -613.22 | 0.60 |
-| baseline | MyopicEconomic | -4705.91 | -1364.31 | 0.53 |
-| baseline | ObservationPlanner | -2058.12 | -663.04 | 0.60 |
-| baseline | PPO | -2102.25 | -746.14 | 0.68 |
-| severe_stress | AlwaysDecrease20 | -2545.69 | -1200.57 | 0.95 |
-| severe_stress | FullStatePlanner | -2608.84 | -1128.93 | 0.93 |
-| severe_stress | HistoryPlanner | -2621.15 | -1171.98 | 0.95 |
-| severe_stress | MyopicEconomic | -4846.57 | -2180.11 | 0.84 |
-| severe_stress | ObservationPlanner | -2576.22 | -1165.73 | 0.95 |
-| severe_stress | PPO | -2545.69 | -1200.57 | 0.95 |
-
-| scenario | gap | difference | lower | upper |
-| --- | --- | --- | --- | --- |
-| baseline | observable_planning | 2647.79 | 1917.54 | 3367.28 |
-| baseline | history | -42.37 | -83.96 | -4.07 |
-| baseline | privileged | 21.65 | -12.41 | 61.50 |
-| baseline | ppo_gap | 44.13 | 9.12 | 87.13 |
-| severe_stress | observable_planning | 2270.36 | 1793.71 | 2818.32 |
-| severe_stress | history | -44.94 | -86.87 | -7.09 |
-| severe_stress | privileged | 12.31 | -60.55 | 73.64 |
-| severe_stress | ppo_gap | -30.53 | -65.38 | -3.85 |
-
-The descriptive classification is **unresolved with current evidence**. Recommendation:
-A PPO optimization and representation experiment. Stratify by macro scenario: the supported gap reverses sign across scenarios. These gaps are not a causal decomposition: supervised approximation,
-validation-selected target horizons and fixed-continuation/repeated-greedy mismatch
-remain confounders. FullStatePlanner is not Q* or a guaranteed bound. Intervals
-condition on fitted models and MC targets. The [full report](information_planning_gap.md)
-documents latent predictability, ablations, actual GAE replay, stochastic critic
-calibration, conditional exploration and PPO counterfactual regret. Phase C is not
-implemented and Phase A artifacts remain unchanged.
-
-<!-- information-gap:end -->
-
-<!-- ppo-diagnostics:start -->
-## Phase C: PPO optimization and representation diagnosis
-
-The preceding Phase B section is retained as the historical result at that stage.
-Phase C now follows its finding that current public observations contain useful
-decision information. It preserves the canonical result, DGP and economic reward.
-The implementation reproduces the original selected and final PPO weights for
-seeds 101, 202 and 303, adds two canonical seeds, and evaluates 102 preregistered
-training runs on a new paired 100-customer cohort under baseline and severe stress.
-
-Greedy contraction exceeds 95% after 512–1,536 steps; strong stochastic contraction
-comes much later, if at all within the canonical budget. Early normalized
-advantages favor contraction, while the initial critic has substantial MC error.
-Improving critic accuracy alone does not restore a better state-dependent policy.
-A validation/mechanism-only rule selects λ=0 for a two-level confirmation with
-five fresh seeds per cell. This delays collapse by 3,481.6 steps (95% paired-seed
-CI [1,587.2, 5,171.2]), but selected-policy reward and net economic value are exactly
-unchanged on the paired test cohort in both scenarios.
-
-Longer training provides a different, exploratory result: 262,144 steps recover
-some state dependence in the unchanged actor architecture. Relative to canonical
-PPO, discounted reward improves by 75.79 EUR/customer in baseline
-(95% paired customer/seed CI [9.29, 160.81]), versus −12.39 EUR in severe stress
-([−33.98, 0.68]). The treatment-by-scenario interaction is −88.19 EUR
-([−183.26, −16.29]). Baseline net economic value increases by 132.65 EUR
-([48.97, 240.31]). These three-seed exploratory comparisons are not multiplicity-
-adjusted or fresh-seed confirmation of the budget effect.
-
-Supervised imitation learns only part of the planner boundary; a richer actor
-does not consistently improve fidelity. Extended-budget fitted teacher regret
-increases, and the independent fixed-continuation regret reduction is inconclusive.
-Policy-value improvement therefore does not establish complete boundary recovery.
-The decision gate is **ScenarioDependent + Unresolved**: economic consequences
-depend on scenario, while the separate causal roles of advantage estimation,
-critic error, exploration and actor optimization remain incompletely identified.
-Temporal ordering is not treated as causal identification, and no new phase is
-implemented. The [full quantitative report](ppo_optimization_diagnosis.md)
-contains all interventions, negative results, thirteen CSV-derived figures,
-selection rules and reproducibility commands.
-<!-- ppo-diagnostics:end -->
-
-
-<!-- policy-initialization:start -->
-## Phase D — Actor initialization and preservation
-
-Imitation initialization retains state-dependent decisions under PPO and improves baseline reward relative to random initialization at both budgets. Teacher regret nevertheless increases during training, and stress reward gains are not established. The results support a short-budget discovery limitation in baseline, without establishing exact teacher-boundary preservation or a universal mechanism.
-
-Decision gate: **InitializationSensitive, ScenarioDependent, DiscoveryLimited, Unresolved**. DiscoveryLimited, when present, is restricted to short-budget baseline behavior; not a uniquely identified universal cause.
-
-| budget | metric | scenario | mean | low | high |
-| --- | --- | --- | --- | --- | --- |
-| 32768.0000 | discounted_reward | baseline | 99.3344 | 41.9437 | 165.5620 |
-| 32768.0000 | discounted_reward | severe_stress | -35.9209 | -66.7828 | -5.5938 |
-| 32768.0000 | net_economic_value | baseline | 214.6763 | 143.2867 | 300.8763 |
-| 32768.0000 | net_economic_value | severe_stress | 72.4043 | 44.8037 | 105.6874 |
-| 262144.0000 | discounted_reward | baseline | 75.5848 | 18.2889 | 153.4753 |
-| 262144.0000 | discounted_reward | severe_stress | -19.8631 | -50.2052 | 7.5360 |
-| 262144.0000 | net_economic_value | baseline | 155.0456 | 74.1619 | 255.4068 |
-| 262144.0000 | net_economic_value | severe_stress | 29.9000 | -3.1661 | 67.3494 |
-
-Full protocol, limitations and temporal diagnostics: [Phase D report](policy_initialization_preservation.md).
-<!-- policy-initialization:end -->
+<!-- final-conclusion:start -->
+Learned sequential control adds net economic value over contraction across the declared worlds, but does not establish a reward improvement in every world. Its complexity is justified conditionally on the economic objective and synthetic setting, not by universal policy superiority. The additional BC regularizer does not establish an incremental NEV gain over initialization alone in both macro scenarios.
+<!-- final-conclusion:end -->

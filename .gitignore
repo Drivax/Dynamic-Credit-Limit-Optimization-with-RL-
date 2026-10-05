@@ -164,7 +164,7 @@ outputs/main/structural_diagnostics/action_values.csv
 outputs/main/structural_diagnostics/reward_decomposition.csv
 outputs/main/structural_diagnostics/ppo_disagreement_states.csv
 
-# Phase B compact scientific artifacts; raw draws and diagnostic models stay local.
+# Information diagnostics: compact scientific artifacts; raw draws and diagnostic models stay local.
 !outputs/main/information_gap/
 outputs/main/information_gap/*
 !outputs/main/information_gap/*.csv
@@ -175,7 +175,7 @@ outputs/main/information_gap/episode_metrics.csv
 outputs/main/information_gap/state_regret.csv
 outputs/main/information_gap/checkpoint_diagnostics.csv
 
-# Phase C compact scientific artifacts; checkpoints, raw buffers and MC caches stay local.
+# PPO diagnostics: compact scientific artifacts; checkpoints, raw buffers and MC caches stay local.
 !outputs/main/ppo_diagnostics/
 outputs/main/ppo_diagnostics/*
 !outputs/main/ppo_diagnostics/*.csv
@@ -190,3 +190,32 @@ outputs/main/ppo_diagnostics/policy_regret.csv
 outputs/main/ppo_diagnostics/counterfactual_states.csv
 outputs/main/ppo_diagnostics/gae_alignment_states.csv
 outputs/main/ppo_diagnostics/exploration.csv
+
+# Final compact evidence; raw trajectories, replay buffers and model archives stay local.
+!outputs/main/final/
+outputs/main/final/*
+!outputs/main/final/*.csv
+!outputs/main/final/*.json
+!outputs/main/final/*.md
+!outputs/main/final/figures/
+!outputs/main/final/historical_documents/
+!outputs/main/final_manifest.json
+outputs/main/final/episodes.csv
+outputs/main/final/behavior_by_customer.csv
+
+# Release hygiene: regenerate bulky diagnostics; tracked historical copies remain protected.
+outputs/main/ppo_diagnostics/training_updates.csv
+outputs/main/ppo_diagnostics/action_distribution.csv
+outputs/main/final/coverage*.json
+outputs/main/final/reproduction_baseline.json
+outputs/main/final/figure_contact_sheet.*
+outputs/main/final/figures/*
+!outputs/main/final/figures/*.png
+outputs/release/
+*.tmp
+*.bak
+
+# Compact frozen source for the final initialization trajectory figure.
+!outputs/main/policy_initialization/
+outputs/main/policy_initialization/*
+!outputs/main/policy_initialization/training_trajectory.csv

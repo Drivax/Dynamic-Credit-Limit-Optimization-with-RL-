@@ -1,0 +1,32 @@
+{
+  "01_decision_process": [
+    "configs/simulation.yaml"
+  ],
+  "02_structural_action_map": [
+    "outputs\\main\\structural_diagnostics\\action_maps.csv"
+  ],
+  "03_canonical_collapse": [
+    "outputs\\main\\policy_initialization\\training_trajectory.csv"
+  ],
+  "04_initialization": [
+    "outputs\\main\\policy_initialization\\training_trajectory.csv"
+  ],
+  "05_behavior": [
+    "outputs\\main\\final\\behavior_by_seed.csv"
+  ],
+  "06_economic_risk": [
+    "outputs\\main\\final\\main_table.csv"
+  ],
+  "07_incremental_value": [
+    "outputs\\main\\final\\paired_comparisons.csv"
+  ],
+  "08_world_robustness": [
+    "outputs\\main\\final\\main_table.csv"
+  ],
+  "09_preservation": [
+    "outputs\\main\\final\\preservation.csv"
+  ],
+  "10_ope": [
+    "outputs\\main\\final\\ope_summary.csv"
+  ]
+}

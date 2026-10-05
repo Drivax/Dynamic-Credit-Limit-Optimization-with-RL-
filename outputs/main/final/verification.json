@@ -1,0 +1,18 @@
+{
+  "status": "passed_locally",
+  "protected_historical_files": 12665,
+  "frozen_products_verified": true,
+  "figures_identical_after_regeneration": 10,
+  "measured_document_blocks_match": true,
+  "conclusions_match_classification": true,
+  "episodes": 60000,
+  "policy_seed_world_budget_cells": 400,
+  "customers_per_cell": 150,
+  "counterfactual_states": 40,
+  "counterfactual_rows": 3200,
+  "ope_rows": 300,
+  "bc0_exact_replay": "bc0_verification.json",
+  "validation": "validation.json",
+  "manifest": "../final_manifest.json",
+  "remote_ci_executed": false
+}

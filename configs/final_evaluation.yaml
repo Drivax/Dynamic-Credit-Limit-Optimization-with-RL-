@@ -1,0 +1,60 @@
+# Frozen before any final experiment outcomes. No additional configurations.
+version: 1
+seeds: [101, 202, 303, 404, 505]
+beta_candidate: 0.05
+schedules: [BC0, constant, decay]
+selection: maximum mean canonical baseline validation selected-checkpoint reward across five seeds; constant wins exact tie
+beta_selection: compare the single 0.05 candidate under constant and decay on validation; retain the better regularized treatment even if BC0 wins, and report that failure
+training: canonical PPO, frozen 64x64 Tanh BC actor and paired random critic; canonical Markov train population
+bc_data: frozen D train observations and F0 hard labels only; uniform natural visits, independent local RNG, batch 128
+decay: beta0 * max(0, 1 - num_timesteps / total_timesteps), at each PPO update
+checkpoint: unchanged canonical baseline validation selector
+long_run: selected regularized schedule only; no further selection or tuning
+optional_q_pretraining: omitted to keep the final contrast identifiable
+constrained: existing portfolio benchmark retained separately because portfolio-level allocation is not a single-customer policy
+standard:
+  budgets: [32768, 262144]
+  customers: 150
+  population_seed: 1064103
+  bootstrap_repetitions: 2000
+  mc_states_per_scenario: 20
+  mc_draws: 32
+  ope_customers: 300
+  ope_replicates: 5
+smoke:
+  budgets: [128, 256]
+  customers: 4
+  population_seed: 2064103
+  bootstrap_repetitions: 20
+  mc_states_per_scenario: 2
+  mc_draws: 2
+  ope_customers: 8
+  ope_replicates: 1
+worlds:
+  nominal: {}
+  severe_stress: {macro: severe_stress}
+  population_shift: {trait_donor: bottom creditworthiness quartile, replace_fraction: 0.25}
+  behavioral_shift: {dynamics.spend_limit_elasticity: 0.20, dynamics.payment_persistence: 0.60, dynamics.payment_income_cap: 0.45}
+  risk_shift: {default.utilization: 1.45, default.debt_to_income: 0.55}
+ope:
+  targets: [AlwaysDecrease20, BCRegularizedPPO]
+  target_action_probability: {high: 0.95, medium: 0.70, low: 0.30}
+  estimators: [IS, WIS]
+  estimand: undiscounted net economic value
+  truth: independent final nominal test cohort; finite Monte Carlo error reported
+hypotheses:
+  H1: BCInit preserves more state dependence than canonical PPO.
+  H2: Regularization reduces teacher boundary erosion relative to BCInit.
+  H3: Better preservation need not improve economic value.
+  H4: Effects differ or weaken under severe stress.
+  H5: ID advantage can coexist with greater OOD degradation.
+  H6: ID-only gains do not establish robust superiority.
+confirmatory:
+  C1: BCInitPPO - CanonicalPPO
+  C2: BCRegularizedPPO - BCInitPPO
+  C3: BCRegularizedPPO - AlwaysDecrease20
+  C4: BCRegularizedPPO - MyopicEconomic
+  C5: BCRegularizedPPO shifted world - nominal
+endpoints: [net_economic_value, discounted_reward, credit_loss, defaulted, diversity, teacher_regret, worst_world_value]
+inference: paired seed/customer bootstrap, 95 percent marginal intervals conditional on the simulator; other contrasts exploratory
+counterfactual: fresh test states, uniform natural visits; independent 32 selection and 32 evaluation draws; shared frozen canonical seed101 continuation; H12; first-action deviation only

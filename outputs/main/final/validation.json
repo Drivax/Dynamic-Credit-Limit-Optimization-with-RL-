@@ -1,0 +1,38 @@
+{
+  "status": "passed_locally",
+  "completed_at_utc": "2026-10-05T08:11:43.718229+00:00",
+  "full_suite": {
+    "passed": 189,
+    "log": "pytest.log"
+  },
+  "reporting_regression": {
+    "passed": 7,
+    "log": "regression_tests.log"
+  },
+  "coverage_percent": 76.93469672321636,
+  "coverage_floor": 75.13,
+  "coverage_method": "Full-suite coverage retained for unchanged modules; changed-module data cleared before targeted regression coverage was appended.",
+  "ruff": "passed",
+  "smoke_reproduction": {
+    "status": "passed",
+    "logs": [
+      "smoke_final_replay.log",
+      "smoke_final_report.log"
+    ]
+  },
+  "standard_reproduction": {
+    "status": "passed",
+    "log": "standard_final_frozen_replay.log"
+  },
+  "figures_regenerated_identically": 10,
+  "ci": {
+    "configured_platforms": [
+      "ubuntu-latest",
+      "windows-latest"
+    ],
+    "remote_executed": false,
+    "linux_executed": false,
+    "limitation": "Local-only work; no installed WSL Linux distribution. Hosted CI has not been executed."
+  },
+  "local_only": true
+}

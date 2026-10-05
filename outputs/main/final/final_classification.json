@@ -1,0 +1,8 @@
+{
+  "SequentialValue": "conditional",
+  "Learnability": "initialization-sensitive",
+  "Robustness": "scenario-dependent",
+  "ComplexityValue": "conditionally justified",
+  "classification_basis": "Descriptive primary-budget interpretation, not an additional confirmatory test: NEV and reward across all declared worlds; historical structural evidence",
+  "answer": "Learned sequential control adds net economic value over contraction across the declared worlds, but does not establish a reward improvement in every world. Its complexity is justified conditionally on the economic objective and synthetic setting, not by universal policy superiority. The additional BC regularizer does not establish an incremental NEV gain over initialization alone in both macro scenarios."
+}

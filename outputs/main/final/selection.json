@@ -1,0 +1,9 @@
+{
+  "schedule": "decay",
+  "beta": 0.05,
+  "selection_split": "validation",
+  "validation_csv_sha256": "ad6513aced21ea7dd3cc52557c05c2af3b774c0e2528bcc08852adb8090057bb",
+  "selected_validation_score": -1894.0161002835453,
+  "BC0_standard_validation_mean": -1890.9437336539625,
+  "smoke_control_budget_mismatch": false
+}

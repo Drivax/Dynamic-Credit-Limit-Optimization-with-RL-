@@ -1,0 +1,538 @@
+path,bytes,category
+.github/workflows/ci.yml,745,configuration
+.gitignore,8793,documentation / packaging
+CHANGELOG.md,875,documentation / packaging
+CITATION.cff,370,documentation / packaging
+LICENSE,1083,documentation / packaging
+README.md,12644,documentation / packaging
+configs/constrained_policy.yaml,723,configuration
+configs/experiments.yaml,344,configuration
+configs/final_evaluation.yaml,3153,configuration
+configs/information_gap.yaml,796,configuration
+configs/macro_scenarios.yaml,792,configuration
+configs/main_evaluation.yaml,597,configuration
+configs/ope.yaml,568,configuration
+configs/pd_model.yaml,1039,configuration
+configs/policy_evaluation.yaml,1298,configuration
+configs/policy_initialization.yaml,3897,configuration
+configs/portfolio.yaml,341,configuration
+configs/ppo_diagnostics.yaml,3575,configuration
+configs/robustness.yaml,1317,configuration
+configs/simulation.yaml,2464,configuration
+data/README.md,1930,documentation / packaging
+docs/dgp.md,17371,documentation / packaging
+docs/environment.md,3375,documentation / packaging
+docs/final_protocol.md,5148,documentation / packaging
+docs/final_repository_audit.md,2040,documentation / packaging
+docs/finalization_audit.md,7873,documentation / packaging
+docs/information_gap_protocol.md,7143,documentation / packaging
+docs/information_planning_gap.md,20430,documentation / packaging
+docs/off_policy_evaluation.md,8920,documentation / packaging
+docs/pd_audit.md,3608,documentation / packaging
+docs/pd_model.md,13385,documentation / packaging
+docs/pd_results.md,21366,documentation / packaging
+docs/policy_audit.md,3683,documentation / packaging
+docs/policy_evaluation.md,17198,documentation / packaging
+docs/policy_initialization_implementation.md,4752,documentation / packaging
+docs/policy_initialization_preservation.md,22867,documentation / packaging
+docs/policy_initialization_protocol.md,3752,documentation / packaging
+docs/policy_results.md,35760,documentation / packaging
+docs/portfolio_audit.md,2280,documentation / packaging
+docs/portfolio_decisioning.md,13712,documentation / packaging
+docs/portfolio_results.md,49352,documentation / packaging
+docs/ppo_diagnostics_implementation.md,4317,documentation / packaging
+docs/ppo_diagnostics_protocol.md,6616,documentation / packaging
+docs/ppo_optimization_diagnosis.md,46295,documentation / packaging
+docs/release_assets.md,4544,documentation / packaging
+docs/release_audit.md,4132,documentation / packaging
+docs/release_checklist.md,2498,documentation / packaging
+docs/release_notes_v1.0.0.md,1833,documentation / packaging
+docs/repository_inventory.csv,20754,documentation / packaging
+docs/robustness.md,9377,documentation / packaging
+docs/robustness_audit.md,3021,documentation / packaging
+docs/robustness_results.md,26763,documentation / packaging
+docs/structural_audit.md,5168,documentation / packaging
+docs/structural_diagnosis.md,23542,documentation / packaging
+docs/technical_paper.md,28160,documentation / packaging
+docs/third_party_notices.md,1425,documentation / packaging
+experiments/README.md,7359,source / tests
+experiments/__init__.py,76,source / tests
+experiments/common.py,181,source / tests
+experiments/compare_policies.py,11353,source / tests
+experiments/dgp_sanity.py,20085,source / tests
+experiments/off_policy_evaluation.py,9735,source / tests
+experiments/pd_env_smoke.py,2172,source / tests
+experiments/portfolio_constraints.py,16760,source / tests
+experiments/portfolio_diagnostics.py,5073,source / tests
+experiments/robustness.py,6360,source / tests
+experiments/study_common.py,4131,source / tests
+experiments/train_pd.py,215,source / tests
+experiments/train_ppo.py,3731,source / tests
+experiments/trajectory_sanity.py,8465,source / tests
+experiments/verify_portfolio.py,8504,source / tests
+outputs/experiments/ope_standard/macro_scenarios.yaml,792,historical evidence
+outputs/experiments/ope_standard/manifest.json,21080,historical evidence
+outputs/experiments/ope_standard/ope.yaml,568,historical evidence
+outputs/experiments/ope_standard/pd_model.yaml,1039,historical evidence
+outputs/experiments/ope_standard/policy_evaluation.yaml,1298,historical evidence
+outputs/experiments/ope_standard/policy_inventory.json,3396,historical evidence
+outputs/experiments/ope_standard/report_manifest.json,540,historical evidence
+outputs/experiments/ope_standard/simulation.yaml,2464,historical evidence
+outputs/experiments/portfolio/standard/constrained_policy.yaml,723,historical evidence
+outputs/experiments/portfolio/standard/manifest.json,26464,historical evidence
+outputs/experiments/portfolio/standard/portfolio.yaml,341,historical evidence
+outputs/experiments/portfolio/standard/report_manifest.json,504,historical evidence
+outputs/experiments/portfolio/standard/robustness.yaml,1317,historical evidence
+outputs/experiments/portfolio/standard/simulation.yaml,2464,historical evidence
+outputs/experiments/robustness_standard/macro_scenarios.yaml,792,historical evidence
+outputs/experiments/robustness_standard/manifest.json,428891,historical evidence
+outputs/experiments/robustness_standard/pd_model.yaml,1039,historical evidence
+outputs/experiments/robustness_standard/policy_evaluation.yaml,1298,historical evidence
+outputs/experiments/robustness_standard/policy_inventory.json,3752,historical evidence
+outputs/experiments/robustness_standard/report_manifest.json,540,historical evidence
+outputs/experiments/robustness_standard/robustness.yaml,1317,historical evidence
+outputs/experiments/robustness_standard/simulation.yaml,2464,historical evidence
+outputs/figures/ope/standard/error_vs_support.png,48270,historical evidence
+outputs/figures/ope/standard/ess.png,54298,historical evidence
+outputs/figures/ope/standard/importance_weights.png,46243,historical evidence
+outputs/figures/ope/standard/ope_vs_mc.png,94683,historical evidence
+outputs/figures/pd/calibration_deciles.png,130136,historical evidence
+outputs/figures/pd/stress_policy_comparison.png,172595,historical evidence
+outputs/figures/policy_evaluation/action_distribution.png,57317,historical evidence
+outputs/figures/policy_evaluation/economic_value.png,65595,historical evidence
+outputs/figures/policy_evaluation/paired_value_distribution.png,35186,historical evidence
+outputs/figures/policy_evaluation/pd_feedback.png,136643,historical evidence
+outputs/figures/policy_evaluation/policy_heatmaps.png,78041,historical evidence
+outputs/figures/policy_evaluation/ppo_training_diagnostics.png,441392,historical evidence
+outputs/figures/policy_evaluation/risk_return.png,59804,historical evidence
+outputs/figures/policy_evaluation/stress_robustness.png,181131,historical evidence
+outputs/figures/policy_evaluation/trajectory_RL_test_00048.png,211840,historical evidence
+outputs/figures/policy_evaluation/trajectory_RL_test_00098.png,229844,historical evidence
+outputs/figures/policy_evaluation/trajectory_RL_test_00115.png,202690,historical evidence
+outputs/figures/policy_evaluation/validation_convergence.png,90690,historical evidence
+outputs/figures/portfolio/standard/budget_action_heatmap.png,89761,historical evidence
+outputs/figures/portfolio/standard/budget_dynamics.png,322177,historical evidence
+outputs/figures/portfolio/standard/budget_frontier.png,118680,historical evidence
+outputs/figures/portfolio/standard/loss_distribution.png,89710,historical evidence
+outputs/figures/portfolio/standard/model_risk.png,52466,historical evidence
+outputs/figures/portfolio/standard/portfolio_0.png,349106,historical evidence
+outputs/figures/portfolio/standard/portfolio_1.png,359820,historical evidence
+outputs/figures/portfolio/standard/portfolio_2.png,355033,historical evidence
+outputs/figures/portfolio/standard/risk_value.png,94251,historical evidence
+outputs/figures/portfolio/standard/safety_buffer.png,69951,historical evidence
+outputs/figures/robustness/standard/constraint_violations.png,56335,historical evidence
+outputs/figures/robustness/standard/local_smoothness.png,49423,historical evidence
+outputs/figures/robustness/standard/parameter_sensitivity.png,84632,historical evidence
+outputs/figures/robustness/standard/pd_distortion.png,105806,historical evidence
+outputs/figures/robustness/standard/rank_stability.png,68387,historical evidence
+outputs/figures/robustness/standard/risk_value.png,91614,historical evidence
+outputs/figures/robustness/standard/trajectory_macro_unexpected_ROBUST_TEST_000032.png,247237,historical evidence
+outputs/figures/robustness/standard/trajectory_macro_unexpected_ROBUST_TEST_000037.png,231059,historical evidence
+outputs/figures/robustness/standard/trajectory_macro_unexpected_ROBUST_TEST_000043.png,203193,historical evidence
+outputs/figures/robustness/standard/trajectory_nominal_ROBUST_TEST_000032.png,245161,historical evidence
+outputs/figures/robustness/standard/trajectory_nominal_ROBUST_TEST_000037.png,251061,historical evidence
+outputs/figures/robustness/standard/trajectory_nominal_ROBUST_TEST_000043.png,197597,historical evidence
+outputs/figures/robustness/standard/world_distribution.png,52162,historical evidence
+outputs/figures/robustness/standard/worst_world.png,45853,historical evidence
+outputs/main/final/bc0_verification.json,1102,final evidence
+outputs/main/final/behavior_by_seed.csv,89965,final evidence
+outputs/main/final/conditional_actions.csv,1016233,final evidence
+outputs/main/final/constrained_secondary.csv,1049,final evidence
+outputs/main/final/counterfactual.csv,363941,final evidence
+outputs/main/final/counterfactual_summary.csv,39849,final evidence
+outputs/main/final/customer_heterogeneity.csv,467759,final evidence
+outputs/main/final/documentation_audit.json,513,final evidence
+outputs/main/final/figure_hashes.json,1271,final evidence
+outputs/main/final/figure_sources.json,833,final evidence
+outputs/main/final/figures/01_decision_process.png,39777,final evidence
+outputs/main/final/figures/02_structural_action_map.png,131425,final evidence
+outputs/main/final/figures/03_canonical_collapse.png,54651,final evidence
+outputs/main/final/figures/04_initialization.png,54524,final evidence
+outputs/main/final/figures/05_behavior.png,44925,final evidence
+outputs/main/final/figures/06_economic_risk.png,65193,final evidence
+outputs/main/final/figures/07_incremental_value.png,54787,final evidence
+outputs/main/final/figures/08_world_robustness.png,75840,final evidence
+outputs/main/final/figures/09_preservation.png,60764,final evidence
+outputs/main/final/figures/10_ope.png,144136,final evidence
+outputs/main/final/final_classification.json,783,final evidence
+outputs/main/final/frozen_products.json,3371,final evidence
+outputs/main/final/heterogeneity.csv,624480,final evidence
+outputs/main/final/historical_documents/README.md,23320,final evidence
+outputs/main/final/historical_documents/scientific_manifest.json,107495,final evidence
+outputs/main/final/historical_documents/technical_paper.md,38527,final evidence
+outputs/main/final/main_table.csv,32837,final evidence
+outputs/main/final/measured_results.md,2798,final evidence
+outputs/main/final/ope_estimates.csv,66021,final evidence
+outputs/main/final/ope_summary.csv,2121,final evidence
+outputs/main/final/paired_comparisons.csv,79107,final evidence
+outputs/main/final/preregistration.json,10766,final evidence
+outputs/main/final/preservation.csv,10654,final evidence
+outputs/main/final/preservation_comparisons.csv,1059,final evidence
+outputs/main/final/prior_audit.json,4263,final evidence
+outputs/main/final/protected_artifacts.json,1908379,final evidence
+outputs/main/final/robustness.csv,4267,final evidence
+outputs/main/final/schedule_validation.csv,398,final evidence
+outputs/main/final/selection.json,328,final evidence
+outputs/main/final/validation.json,1090,final evidence
+outputs/main/final/verification.json,583,final evidence
+outputs/main/final/worlds.json,26404,final evidence
+outputs/main/final_manifest.json,107495,final evidence
+outputs/main/information_gap/action_confusion.csv,12855,historical evidence
+outputs/main/information_gap/action_distribution.csv,66329,historical evidence
+outputs/main/information_gap/advantage_alignment.csv,9763,historical evidence
+outputs/main/information_gap/benchmark_values.csv,12932,historical evidence
+outputs/main/information_gap/checkpoint_validation.csv,1047,historical evidence
+outputs/main/information_gap/counterfactual_regret.csv,1899,historical evidence
+outputs/main/information_gap/critic_diagnostics.csv,25987,historical evidence
+outputs/main/information_gap/critic_states.csv,86819,historical evidence
+outputs/main/information_gap/exploration.csv,360784,historical evidence
+outputs/main/information_gap/feature_importance.csv,3424,historical evidence
+outputs/main/information_gap/feature_names.json,26538,historical evidence
+outputs/main/information_gap/figures/action_confusion.png,173139,historical evidence
+outputs/main/information_gap/figures/benchmark_values.png,61075,historical evidence
+outputs/main/information_gap/figures/critic_calibration.png,69194,historical evidence
+outputs/main/information_gap/figures/feature_importance.png,41462,historical evidence
+outputs/main/information_gap/figures/history_value.png,48798,historical evidence
+outputs/main/information_gap/figures/information_gap.png,86691,historical evidence
+outputs/main/information_gap/figures/latent_predictability.png,45494,historical evidence
+outputs/main/information_gap/figures/planner_regret.png,47453,historical evidence
+outputs/main/information_gap/figures/ppo_action_training.png,156311,historical evidence
+outputs/main/information_gap/figures/ppo_entropy_training.png,96956,historical evidence
+outputs/main/information_gap/figures/ppo_regret_map.png,45270,historical evidence
+outputs/main/information_gap/history_depth.csv,9358,historical evidence
+outputs/main/information_gap/information_gap.csv,3069,historical evidence
+outputs/main/information_gap/latent_predictability.csv,821,historical evidence
+outputs/main/information_gap/manifest.json,5647,historical evidence
+outputs/main/information_gap/model_selection.csv,1230,historical evidence
+outputs/main/information_gap/planner_fit_diagnostics.csv,511,historical evidence
+outputs/main/information_gap/planner_regret.csv,679549,historical evidence
+outputs/main/information_gap/policy_agreement.csv,152716,historical evidence
+outputs/main/information_gap/ppo_advantages.csv,155157,historical evidence
+outputs/main/information_gap/ppo_normalized_advantages.csv,64629,historical evidence
+outputs/main/information_gap/ppo_reproducibility.json,273,historical evidence
+outputs/main/information_gap/ppo_training_diagnostics.csv,109112,historical evidence
+outputs/main/information_gap/protected_artifacts.json,213477,historical evidence
+outputs/main/information_gap/replay_verification.csv,161,historical evidence
+outputs/main/information_gap/report.md,20430,historical evidence
+outputs/main/information_gap/reproducibility.json,366,historical evidence
+outputs/main/information_gap/states.csv,321434,historical evidence
+outputs/main/information_gap/verification.json,1404,historical evidence
+outputs/main/policy_initialization/training_trajectory.csv,109429,historical evidence
+outputs/main/ppo_diagnostics/action_distribution.csv,4586415,historical evidence
+outputs/main/ppo_diagnostics/actual_training_gae.csv,2736,historical evidence
+outputs/main/ppo_diagnostics/alignment_by_region.csv,522892,historical evidence
+outputs/main/ppo_diagnostics/all_policy_results.csv,27057,historical evidence
+outputs/main/ppo_diagnostics/canonical_ppo_configuration.csv,1540,historical evidence
+outputs/main/ppo_diagnostics/canonical_training.csv,554442,historical evidence
+outputs/main/ppo_diagnostics/checkpoint_selection.csv,59032,historical evidence
+outputs/main/ppo_diagnostics/collapse_comparisons.csv,6479,historical evidence
+outputs/main/ppo_diagnostics/collapse_timing.csv,136777,historical evidence
+outputs/main/ppo_diagnostics/confirmation_eligibility.csv,1493,historical evidence
+outputs/main/ppo_diagnostics/confirmatory_mechanism_seeds.csv,582,historical evidence
+outputs/main/ppo_diagnostics/confirmatory_mechanisms.csv,466,historical evidence
+outputs/main/ppo_diagnostics/confirmatory_plan.json,4964,historical evidence
+outputs/main/ppo_diagnostics/confirmatory_registry.csv,2562,historical evidence
+outputs/main/ppo_diagnostics/confirmatory_results.csv,479,historical evidence
+outputs/main/ppo_diagnostics/counterfactual_provenance.json,2667,historical evidence
+outputs/main/ppo_diagnostics/counterfactual_regret.csv,38793,historical evidence
+outputs/main/ppo_diagnostics/critic_by_region.csv,82903,historical evidence
+outputs/main/ppo_diagnostics/critic_diagnostics.csv,45983,historical evidence
+outputs/main/ppo_diagnostics/decision_gate.json,6216,historical evidence
+outputs/main/ppo_diagnostics/diagnostic_registry.csv,4226,historical evidence
+outputs/main/ppo_diagnostics/early_advantage_ordering.csv,2331,historical evidence
+outputs/main/ppo_diagnostics/entropy.csv,799186,historical evidence
+outputs/main/ppo_diagnostics/experiment_registry.csv,19189,historical evidence
+outputs/main/ppo_diagnostics/figures/action_distribution_training.png,109685,historical evidence
+outputs/main/ppo_diagnostics/figures/architecture_effect.png,44512,historical evidence
+outputs/main/ppo_diagnostics/figures/baseline_vs_stress.png,147333,historical evidence
+outputs/main/ppo_diagnostics/figures/budget_effect.png,104153,historical evidence
+outputs/main/ppo_diagnostics/figures/collapse_by_entropy.png,37033,historical evidence
+outputs/main/ppo_diagnostics/figures/collapse_by_lambda.png,39435,historical evidence
+outputs/main/ppo_diagnostics/figures/collapse_timeline.png,832723,historical evidence
+outputs/main/ppo_diagnostics/figures/critic_error.png,103185,historical evidence
+outputs/main/ppo_diagnostics/figures/decision_maps.png,1477175,historical evidence
+outputs/main/ppo_diagnostics/figures/entropy_training.png,167085,historical evidence
+outputs/main/ppo_diagnostics/figures/gae_vs_mc.png,219414,historical evidence
+outputs/main/ppo_diagnostics/figures/planner_imitation.png,50736,historical evidence
+outputs/main/ppo_diagnostics/figures/regret_maps.png,1534708,historical evidence
+outputs/main/ppo_diagnostics/final_policy_results.csv,2039,historical evidence
+outputs/main/ppo_diagnostics/final_training_diagnostics.csv,181667,historical evidence
+outputs/main/ppo_diagnostics/gae_alignment.csv,77862,historical evidence
+outputs/main/ppo_diagnostics/imitation.csv,4556,historical evidence
+outputs/main/ppo_diagnostics/imitation_confusion.csv,9736,historical evidence
+outputs/main/ppo_diagnostics/imitation_states.csv,908503,historical evidence
+outputs/main/ppo_diagnostics/intervention_results.csv,138761,historical evidence
+outputs/main/ppo_diagnostics/mc_action_opportunity.csv,43211,historical evidence
+outputs/main/ppo_diagnostics/mc_value_benchmark.csv,1464,historical evidence
+outputs/main/ppo_diagnostics/paired_counterfactual_regret.csv,7273,historical evidence
+outputs/main/ppo_diagnostics/paired_vs_constant.csv,7017,historical evidence
+outputs/main/ppo_diagnostics/preregistration.json,6588,historical evidence
+outputs/main/ppo_diagnostics/protected_artifacts.json,399234,historical evidence
+outputs/main/ppo_diagnostics/representation.csv,11525,historical evidence
+outputs/main/ppo_diagnostics/scenario_comparison.csv,47404,historical evidence
+outputs/main/ppo_diagnostics/state_coverage.csv,246190,historical evidence
+outputs/main/ppo_diagnostics/state_endpoint_comparisons.csv,17671,historical evidence
+outputs/main/ppo_diagnostics/test_states.csv,54760,historical evidence
+outputs/main/ppo_diagnostics/training_updates.csv,5524386,historical evidence
+outputs/main/ppo_diagnostics/validation.json,336,historical evidence
+outputs/main/ppo_diagnostics/validation_trajectories.csv,429378,historical evidence
+outputs/main/ppo_diagnostics/verification.json,262,historical evidence
+outputs/main/standard/figures/baseline_stress.png,44629,historical evidence
+outputs/main/standard/figures/paired_trajectory.png,125791,historical evidence
+outputs/main/standard/figures/pd/calibration_deciles.png,130136,historical evidence
+outputs/main/standard/figures/pd/macro_regime.png,56657,historical evidence
+outputs/main/standard/figures/pd/pd_distribution.png,42499,historical evidence
+outputs/main/standard/figures/pd/representative_trajectories.png,245316,historical evidence
+outputs/main/standard/figures/pd/stress_policy_comparison.png,172595,historical evidence
+outputs/main/standard/figures/pd/temporal_drift.png,87664,historical evidence
+outputs/main/standard/figures/ppo_policy_map.png,57673,historical evidence
+outputs/main/standard/figures/risk_value.png,73520,historical evidence
+outputs/main/standard/manifest.json,28077,historical evidence
+outputs/main/standard/results/baseline_results.csv,668,historical evidence
+outputs/main/standard/results/constant_equivalence.json,336,historical evidence
+outputs/main/standard/results/figure_metadata.json,124,historical evidence
+outputs/main/standard/results/model_hashes.json,326,historical evidence
+outputs/main/standard/results/paired_comparisons.csv,8567,historical evidence
+outputs/main/standard/results/pd/manifest.json,15970,historical evidence
+outputs/main/standard/results/pd/metrics.csv,14728,historical evidence
+outputs/main/standard/results/pd/metrics.json,31781,historical evidence
+outputs/main/standard/results/pd/sample_counts.csv,1203,historical evidence
+outputs/main/standard/results/population_ids.json,43964,historical evidence
+outputs/main/standard/results/seed_metrics.csv,8020,historical evidence
+outputs/main/standard/results/severe_stress_results.csv,710,historical evidence
+outputs/main/standard/results/summary.csv,8070,historical evidence
+outputs/main/standard/results/tables.md,2840,historical evidence
+outputs/main/standard/results/verification.json,755,historical evidence
+outputs/main/structural_diagnostics/action_constraints.csv,5312,historical evidence
+outputs/main/structural_diagnostics/action_dominance.csv,2786066,historical evidence
+outputs/main/structural_diagnostics/action_gaps.csv,1143615,historical evidence
+outputs/main/structural_diagnostics/action_maps.csv,166622,historical evidence
+outputs/main/structural_diagnostics/action_persistence.csv,223810,historical evidence
+outputs/main/structural_diagnostics/answers.md,1621,historical evidence
+outputs/main/structural_diagnostics/coverage.json,212999,historical evidence
+outputs/main/structural_diagnostics/effective_action_gaps.csv,135707,historical evidence
+outputs/main/structural_diagnostics/figures/action_dominance_by_horizon.png,67905,historical evidence
+outputs/main/structural_diagnostics/figures/action_gap_histogram.png,45250,historical evidence
+outputs/main/structural_diagnostics/figures/action_gap_map.png,124626,historical evidence
+outputs/main/structural_diagnostics/figures/action_gap_map_income_bucket.png,262716,historical evidence
+outputs/main/structural_diagnostics/figures/action_gap_map_macro_regime.png,247512,historical evidence
+outputs/main/structural_diagnostics/figures/action_gap_map_phase.png,377521,historical evidence
+outputs/main/structural_diagnostics/figures/contraction_advantage_map.png,125769,historical evidence
+outputs/main/structural_diagnostics/figures/contraction_advantage_map_income_bucket.png,257535,historical evidence
+outputs/main/structural_diagnostics/figures/contraction_advantage_map_macro_regime.png,252000,historical evidence
+outputs/main/structural_diagnostics/figures/contraction_advantage_map_phase.png,371855,historical evidence
+outputs/main/structural_diagnostics/figures/optimal_action_map.png,121648,historical evidence
+outputs/main/structural_diagnostics/figures/optimal_action_map_income_bucket.png,248972,historical evidence
+outputs/main/structural_diagnostics/figures/optimal_action_map_macro_regime.png,231239,historical evidence
+outputs/main/structural_diagnostics/figures/optimal_action_map_phase.png,365777,historical evidence
+outputs/main/structural_diagnostics/figures/parameter_sensitivity.png,55646,historical evidence
+outputs/main/structural_diagnostics/figures/planning_opportunity.png,77047,historical evidence
+outputs/main/structural_diagnostics/figures/reward_decomposition.png,58031,historical evidence
+outputs/main/structural_diagnostics/gap_summary.csv,1137980,historical evidence
+outputs/main/structural_diagnostics/interpretation.md,2148,historical evidence
+outputs/main/structural_diagnostics/limit_floor.csv,1909,historical evidence
+outputs/main/structural_diagnostics/manifest.json,14421,historical evidence
+outputs/main/structural_diagnostics/mc_precision.csv,174329,historical evidence
+outputs/main/structural_diagnostics/persistent_state_effects.csv,306262,historical evidence
+outputs/main/structural_diagnostics/planning_opportunity.csv,763900,historical evidence
+outputs/main/structural_diagnostics/planning_summary.csv,19311,historical evidence
+outputs/main/structural_diagnostics/planning_validation.csv,149578,historical evidence
+outputs/main/structural_diagnostics/planning_validation_summary.csv,3726,historical evidence
+outputs/main/structural_diagnostics/policy_collapse.csv,1536,historical evidence
+outputs/main/structural_diagnostics/policy_value_decomposition.csv,194946,historical evidence
+outputs/main/structural_diagnostics/replay_reference.json,551,historical evidence
+outputs/main/structural_diagnostics/replay_verification.json,179,historical evidence
+outputs/main/structural_diagnostics/report_manifest.json,2730,historical evidence
+outputs/main/structural_diagnostics/report_tables.md,22137,historical evidence
+outputs/main/structural_diagnostics/sensitivity.csv,688830,historical evidence
+outputs/main/structural_diagnostics/sensitivity_states.csv,5292,historical evidence
+outputs/main/structural_diagnostics/sensitivity_summary.csv,9348,historical evidence
+outputs/main/structural_diagnostics/state_profile_dominance.csv,222646,historical evidence
+outputs/main/structural_diagnostics/state_support.csv,1194,historical evidence
+outputs/main/structural_diagnostics/states.csv,20041,historical evidence
+outputs/main/structural_diagnostics/summary.md,658,historical evidence
+outputs/main/structural_diagnostics/verification.json,1029,historical evidence
+outputs/results/ope/standard/estimates.csv,118535,historical evidence
+outputs/results/ope/standard/mc_summary.csv,3989,historical evidence
+outputs/results/ope/standard/runtime.json,130,historical evidence
+outputs/results/ope/standard/summary.csv,20550,historical evidence
+outputs/results/ope/standard/support_summary.csv,1275,historical evidence
+outputs/results/ope/standard/timing.csv,1841,historical evidence
+outputs/results/ope/standard/verification.json,635,historical evidence
+outputs/results/pd/benchmark.json,879,historical evidence
+outputs/results/pd/metrics.csv,14734,historical evidence
+outputs/results/pd/metrics.json,31782,historical evidence
+outputs/results/pd/sample_counts.csv,1203,historical evidence
+outputs/results/policy_evaluation/constant_rule_equivalence.csv,6067,historical evidence
+outputs/results/policy_evaluation/evaluation_benchmark.csv,9093,historical evidence
+outputs/results/policy_evaluation/manifest_audit.json,12636,historical evidence
+outputs/results/policy_evaluation/manifest_evaluate.json,12763,historical evidence
+outputs/results/policy_evaluation/manifest_figures.json,12762,historical evidence
+outputs/results/policy_evaluation/manifest_smoke.json,12636,historical evidence
+outputs/results/policy_evaluation/manifest_train.json,12760,historical evidence
+outputs/results/policy_evaluation/paired_comparisons.csv,55800,historical evidence
+outputs/results/policy_evaluation/pd_calibration_under_policies.csv,9044,historical evidence
+outputs/results/policy_evaluation/pilot_validation.csv,108,historical evidence
+outputs/results/policy_evaluation/reward_audit.csv,1190,historical evidence
+outputs/results/policy_evaluation/robustness.csv,2873,historical evidence
+outputs/results/policy_evaluation/seed_metrics.csv,55987,historical evidence
+outputs/results/policy_evaluation/selection.json,236,historical evidence
+outputs/results/policy_evaluation/summary.csv,43218,historical evidence
+outputs/results/policy_evaluation/threshold_validation.csv,275,historical evidence
+outputs/results/policy_evaluation/training_benchmark.csv,1086,historical evidence
+outputs/results/policy_evaluation/verification.json,1029,historical evidence
+outputs/results/portfolio/standard/action_segments.csv,21168,historical evidence
+outputs/results/portfolio/standard/additional_constraints.csv,8648,historical evidence
+outputs/results/portfolio/standard/budget_marginal_value.csv,2091,historical evidence
+outputs/results/portfolio/standard/buffer_validation.csv,14168,historical evidence
+outputs/results/portfolio/standard/cases.json,122506,historical evidence
+outputs/results/portfolio/standard/constant_rule_gaps.csv,156267,historical evidence
+outputs/results/portfolio/standard/diagnostic_mc_ambiguity.csv,8396,historical evidence
+outputs/results/portfolio/standard/documentation_verification.json,2639,historical evidence
+outputs/results/portfolio/standard/evaluation_runtime.json,69,historical evidence
+outputs/results/portfolio/standard/loss_distribution.csv,684,historical evidence
+outputs/results/portfolio/standard/loss_distribution_by_seed.csv,617,historical evidence
+outputs/results/portfolio/standard/model_hashes.json,1591,historical evidence
+outputs/results/portfolio/standard/ope_runtime.json,169,historical evidence
+outputs/results/portfolio/standard/paired_comparisons.csv,341154,historical evidence
+outputs/results/portfolio/standard/parallel_verification.json,206,historical evidence
+outputs/results/portfolio/standard/penalty_validation.csv,10310,historical evidence
+outputs/results/portfolio/standard/portfolio_ope_summary.csv,916,historical evidence
+outputs/results/portfolio/standard/seed_metrics.csv,197587,historical evidence
+outputs/results/portfolio/standard/selection.json,217,historical evidence
+outputs/results/portfolio/standard/sensitivity_deltas.csv,48010,historical evidence
+outputs/results/portfolio/standard/sequential_cases.csv,129230,historical evidence
+outputs/results/portfolio/standard/summary.csv,119716,historical evidence
+outputs/results/portfolio/standard/tail_runtime.json,71,historical evidence
+outputs/results/portfolio/standard/training_timing.csv,520,historical evidence
+outputs/results/portfolio/standard/uncertainty.csv,111784,historical evidence
+outputs/results/portfolio/standard/verification.json,983,historical evidence
+outputs/results/portfolio/standard/world_feasibility.csv,406,historical evidence
+outputs/results/robustness/parallel_verification.json,166,historical evidence
+outputs/results/robustness/standard/constant_equivalence.csv,63796,historical evidence
+outputs/results/robustness/standard/constraint_violations.csv,2808,historical evidence
+outputs/results/robustness/standard/distributions.csv,13594,historical evidence
+outputs/results/robustness/standard/dominance.csv,3405,historical evidence
+outputs/results/robustness/standard/local_smoothness.csv,326358,historical evidence
+outputs/results/robustness/standard/oat_sensitivity.csv,30646,historical evidence
+outputs/results/robustness/standard/paired_comparisons.csv,24276,historical evidence
+outputs/results/robustness/standard/parameter_associations.csv,8716,historical evidence
+outputs/results/robustness/standard/runtime.json,73,historical evidence
+outputs/results/robustness/standard/sequential_cases.csv,97424,historical evidence
+outputs/results/robustness/standard/simulator_only_oracle_gap_summary.csv,996,historical evidence
+outputs/results/robustness/standard/timing.csv,174048,historical evidence
+outputs/results/robustness/standard/uncertainty.csv,4867,historical evidence
+outputs/results/robustness/standard/verification.json,585,historical evidence
+outputs/results/robustness/standard/win_frequencies.csv,3421,historical evidence
+outputs/results/robustness/standard/world_metrics.csv,499179,historical evidence
+outputs/results/robustness/standard/worst_worlds.csv,9311,historical evidence
+pyproject.toml,1055,documentation / packaging
+src/credit_rl/__init__.py,220,source / tests
+src/credit_rl/config.py,12261,source / tests
+src/credit_rl/envs/__init__.py,70,source / tests
+src/credit_rl/envs/constraints.py,571,source / tests
+src/credit_rl/envs/credit_limit_env.py,13906,source / tests
+src/credit_rl/envs/observation.py,1666,source / tests
+src/credit_rl/evaluation/__init__.py,80,source / tests
+src/credit_rl/evaluation/dgp_diagnostics.py,2067,source / tests
+src/credit_rl/evaluation/metrics.py,994,source / tests
+src/credit_rl/evaluation/ope.py,4184,source / tests
+src/credit_rl/evaluation/ope_reporting.py,4873,source / tests
+src/credit_rl/evaluation/policy_engine.py,8000,source / tests
+src/credit_rl/evaluation/policy_reporting.py,17616,source / tests
+src/credit_rl/evaluation/policy_statistics.py,4556,source / tests
+src/credit_rl/evaluation/robustness_reporting.py,16598,source / tests
+src/credit_rl/evaluation/robustness_statistics.py,5908,source / tests
+src/credit_rl/evaluation/scenarios.py,2505,source / tests
+src/credit_rl/evaluation/sensors.py,1805,source / tests
+src/credit_rl/evaluation/structural.py,9845,source / tests
+src/credit_rl/evaluation/worlds.py,5435,source / tests
+src/credit_rl/experiments/__init__.py,52,source / tests
+src/credit_rl/experiments/common.py,2211,source / tests
+src/credit_rl/experiments/final_analysis.py,16661,source / tests
+src/credit_rl/experiments/final_evaluation.py,10903,source / tests
+src/credit_rl/experiments/final_learning.py,8695,source / tests
+src/credit_rl/experiments/final_ope.py,5652,source / tests
+src/credit_rl/experiments/final_panels.py,13734,source / tests
+src/credit_rl/experiments/final_report.py,22432,source / tests
+src/credit_rl/experiments/final_smoke_inputs.py,4887,source / tests
+src/credit_rl/experiments/final_verify.py,3543,source / tests
+src/credit_rl/experiments/information_analysis.py,14573,source / tests
+src/credit_rl/experiments/information_gap.py,10718,source / tests
+src/credit_rl/experiments/information_ppo.py,19207,source / tests
+src/credit_rl/experiments/information_report.py,29727,source / tests
+src/credit_rl/experiments/initialization_analysis.py,20477,source / tests
+src/credit_rl/experiments/initialization_boundary_probe.py,5446,source / tests
+src/credit_rl/experiments/initialization_finalize.py,6713,source / tests
+src/credit_rl/experiments/initialization_learning.py,8318,source / tests
+src/credit_rl/experiments/initialization_metrics.py,3492,source / tests
+src/credit_rl/experiments/initialization_minibatches.py,6091,source / tests
+src/credit_rl/experiments/initialization_report.py,35555,source / tests
+src/credit_rl/experiments/initialization_verify.py,6474,source / tests
+src/credit_rl/experiments/main_evaluation.py,8319,source / tests
+src/credit_rl/experiments/pd_training.py,12906,source / tests
+src/credit_rl/experiments/policy_initialization.py,16803,source / tests
+src/credit_rl/experiments/ppo_analysis.py,11292,source / tests
+src/credit_rl/experiments/ppo_confirmation.py,9428,source / tests
+src/credit_rl/experiments/ppo_counterfactual.py,6954,source / tests
+src/credit_rl/experiments/ppo_diagnostics.py,13009,source / tests
+src/credit_rl/experiments/ppo_imitation.py,7100,source / tests
+src/credit_rl/experiments/ppo_learning.py,9815,source / tests
+src/credit_rl/experiments/ppo_measurements.py,17228,source / tests
+src/credit_rl/experiments/ppo_report.py,38118,source / tests
+src/credit_rl/experiments/ppo_verify.py,3778,source / tests
+src/credit_rl/experiments/report_assets.py,6583,source / tests
+src/credit_rl/experiments/structural_diagnostics.py,22876,source / tests
+src/credit_rl/experiments/structural_report.py,28122,source / tests
+src/credit_rl/policies/__init__.py,67,source / tests
+src/credit_rl/policies/baselines.py,1499,source / tests
+src/credit_rl/policies/decision.py,5538,source / tests
+src/credit_rl/policies/information.py,6141,source / tests
+src/credit_rl/policies/oracle.py,1898,source / tests
+src/credit_rl/policies/registry.py,1762,source / tests
+src/credit_rl/policies/training.py,7602,source / tests
+src/credit_rl/portfolio/__init__.py,244,source / tests
+src/credit_rl/portfolio/accounting.py,4302,source / tests
+src/credit_rl/portfolio/environment.py,10886,source / tests
+src/credit_rl/portfolio/policies.py,4313,source / tests
+src/credit_rl/portfolio/reporting.py,17487,source / tests
+src/credit_rl/reward.py,1732,source / tests
+src/credit_rl/risk/__init__.py,69,source / tests
+src/credit_rl/risk/calibration.py,727,source / tests
+src/credit_rl/risk/dataset.py,3847,source / tests
+src/credit_rl/risk/evaluation.py,3238,source / tests
+src/credit_rl/risk/features.py,4949,source / tests
+src/credit_rl/risk/generation.py,2806,source / tests
+src/credit_rl/risk/longitudinal.py,4453,source / tests
+src/credit_rl/risk/pd_model.py,3751,source / tests
+src/credit_rl/risk/reporting.py,5664,source / tests
+src/credit_rl/risk/settings.py,2667,source / tests
+src/credit_rl/risk/training.py,2602,source / tests
+src/credit_rl/simulation/__init__.py,74,source / tests
+src/credit_rl/simulation/behavior.py,5053,source / tests
+src/credit_rl/simulation/customer.py,5492,source / tests
+src/credit_rl/simulation/default.py,1059,source / tests
+src/credit_rl/simulation/dgp.py,2495,source / tests
+src/credit_rl/simulation/macro.py,4376,source / tests
+src/credit_rl/simulation/shocks.py,2775,source / tests
+src/credit_rl/simulation/simulator.py,866,source / tests
+src/credit_rl/simulation/synthetic_snapshot.py,3466,source / tests
+src/credit_rl/utils/__init__.py,44,source / tests
+src/credit_rl/utils/seeding.py,849,source / tests
+tests/conftest.py,891,source / tests
+tests/test_dgp_v2.py,6178,source / tests
+tests/test_dynamics.py,3897,source / tests
+tests/test_environment.py,6529,source / tests
+tests/test_final_evaluation.py,10258,source / tests
+tests/test_information_gap.py,9286,source / tests
+tests/test_longitudinal_pd.py,11672,source / tests
+tests/test_macro_and_shocks.py,5136,source / tests
+tests/test_main_pipeline.py,4479,source / tests
+tests/test_policy_benchmark.py,10173,source / tests
+tests/test_policy_initialization.py,9734,source / tests
+tests/test_portfolio.py,7377,source / tests
+tests/test_ppo_diagnostics.py,10268,source / tests
+tests/test_reproducibility.py,2675,source / tests
+tests/test_reward_and_risk.py,4497,source / tests
+tests/test_robustness_ope.py,7164,source / tests
+tests/test_structural_diagnostics.py,10434,source / tests
