@@ -117,11 +117,18 @@ def test_stochastic_evaluation_uses_local_customer_month_crn():
     env.close()
 
 
-def test_smoke_imitation_paired_training_snapshot_hashes_and_reproduction(tmp_path):
+def test_smoke_imitation_paired_training_snapshot_hashes_and_reproduction(tmp_path, monkeypatch):
     from credit_rl.experiments.main_evaluation import digest
     from credit_rl.experiments.information_ppo import same_parameters
     config, settings, _ = settings_for('smoke', 'configs')
     settings['population'].update(train=4, validation=2)
+    from credit_rl.experiments import initialization_learning
+    monkeypatch.setattr(initialization_learning, 'ROOT', tmp_path/'inputs')
+    reference = tmp_path/'inputs/ppo_diagnostics/runs/canonical/101/checkpoint_0.zip'
+    reference.parent.mkdir(parents=True)
+    env = CreditLimitEnv(config=config)
+    PPO('MlpPolicy', env, seed=101, n_steps=64, batch_size=64).save(reference)
+    env.close()
     protocol = yaml.safe_load(Path('configs/policy_initialization.yaml').read_text())
     protocol['smoke']['snapshots'] = [0, 64, 128]
     obs = np.random.default_rng(2).random((16, 21)).astype(np.float32)
@@ -149,26 +156,45 @@ def test_smoke_imitation_paired_training_snapshot_hashes_and_reproduction(tmp_pa
                                PPO.load(tmp_path/'replay/runs/128'/arm/'101/final.zip'))
 
 
-def test_saved_smoke_analysis_seed_schema_csv_figures_and_protection(tmp_path):
-    from credit_rl.experiments.initialization_analysis import analyze_budget
+def test_saved_smoke_analysis_seed_schema_csv_figures_and_protection(tmp_path, monkeypatch):
+    """Build isolated software inputs; never depend on ignored research artifacts."""
+    from credit_rl.experiments import initialization_analysis, initialization_learning
+    from credit_rl.experiments import policy_initialization as experiment
+    from credit_rl.experiments.final_smoke_inputs import build_inputs
     from credit_rl.experiments.initialization_report import registry, figures, scientific_report
-    from credit_rl.experiments.policy_initialization import verify_protection
     from credit_rl.experiments.main_evaluation import digest
     from credit_rl.risk.longitudinal import LongitudinalPDModel
-    source = Path('outputs/main/policy_initialization_smoke')
-    if not (source/'analysis/128/RandomInit_101/completed.json').exists():
-        pytest.skip('Run the Phase D smoke workflow to enable persisted-analysis integration check')
-    output = tmp_path/'diagnostic_copy'
-    shutil.copytree(source, output)
-    for path in (output/'analysis/128').glob('*/completed.json'):
-        path.unlink()
-    config, settings, _ = settings_for('smoke', 'configs')
-    protocol = yaml.safe_load(Path('configs/policy_initialization.yaml').read_text())
-    risk = LongitudinalPDModel.load('outputs/main/standard/models/pd/logistic_calibrated.joblib')
-    torch.set_num_threads(1)
     from threadpoolctl import threadpool_limits
+    root = tmp_path/'inputs'
+    for module in (experiment, initialization_analysis, initialization_learning):
+        monkeypatch.setattr(module, 'ROOT', root)
+    torch.set_num_threads(1)
+    config, settings, _ = settings_for('smoke', 'configs')
+    settings['population'].update(train=4, validation=2)
+    protocol = yaml.safe_load(Path('configs/policy_initialization.yaml').read_text())
+    protocol['smoke'].update(budgets=[128], snapshots=[0, 64, 128],
+        train_customers=3, validation_customers=3, test_customers=3,
+        imitation_epochs=2, imitation_check_every=1, mc_draws=2,
+        mc_states_per_scenario=1, bootstrap_repetitions=20)
+    protocol['imitation']['architectures'] = [[64, 64]]
+    output = tmp_path/'diagnostic'
+    output.mkdir()
     with threadpool_limits(limits=1):
-        analyze_budget(config, settings, protocol, risk, output, 'smoke', 128)
+        build_inputs(root)
+        assert json.loads((root/'fixture_complete.json').read_text())['scientific_evidence'] is False
+        risk = LongitudinalPDModel.load(root/'standard/models/pd/logistic_calibrated.joblib')
+        shutil.copyfile(root/'standard/models/ppo_101/selected.zip',
+                        root/'ppo_diagnostics/runs/canonical/101/selected.zip')
+        experiment.build_dataset(config, settings, protocol['smoke'], risk, output)
+        experiment.imitate(config, settings, protocol, risk, output, 'smoke')
+        experiment.write_json(output/'preregistration.json', dict(identity=dict(profile='smoke',
+            protocol=protocol, teacher_sha256=digest(root/'information_gap/planners.joblib'),
+            ppo_config=settings['ppo'])))
+        protected = experiment.protected_files()
+        experiment.write_json(output/'protected_artifacts.json', protected)
+        run_pair(config, settings, protocol, risk, output, 'smoke', 128, 101, [64, 64],
+                 smoke_unqualified=True)
+        initialization_analysis.analyze_budget(config, settings, protocol, risk, output, 'smoke', 128)
     results = pd.read_csv(output/'statistical_comparisons.csv')
     assert not results.empty and set(results.scenario) == {'baseline', 'severe_stress'}
     assert pd.read_csv(output/'preservation_pooled.csv')['mean'].notna().all()
@@ -179,4 +205,8 @@ def test_saved_smoke_analysis_seed_schema_csv_figures_and_protection(tmp_path):
     assert hashes == {p.name: digest(p) for p in (output/'figures').glob('*.png')}
     scientific_report(output)
     assert '## 17. Decision gate' in (output/'report.md').read_text(encoding='utf-8')
-    assert verify_protection(output) > 9000
+    assert experiment.verify_protection(output) == len(protected) > 0
+    sentinel = root/'ppo_diagnostics/runs/canonical/101/checkpoint_0.zip'
+    sentinel.write_bytes(b'corrupted test fixture')
+    with pytest.raises(AssertionError, match='Protected artifacts changed'):
+        experiment.verify_protection(output)
